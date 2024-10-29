@@ -1,0 +1,25 @@
+<!-- database/templates/database.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Usuarios</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; color: #333; }
+        h1 { color: #4CAF50; }
+        ul { list-style-type: none; padding: 0; }
+        li { padding: 8px; background: #fff; margin-bottom: 5px; border: 1px solid #ddd; }
+        li:nth-child(odd) { background: #eee; }
+    </style>
+</head>
+<body>
+    <h1>Lista de Usuarios</h1>
+    <ul>
+        {% for usuario in database %}
+            <li><strong>Email:</strong> {{ usuario.email }}<br>
+                <strong>ID:</strong> {{ usuario.id_user }}</li>
+        {% empty %}
+            <li>No hay usuarios disponibles.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
