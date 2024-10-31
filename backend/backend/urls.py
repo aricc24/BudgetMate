@@ -16,9 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from database import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('database/', views.database, name='database'),
 ]
