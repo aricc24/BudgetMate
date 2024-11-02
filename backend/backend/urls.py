@@ -20,5 +20,6 @@ from logic.views import ReactView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('logic/', include('logic.urls')),
     path('wel/', ReactView.as_view({'get': 'list', 'post': 'create'}), name="something"),
 ]
