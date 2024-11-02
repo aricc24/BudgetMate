@@ -12,26 +12,36 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
-        def create(self, clean_data):
-            user = User(
-                email = validated_data['email'],
-                password = validated_data['password'],
-            )
-            user.set_password(validated_data['password'])
-            user.save()
-            return user
+    def create(self, validated_data):  # Correcto: debe estar fuera de Meta
+        user = User(
+            email = validated_data['email'],
+            password = validated_data['password'],
+        )
+        user.save()
+        return user
 
-        def validate_email(self, value):
-            if User.objects.filter(email=value).exists():
-                raise serializers.ValidationError("This e-mail is already registered.")
-            return value
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("This e-mail is already registered.")
+        return value
 
 class UserLoginSerializer(serializers.Serializer):
-	email = serializers.EmailField()
-	password = serializers.CharField()
+    email = serializers.EmailField()
+    password = serializers.CharField()
 
-	def check_user(self, clean_data):
-		user = authenticate(username=clean_data['email'], password=clean_data['password'])
-		if not user:
-			raise ValidationError('User not found')
-		return user
+    def validate(self, attrs):  # Asegúrate de que esta línea esté correctamente alineada
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        #user = authenticate(request=self.context.get('request'), username=email, password=password)
+        #if user is None:
+        try:
+            user = User.objects.get(email = email, password = password)
+        except User.DoesNotExist:
+            raise serializers.ValidationError('Invalid credentials')
+        except User.MultipleObjectsReturned:
+            raise serializers.ValidationError("Multiple users found with this email")
+        if user is None:
+            raise serializers.ValidationError('Invalid credentials')
+        attrs['user'] = user
+        return attrs
