@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  backend:
+    build: ./backend
+    container_name: django_backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+   # depends_on:
+     # - db
+    environment:
+     # - DB_USER=${DB_USER}
+     # - DB_PASSWORD=${DB_PASSWORD}
+     # - DB_NAME=${DB_NAME}
+     # - DB_HOST=db
+     # - DB_PORT=3306
+       - PYTHONUNBUFFERED=1
+
+  frontend:
+    build: ./frontend
+    container_name: react_frontend
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+
+
+ # db:
+   # image: mysql:8.0
+   # container_name: mysql_db
+    #environment:
+     # MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+     # MYSQL_USER: ${DB_USER}
+     # MYSQL_PASSWORD: ${DB_PASSWORD}
+     # MYSQL_DATABASE: ${DB_NAME}
+   # ports:
+     # - "3306:3306"
+    #volumes:
+      #- mysql_data:/var/lib/mysql
+
+#volumes:
+  #mysql_data:
