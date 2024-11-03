@@ -9,15 +9,15 @@ services:
       - ./backend:/app
     ports: 
       - "8000:8000"
-   # depends_on: 
-     # - db
+    depends_on: 
+      - db
     environment:
-     # - DB_USER=${DB_USER}
-     # - DB_PASSWORD=${DB_PASSWORD}
-     # - DB_NAME=${DB_NAME}
-     # - DB_HOST=db
-     # - DB_PORT=3306
-       - PYTHONUNBUFFERED=1
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=db
+      - DB_PORT=3306
+      - PYTHONUNBUFFERED=1
 
   frontend: 
     build: ./frontend
@@ -30,19 +30,19 @@ services:
     tty: true 
 
 
- # db:
-   # image: mysql:8.0
-   # container_name: mysql_db
-    #environment:
-     # MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-     # MYSQL_USER: ${DB_USER}
-     # MYSQL_PASSWORD: ${DB_PASSWORD}
-     # MYSQL_DATABASE: ${DB_NAME}
-   # ports:
-     # - "3306:3306"
-    #volumes:
-      #- mysql_data:/var/lib/mysql
+  db:
+   image: mysql:latest
+   container_name: mysql_db
+   environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+   ports:
+      - "3306:3306"
+   volumes:
+      - mysql_data:/var/lib/mysql
 
-#volumes:
-  #mysql_data:
+volumes:
+  mysql_data:
 
