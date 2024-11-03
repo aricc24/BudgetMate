@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css';
+import { login } from './services/apiService';
 
 function Login(){
     const [username, setUsername] = useState('');
@@ -7,8 +8,12 @@ function Login(){
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Username:', username);
-        console.log('Password:', password);
+        try{
+          const data = await login(username, password);
+          console.log('Login successful:', data);
+        } catch (error) {
+          console.error('Error during login:', error);
+        }
 
     };
 

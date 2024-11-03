@@ -33,11 +33,12 @@ services:
  # db:
    # image: mysql:8.0
    # container_name: mysql_db
-    #environment:
+    environment:
      # MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
      # MYSQL_USER: ${DB_USER}
      # MYSQL_PASSWORD: ${DB_PASSWORD}
      # MYSQL_DATABASE: ${DB_NAME}
+     - REACT_APP_API_URL=http://backend:8000
    # ports:
      # - "3306:3306"
     #volumes:
