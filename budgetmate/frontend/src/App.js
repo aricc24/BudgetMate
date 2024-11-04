@@ -32,7 +32,7 @@ function App() {
 const titleStyle = {
     fontSize: '32px',
     fontWeight: 'bold',
-    color: '#696969',  // Cambia el color según prefieras
+    color: '#000000',  // Cambia el color según prefieras
     marginBottom: '20px',
 };
 

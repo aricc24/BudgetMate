@@ -24,3 +24,19 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("This e-mail is already registered.")
         return value
+
+class UserLoginSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        email = data.get('email')
+        password = data.get('password')
+
+
+        user = authenticate(username=email, password=password)
+        if user is None:
+            raise serializers.ValidationError("Invalid email or password.")
+
+        data['user'] = user
+        return data

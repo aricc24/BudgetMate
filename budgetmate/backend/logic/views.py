@@ -24,11 +24,5 @@ class UserRegisterView(generics.CreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserLoginView(APIView):
-    permission_classes = (permissions.AllowAny,)
-
     def post(self, request, *args, **kwargs):
-        email = request.data.get('email')
-        password = request.data.get('password')
-
-
-        return Response({'message': 'Login successful', 'user_id': 1}, status=status.HTTP_200_OK)
+        return Response({"message": "Login successful!"}, status=status.HTTP_200_OK)
