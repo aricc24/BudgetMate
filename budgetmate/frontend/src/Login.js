@@ -35,7 +35,7 @@ import { login } from './services/api';
            <label htmlFor="password">Contraseña:</label>
            <input
              type="password"
-             id="password"
+             id="login-password"
              value={password}
              onChange={(e) => setPassword(e.target.value)}
              placeholder="Contraseña"
