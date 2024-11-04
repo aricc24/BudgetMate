@@ -1,9 +1,7 @@
-from django.shortcuts import render
-from rest_framework import viewsets
-from .models import *
-from .serializer import *
-# Create your views here.
+from rest_framework import generics
+from .models import User
+from .serializer import ReactSerializer
 
-class ReactView(viewsets.ModelViewSet):
+class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = ReactSerializer

@@ -1,32 +1,65 @@
-import React from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 
-class App extends React.Component {
-    state = {
-        details: {},
+function App() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const userData = {
+            email,
+            password
+        };
+
+        try {
+            const response = await fetch('http://127.0.0.1:8001/wel/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
+
+            if (response.ok) {
+                setMessage('User added successfully!');
+            } else {
+                setMessage('Error adding user.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setMessage('Error adding user.');
+        }
     };
 
-    componentDidMount() {
-        axios.get('http://localhost:8000/wel/')
-            .then(res => {
-                console.log(res.data);
-                this.setState({
-                    details: res.data
-                });
-            })
-            .catch(err => {
-                console.error("Error while getting data:", err);
-            });
-    }
-
-    render() {
-      const { details } = this.state;
-      return (
-          <div>
-              <h1>Email: {details.email}</h1>
-              <p>Password: {details.password}</p>
-          </div>
-      );
-    }
+    return (
+        <div className="App">
+            <h1>User Registration</h1>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Email:</label>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Password:</label>
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+                <button type="submit">Register</button>
+            </form>
+            {message && <p>{message}</p>}
+        </div>
+    );
 }
+
 export default App;
