@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
 import './Login.css';
-import { login } from './services/apiService';
+import { login } from './services/api';
 
-function Login(){
+ function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        try{
-          const data = await login(username, password);
-          console.log('Login successful:', data);
+        try {
+            const data = await login(username, password);
+            console.log('Login successful:', data);
         } catch (error) {
-          console.error('Error during login:', error);
+            console.error('Error during login:', error);
         }
-
     };
 
     return(

@@ -1,8 +1,8 @@
 FROM node:16
 WORKDIR /app
-COPY ./frontend/package*.json /app/
+COPY ./budgetmate/frontend/package*.json /app/
 RUN npm install
-COPY ./frontend /app
+COPY ./budgetmate/frontend /app
 
 EXPOSE 3000
 CMD ["npm", "start"]
