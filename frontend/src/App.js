@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './App.css';
 
 function App() {
     const [email, setEmail] = useState('');
@@ -34,30 +35,32 @@ function App() {
     };
 
     return (
-        <div className="App">
-            <h1>User Registration</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Register</button>
-            </form>
-            {message && <p>{message}</p>}
+        <div className="app">
+            <div className="card">
+                <h1 className="title">User Registration</h1>
+                <form className="form" onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="button">Register</button>
+                </form>
+                {message && <p className="message">{message}</p>}
+            </div>
         </div>
     );
 }
