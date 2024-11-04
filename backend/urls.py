@@ -22,4 +22,3 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', ReactView.as_view(), name="user-list"),
 ]
-
