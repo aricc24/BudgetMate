@@ -1,6 +1,7 @@
 // src/Register.js
 import React, { useState } from 'react';
 import { register } from './services/api';
+import axios from 'axios';
 
 function Register({onBack}) {
     const [email, setEmail] = useState('');
@@ -9,11 +10,18 @@ function Register({onBack}) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMessage('');
         try {
-            const response = await register(email, password);
-            setMessage("User registered successfully!");
+            const response = await axios.post('http://localhost:8001/api/register/', {
+                email: email,
+                password: password,
+            });
+            if (response.status === 201) {
+                setMessage('Registration successful!');
+            }
         } catch (error) {
-            setMessage("Error during registration: " + error.message);
+            setMessage('Registration failed. Please try again.');
+            console.error('Error during registration:', error);
         }
     };
 
@@ -26,6 +34,7 @@ function Register({onBack}) {
                 <button type="submit">Register</button>
                 <button type="button" onClick={onBack}>Back</button>
             </form>
+            {message && <p>{message}</p>}
         </div>
     );
 }
