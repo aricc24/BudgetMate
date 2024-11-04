@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'corsheaders',
+    'logic',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +64,7 @@ MIDDLEWARE = [
 #}
 
 
-ROOT_URLCONF = "backend.urls"
+ROOT_URLCONF = "urls"
 
 TEMPLATES = [
     {
