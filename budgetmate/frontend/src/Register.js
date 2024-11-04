@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { register } from './services/api';
 
-function Register() {
+function Register({onBack}) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
@@ -18,33 +18,13 @@ function Register() {
     };
 
     return (
-        <div className="register-container">
-            <form onSubmit={handleSubmit} className="register-form">
-                <h2>Register</h2>
-                <div className="inputGroup">
-                    <label htmlFor="email">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email"
-                        required
-                    />
-                </div>
-                <div className="inputGroup">
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="register-password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Password"
-                        required
-                    />
-                </div>
-                <button type="submit" className="register-button">Register</button>
-                <p>{message}</p>
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+            <h2>Register</h2>
+            <form onSubmit={handleSubmit}>
+                <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <button type="submit">Register</button>
+                <button type="button" onClick={onBack}>Back</button>
             </form>
         </div>
     );
