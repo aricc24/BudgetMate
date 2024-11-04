@@ -51,7 +51,7 @@ function SignIn() {
                 </form>
                 {message && <p className="message">{message}</p>}
 
-                {/* Botón link para ir a la página de login */}
+                {}
                 <p>
                     Already have an account? <Link to="/login" className="link-button">Log In</Link>
                 </p>

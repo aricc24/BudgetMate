@@ -1,13 +1,35 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setMessage("Logged in successfully!"); 
+        const userData = { email, password };
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/wel/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('token', data.token); 
+                setMessage('Logged in successfully!');
+                navigate('/dashboard'); 
+            } else {
+                setMessage('Invalid email or password.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setMessage('An error occurred during login.');
+        }
     };
 
     return (
