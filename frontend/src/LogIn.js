@@ -12,17 +12,19 @@ function Login() {
         const userData = { email, password };
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/users/', {
+            const response = await fetch('http://127.0.0.1:8000/api/login/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
             });
 
             const data = await response.json();
-            localStorage.setItem('token', data.token); 
-            setMessage('Logged in successfully!');
-            navigate('/dashboard'); 
-            
+
+            if (response.ok) {
+                setMessage(data.message);
+            } else {
+                setMessage(data.message);
+            }
         } catch (error) {
             console.error('Error:', error);
             setMessage('An error occurred during login.');
