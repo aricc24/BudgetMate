@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -18,6 +20,7 @@ function Login() {
                 body: JSON.stringify(userData),
             });
 
+            //modify this
             const data = await response.json();
 
             if (response.ok) {
@@ -38,21 +41,33 @@ function Login() {
                 <form className="form" onSubmit={handleLogin}>
                     <div className="form-group">
                         <label>Email</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
+                        <div className="input-container">
+                            <i className="fas fa-envelope icon"></i>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                placeholder="Enter your email"
+                            />
+                        </div>
                     </div>
                     <div className="form-group">
                         <label>Password</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
+                        <div className="input-container">
+                            <i className="fas fa-key icon"></i>
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                placeholder="Enter your password"
+                            />
+                            <i
+                                className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} toggle-password`}
+                                onClick={() => setShowPassword(!showPassword)}
+                            ></i>
+                        </div>
                     </div>
                     <button type="submit" className="button">Log In</button>
                 </form>
