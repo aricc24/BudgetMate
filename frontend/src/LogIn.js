@@ -19,11 +19,12 @@ function Login() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
             });
-
             //modify this
             const data = await response.json();
 
             if (response.ok) {
+                const { id, email } = data;
+                navigate('/main_page', {state: { id, email }});
                 setMessage(data.message);
             } else {
                 setMessage(data.message);

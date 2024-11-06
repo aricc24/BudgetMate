@@ -24,12 +24,12 @@ def login_view(request):
         print(f"Password in database: {user.password}")
 
         if user.password == password:
-            return Response({"message": "Logged in successfully!"}, status=status.HTTP_200_OK)
+            return Response({"message": "Logged in successfully!", "id": user.id_user, "email": user.email}, status=status.HTTP_200_OK)
         else:
             return Response({"message": "Sorry, invalid data"}, status=status.HTTP_401_UNAUTHORIZED)
-    
+
     except User.DoesNotExist:
         # this if for our logs
         print(f"Email inserted: {email}, Password inserted: {password}")
-        
+
         return Response({"message": "Sorry, invalid data"}, status=status.HTTP_401_UNAUTHORIZED)
