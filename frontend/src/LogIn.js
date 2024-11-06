@@ -24,9 +24,12 @@ function Login() {
 
             if (response.ok) {
                 const { id, email } = data;
-                navigate('/main_page', {state: { id, email }});
+                localStorage.setItem('authToken', id);
+                console.log("lil token: ", sessionStorage.getItem('authToken'));
+                navigate('/home', {state: { id, email }});
                 setMessage(data.message);
             } else {
+                setPassword('');
                 setMessage(data.message);
             }
         } catch (error) {

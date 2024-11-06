@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import PrivateRoute from './PrivateRoute';
 import SignIn from './SignIn';
 import Login from './LogIn';
-import MainPage from './MainPage';
+import Home from './Home';
 import './App.css';
 
 function App() {
@@ -11,7 +12,10 @@ function App() {
             <Routes>
                 <Route path="/" element={<SignIn />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/main_page" element={<MainPage />} />
+
+                <Route element={<PrivateRoute />}>
+                    <Route path="/home" element={<Home />} />
+                </Route>
             </Routes>
         </Router>
     );
