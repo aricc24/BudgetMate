@@ -19,7 +19,19 @@ function Login() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
             });
+            //modify this
+            const data = await response.json();
 
+            if (response.ok) {
+                const { id, email } = data;
+                localStorage.setItem('authToken', id);
+                console.log("lil token: ", sessionStorage.getItem('authToken'));
+                navigate('/home', {state: { id, email }});
+                setMessage(data.message);
+            } else {
+                setPassword('');
+                setMessage(data.message);
+            }
             setMessage(response.ok ? 'Login correctly!' : 'Invalid data.');
         } catch (error) {
             console.error('Error:', error);
