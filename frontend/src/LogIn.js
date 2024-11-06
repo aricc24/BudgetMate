@@ -20,14 +20,7 @@ function Login() {
                 body: JSON.stringify(userData),
             });
 
-            //modify this
-            const data = await response.json();
-
-            if (response.ok) {
-                setMessage(data.message);
-            } else {
-                setMessage(data.message);
-            }
+            setMessage(response.ok ? 'Login correctly!' : 'Invalid data.');
         } catch (error) {
             console.error('Error:', error);
             setMessage('An error occurred during login.');
@@ -35,45 +28,48 @@ function Login() {
     };
 
     return (
-        <div className="app">
-            <div className="card">
-                <h1 className="title">Log In</h1>
-                <form className="form" onSubmit={handleLogin}>
-                    <div className="form-group">
-                        <label>Email</label>
-                        <div className="input-container">
-                            <i className="fas fa-envelope icon"></i>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                placeholder="Enter your email"
-                            />
+        <>
+            <div className="background-container"></div>
+            <div className="app">
+                <div className="card">
+                    <h1 className="title">Log In</h1>
+                    <form className="form" onSubmit={handleLogin}>
+                        <div className="form-group">
+                            <label>Email</label>
+                            <div className="input-container">
+                                <i className="fas fa-envelope icon"></i>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                    placeholder="Enter your email"
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <div className="form-group">
-                        <label>Password</label>
-                        <div className="input-container">
-                            <i className="fas fa-key icon"></i>
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                placeholder="Enter your password"
-                            />
-                            <i
-                                className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} toggle-password`}
-                                onClick={() => setShowPassword(!showPassword)}
-                            ></i>
+                        <div className="form-group">
+                            <label>Password</label>
+                            <div className="input-container">
+                                <i className="fas fa-key icon"></i>
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    placeholder="Enter your password"
+                                />
+                                <i
+                                    className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} toggle-password`}
+                                    onClick={() => setShowPassword(!showPassword)}
+                                ></i>
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit" className="button">Log In</button>
-                </form>
-                {message && <p className="message">{message}</p>}
+                        <button type="submit" className="button">Log In</button>
+                    </form>
+                    {message && <p className="message">{message}</p>}
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 
