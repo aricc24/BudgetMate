@@ -1,4 +1,5 @@
 import React from 'react';
+import ProfileIcon from './ProfileIcon'
 import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
@@ -11,9 +12,16 @@ export const Home = () => {
     };
 
     return (
+     <div className="home">
         <nav className="navbar">
-            <button className="button" onClick={logout}>Logout</button>
+           <ProfileIcon logout={logout} />
         </nav>
+    
+      <div className="content">
+        <h1>Bienvenido a la Página de Inicio</h1>
+      </div>
+    </div>
+
     );
 
 };
