@@ -7,7 +7,7 @@ import profilepic from './profilepic.png';
 
 
 
-function ProfileIcon() {
+function ProfileIcon({logout}) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
@@ -17,7 +17,7 @@ function ProfileIcon() {
       <div className="profile-icon" onClick={toggleSidebar}>
         <img src={profilepic} alt="Profile" />
       </div>
-      {isOpen && <Sidebar />}
+      {isOpen && <Sidebar toggleSidebar={toggleSidebar} logout={logout} />}
     </div>
   );
 }

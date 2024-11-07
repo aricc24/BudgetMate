@@ -2,18 +2,16 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Sidebar.css';
 import './Home.css';
+import ProfilePic from './profilepic.png';
 
-
-function Sidebar() {
+function Sidebar({ toggleSidebar, logout }) {
   const navigate = useNavigate();
-
   const navigateToProfile = () => navigate('/profile');
-  const logout = () => navigate('/login');
 
   return (
     <div className="sidebar">
-      <div className="profile-pic">
-        <img src="/path-to-profile-image.jpg" alt="Profile" />
+      <div className="profile-pic" onClick={toggleSidebar}>
+        <img src={ProfilePic} alt="Profile" />
       </div>
       <button onClick={navigateToProfile}>Your Profile</button>
       <button onClick={logout}>Log Out</button>
