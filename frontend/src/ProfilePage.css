@@ -35,11 +35,11 @@
   
   .profile-page input:focus,
   .profile-page textarea:focus {
-    border-color: #3d5afe;
+    border-color: #000000;
   }
   
   .profile-page button {
-    background-color: #3d5afe;
+    background-color: #000000;
     color: #fff;
     padding: 12px;
     font-size: 1rem;
