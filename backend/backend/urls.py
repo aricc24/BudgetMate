@@ -16,7 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from logic.views import ReactView, login_view
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path('admin/', admin.site.urls),
+    path('api/users/', ReactView.as_view(), name="user-list"),
+    path('api/login/', login_view, name="user-log"),
 ]
