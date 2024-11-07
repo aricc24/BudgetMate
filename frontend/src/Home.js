@@ -20,7 +20,7 @@ export const Home = () => {
         </nav>
     
       <div className="content">
-        <h1>Bienvenido a la Página de Inicio</h1>
+        <h1>:3</h1>
       </div>
     </div>
 
