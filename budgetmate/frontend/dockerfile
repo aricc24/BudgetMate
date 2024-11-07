@@ -1,0 +1,8 @@
+FROM node:16
+WORKDIR /app
+COPY ./budgetmate/frontend/package*.json /app/
+RUN npm install
+COPY ./budgetmate/frontend /app
+
+EXPOSE 3000
+CMD ["npm", "start"]
