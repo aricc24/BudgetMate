@@ -1,6 +1,3 @@
-# Ignora dependencias de Node.js en frontend
-frontend/node_modules/
-
 # Ignora caché de Python en backend
 backend/**/__pycache__/
 backend/**/*.pyc
