@@ -1,6 +1,8 @@
 import React from 'react';
 import ProfileIcon from './ProfileIcon'
 import { useNavigate } from 'react-router-dom';
+import './Home.css';
+
 
 export const Home = () => {
     const navigate = useNavigate();
@@ -13,7 +15,7 @@ export const Home = () => {
 
     return (
      <div className="home">
-        <nav className="navbar">
+        <nav className="home-navbar">
            <ProfileIcon logout={logout} />
         </nav>
     
