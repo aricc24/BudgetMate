@@ -19,6 +19,8 @@ function ProfilePage() {
 
   const[isEditing, setIsEditing] = useState(false);
 
+  const handleExit = () => navigate('/home');
+
   useEffect(() => {
     const fetchUserData = async () => {
         const userId = localStorage.getItem('authToken');
@@ -152,6 +154,11 @@ function ProfilePage() {
             <button type="button" onClick={handleCancel}>Cancel</button>
           </div>
         )}
+      </div>
+      <div className="exit-button-container">
+        <button type="button" className="exit-button" onClick={handleExit}>
+          Exit
+        </button>
       </div>
     </div>
   );

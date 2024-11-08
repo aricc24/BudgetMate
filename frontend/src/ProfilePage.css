@@ -8,7 +8,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
-  .profile.left{
+  .profile-left{
     flex: 1; 
     display: flex;
     flex-direction: column;
@@ -38,29 +38,35 @@
     background-color: #333;
   }
 
-  .profile.rigth{
-    flex: 2; 
-    padding: 20px; 
-  }
-  
-  .profile.rigth h2{
-    font-size: 1.8rem;
-    color: #333; 
-    margin-bottom: 20px;   
+  .profile-right {
+    flex: 2;
+    padding: 20px;
   }
 
-  from{
+  .profile-right h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: left;
+    padding-left: 80px;
+  }
+
+  form{
     display: flex; 
     gap: 20px; 
   }
 
-  .from-column{
-    display:flex; 
+  .form-column {
+    display: flex;
     flex-direction: column;
     gap: 15px;
   }
 
-  from imput{
+  .form-group:first-child {
+    margin-left: 40px;
+  }
+
+  form input{
     padding: 10px;
     font-size: 1rem;
     border: 1px solid #ddd;
@@ -69,10 +75,11 @@
     transition: border-color 0.2s;
   }
 
-  from input:focus{
-    border-color: #000;
+  form input::placeholder {
+    color: rgba(0, 0, 0, 0.5); 
+    font-size: 1rem;
   }
-
+  
   .button-group{
     display: flex; 
     gap: 10px; 
@@ -94,4 +101,27 @@
   .button-group button:hover{
     background-color: #333;
   }
+  
+  .exit-button-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .exit-button {
+    padding: 8px 16px;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #555;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .exit-button:hover {
+    background-color: #333;
+  }
+  
   
