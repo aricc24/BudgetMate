@@ -45,3 +45,8 @@ def get_user_info(request):
         return Response({"error": "User not found."}, status=404)
     serializer = ReactSerializer(user)
     return Response(serializer.data)
+
+class UserUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = ReactSerializer
+    lookup_field = 'id_user'

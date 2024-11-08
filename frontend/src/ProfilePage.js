@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
 import axios from 'axios';
 
 function ProfilePage() {
+  const navigate = useNavigate();
   const [profileData, setProfileData] = useState({
-    name: '',
-    lastName: '',
+    first_name: '',
+    last_name_father: '',
     rfc: '',
-    bio: '',
-    phoneNumber: '',
+    phone_number: '',
   });
 
   useEffect(() => {
@@ -22,7 +23,7 @@ function ProfilePage() {
                     }
                 }
             );
-            setProfileData({ name: response.data.first_name, lastName: response.data.last_name_father, rfc: response.data.rfc, bio: 'My Bio', phoneNumber: response.data.phone_number });
+            setProfileData({ first_name: response.data.first_name, last_name_father: response.data.last_name_father, rfc: response.data.rfc, phone_number: response.data.phone_number });
         }
         catch (error) {
             console.error("Error fetching user data:", error);
@@ -36,19 +37,38 @@ function ProfilePage() {
     setProfileData({ ...profileData, [name]: value });
   };
 
-  const saveChanges = () => {
-    console.log('Profile updated:', profileData);
+  const saveChanges = async () => {
+      console.log(JSON.stringify(profileData));
+      try {
+          const usrID = localStorage.getItem('authToken');
+          const response = await fetch(`http://localhost:8000/api/update_user/${usrID}/`, {
+             method: 'PATCH',
+             headers: {'Content-Type':'application/json'},
+             body: JSON.stringify(profileData)
+          });
+          if (response.ok) {
+              const updatedData = await response.json();
+              setProfileData(updatedData);
+              navigate('/home')
+              console.log('Profile updated', profileData);
+          } else {
+              console.error('Error updating profile');
+          }
+      }
+      catch (error) {
+          console.error('Petition error:', error);
+      }
+
   };
 
   return (
     <div className="profile-page">
       <h2>Edit Profile</h2>
       <form>
-        <input name="name" value={profileData.name} onChange={handleChange} placeholder="Name" />
-        <input name="lastName" value={profileData.lastName} onChange={handleChange} placeholder="Last Name" />
+        <input name="first_name" value={profileData.first_name} onChange={handleChange} placeholder="Name" />
+        <input name="last_name_father" value={profileData.last_name_father} onChange={handleChange} placeholder="Last Name" />
         <input name="rfc" value={profileData.rfc} onChange={handleChange} placeholder="RFC" />
-        <textarea name="bio" value={profileData.bio} onChange={handleChange} placeholder="Bio"></textarea>
-        <input name="phoneNumber" value={profileData.phoneNumber} onChange={handleChange} placeholder="Phone Number" />
+        <input name="phone_number" value={profileData.phone_number} onChange={handleChange} placeholder="Phone Number" />
         <button type="button" onClick={saveChanges}>Save Changes</button>
       </form>
     </div>

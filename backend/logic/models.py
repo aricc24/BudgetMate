@@ -15,7 +15,6 @@ class User(models.Model):
     rfc = models.CharField(max_length=13, unique=True, blank=False, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
 
-    # Opciones de estado civil
     SINGLE = 'single'
     MARRIED = 'married'
     DIVORCED = 'divorced'
