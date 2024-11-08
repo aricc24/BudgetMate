@@ -1,30 +1,44 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
 import profilepic from './profilepic.png';
+import axios from 'axios';
 
 function ProfilePage() {
+  const navigate = useNavigate();
   const [profileData, setProfileData] = useState({
-    username: '',
-    name: '',
-    lastName: '',
+    first_name: '',
+    last_name_father: '',
+    last_name_mother: '',
     rfc: '',
-    CURP: '',
+    curp: '',
     email: '',
     password: '',
-    phoneNumber: '',
+    phone_number: '',
   });
 
   const[isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    setProfileData({ username: 'user123',
-      name: 'Nombre',
-      lastName: 'Apellido',
-      rfc: 'RFC1234',
-      CURP: 'CURP1234',
-      email: 'email@example.com',
-      password: 'password123',
-      phoneNumber: '1234567890', });
+    const fetchUserData = async () => {
+        const userId = localStorage.getItem('authToken');
+        try {
+            const response = await axios.post('http://localhost:8000/api/get_user/', {id: userId},
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            setProfileData({ first_name: response.data.first_name, last_name_father: response.data.last_name_father,
+                last_name_mother: response.data.last_name_mother, rfc: response.data.rfc, curp: response.data.curp,
+                email: response.data.email, password: response.data.password, phone_number: response.data.phone_number });
+        }
+        catch (error) {
+            console.error("Error fetching user data:", error);
+        }
+    }
+    fetchUserData();
   }, []);
 
   const handleChange = (e) => {
@@ -35,20 +49,27 @@ function ProfilePage() {
   const handleEdit = () => setIsEditing(true);
 
   const handleSave = async () => {
-    setIsEditing(false);
-    try{
-      const response = await fetch('/api/profile', {
-        method: 'POST',
-        headers: {'Content-Type': 'aplication/json'},
-        body: JSON.stringify(profileData),
-      });
-      if(response.ok){
-        console.log('Profile saved:', profileData);
+      console.log(JSON.stringify(profileData));
+      try {
+          const usrID = localStorage.getItem('authToken');
+          const response = await fetch(`http://localhost:8000/api/update_user/${usrID}/`, {
+             method: 'PATCH',
+             headers: {'Content-Type':'application/json'},
+             body: JSON.stringify(profileData)
+          });
+          if (response.ok) {
+              const updatedData = await response.json();
+              setProfileData(updatedData);
+              navigate('/home')
+              console.log('Profile updated', profileData);
+          } else {
+              console.error('Error updating profile');
+          }
       }
-    }catch(error){
-      console.error('Error saving profile:', error);
-    }
-  }
+      catch (error) {
+          console.error('Petition error:', error);
+      }
+  };
 
   const handleCancel = () => setIsEditing(false);
 
@@ -65,24 +86,24 @@ function ProfilePage() {
         <form>
           <div className="form-group">
             <input
-              name="username"
-              value={profileData.username}
-              onChange={handleChange}
-              placeholder="Username"
-              disabled={!isEditing}
-            />
-            <input
-              name="name"
-              value={profileData.name}
+              name="first_name"
+              value={profileData.first_name}
               onChange={handleChange}
               placeholder="Name"
               disabled={!isEditing}
             />
             <input
-              name="lastName"
-              value={profileData.lastName}
+              name="last_name_father"
+              value={profileData.last_name_father}
               onChange={handleChange}
-              placeholder="Last Name"
+              placeholder="Father's surname"
+              disabled={!isEditing}
+            />
+            <input
+              name="last_name_mother"
+              value={profileData.last_name_mother}
+              onChange={handleChange}
+              placeholder="Mother's surname"
               disabled={!isEditing}
             />
             <input
@@ -95,8 +116,8 @@ function ProfilePage() {
           </div>
           <div className="form-group">
             <input
-              name="CURP"
-              value={profileData.CURP}
+              name="curp"
+              value={profileData.curp}
               onChange={handleChange}
               placeholder="CURP"
               disabled={!isEditing}
@@ -117,8 +138,8 @@ function ProfilePage() {
               disabled={!isEditing}
             />
             <input
-              name="phoneNumber"
-              value={profileData.phoneNumber}
+              name="phone_number"
+              value={profileData.phone_number}
               onChange={handleChange}
               placeholder="Phone Number"
               disabled={!isEditing}
