@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ProfilePage.css';
+import axios from 'axios';
 
 function ProfilePage() {
   const [profileData, setProfileData] = useState({
@@ -11,7 +12,23 @@ function ProfilePage() {
   });
 
   useEffect(() => {
-    setProfileData({ name: 'John', lastName: 'Doe', rfc: 'RFC1234', bio: 'My Bio', phoneNumber: '1234567890' });
+    const fetchUserData = async () => {
+        const userId = localStorage.getItem('authToken');
+        try {
+            const response = await axios.post('http://localhost:8000/api/get_user/', {id: userId},
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            setProfileData({ name: response.data.first_name, lastName: response.data.last_name_father, rfc: response.data.rfc, bio: 'My Bio', phoneNumber: response.data.phone_number });
+        }
+        catch (error) {
+            console.error("Error fetching user data:", error);
+        }
+    }
+    fetchUserData();
   }, []);
 
   const handleChange = (e) => {
