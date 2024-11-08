@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ProfilePage.css';
-import profilepic from './assets/profilepic.png';
+import { useNavigate } from 'react-router-dom';
+import profilepic from './profilepic.png';
 
 function ProfilePage() {
   const [profileData, setProfileData] = useState({
@@ -15,9 +16,11 @@ function ProfilePage() {
   });
 
   const[isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setProfileData({ username: 'user123',
+    setProfileData({ 
+      username: 'user123',
       name: 'Nombre',
       lastName: 'Apellido',
       rfc: 'RFC1234',
@@ -39,7 +42,7 @@ function ProfilePage() {
     try{
       const response = await fetch('/api/profile', {
         method: 'POST', 
-        headers: {'Content-Type': 'aplication/json'}, 
+        headers: {'Content-Type': 'application/json'}, 
         body: JSON.stringify(profileData), 
       }); 
       if(response.ok){
@@ -50,7 +53,9 @@ function ProfilePage() {
     }
   }
 
-  const handleCancel = () => setIsEditing(false); 
+  const handleCancel = () => setIsEditing(false);
+  
+  const handleExit = () => navigate('/home');
 
   return (
     <div className="profile-page">
@@ -131,6 +136,11 @@ function ProfilePage() {
             <button type="button" onClick={handleCancel}>Cancel</button>
           </div>
         )}
+      </div>
+      <div className="exit-button-container">
+        <button type="button" className="exit-button" onClick={handleExit}>
+          Exit
+        </button>
       </div>
     </div>
   );
