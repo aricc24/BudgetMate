@@ -1,17 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import './ProfilePage.css';
+import profilepic from './assets/profilepic.png';
 
 function ProfilePage() {
   const [profileData, setProfileData] = useState({
+    username: '', 
     name: '',
     lastName: '',
     rfc: '',
     CURP: '',
+    email: '', 
+    password: '', 
     phoneNumber: '',
   });
 
+  const[isEditing, setIsEditing] = useState(false);
+
   useEffect(() => {
-    setProfileData({ name: 'Nombre', lastName: 'Apellido', rfc: 'RFC1234', CURP: 'CURP', phoneNumber: '1234567890' });
+    setProfileData({ username: 'user123',
+      name: 'Nombre',
+      lastName: 'Apellido',
+      rfc: 'RFC1234',
+      CURP: 'CURP1234',
+      email: 'email@example.com',
+      password: 'password123',
+      phoneNumber: '1234567890', });
   }, []);
 
   const handleChange = (e) => {
@@ -19,21 +32,106 @@ function ProfilePage() {
     setProfileData({ ...profileData, [name]: value });
   };
 
-  const saveChanges = () => {
-    console.log('Profile updated:', profileData);
-  };
+  const handleEdit = () => setIsEditing(true); 
+  
+  const handleSave = async () => {
+    setIsEditing(false); 
+    try{
+      const response = await fetch('/api/profile', {
+        method: 'POST', 
+        headers: {'Content-Type': 'aplication/json'}, 
+        body: JSON.stringify(profileData), 
+      }); 
+      if(response.ok){
+        console.log('Profile saved:', profileData); 
+      }
+    }catch(error){
+      console.error('Error saving profile:', error); 
+    }
+  }
+
+  const handleCancel = () => setIsEditing(false); 
 
   return (
     <div className="profile-page">
-      <h2>My Profile</h2>
-      <form>
-        <input name="name" value={profileData.name} onChange={handleChange} placeholder="Name" />
-        <input name="lastName" value={profileData.lastName} onChange={handleChange} placeholder="Last Name" />
-        <input name="rfc" value={profileData.rfc} onChange={handleChange} placeholder="RFC" />
-        <textarea name="CURP" value={profileData.CURP} onChange={handleChange} placeholder="CURP"></textarea>
-        <input name="phoneNumber" value={profileData.phoneNumber} onChange={handleChange} placeholder="Phone Number" />
-        <button type="button" onClick={saveChanges}>Save Changes</button>
-      </form>
+      <div className="profile-sidebar">
+        <img src={profilepic} alt="Profile" className="profile-image" />
+        <button type="button" className="edit-button" onClick={handleEdit}>
+          Edit
+        </button>
+      </div>
+      <div className="profile-form">
+        <h2>My Profile</h2>
+        <form>
+          <div className="form-group">
+            <input
+              name="username"
+              value={profileData.username}
+              onChange={handleChange}
+              placeholder="Username"
+              disabled={!isEditing}
+            />
+            <input
+              name="name"
+              value={profileData.name}
+              onChange={handleChange}
+              placeholder="Name"
+              disabled={!isEditing}
+            />
+            <input
+              name="lastName"
+              value={profileData.lastName}
+              onChange={handleChange}
+              placeholder="Last Name"
+              disabled={!isEditing}
+            />
+            <input
+              name="rfc"
+              value={profileData.rfc}
+              onChange={handleChange}
+              placeholder="RFC"
+              disabled={!isEditing}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              name="CURP"
+              value={profileData.CURP}
+              onChange={handleChange}
+              placeholder="CURP"
+              disabled={!isEditing}
+            />
+            <input
+              name="email"
+              value={profileData.email}
+              onChange={handleChange}
+              placeholder="Email"
+              disabled={!isEditing}
+            />
+            <input
+              name="password"
+              type="password"
+              value={profileData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              disabled={!isEditing}
+            />
+            <input
+              name="phoneNumber"
+              value={profileData.phoneNumber}
+              onChange={handleChange}
+              placeholder="Phone Number"
+              disabled={!isEditing}
+            />
+          </div>
+        </form>
+        {isEditing && (
+          <div className="button-group">
+            <button type="button" onClick={handleSave}>Save</button>
+            <button type="button" onClick={handleCancel}>Cancel</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
