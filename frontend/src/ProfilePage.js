@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './ProfilePage.css';
-import profilepic from './assets/profilepic.png';
+import profilepic from './profilepic.png';
 
 function ProfilePage() {
   const [profileData, setProfileData] = useState({
-    username: '', 
+    username: '',
     name: '',
     lastName: '',
     rfc: '',
     CURP: '',
-    email: '', 
-    password: '', 
+    email: '',
+    password: '',
     phoneNumber: '',
   });
 
@@ -32,25 +32,25 @@ function ProfilePage() {
     setProfileData({ ...profileData, [name]: value });
   };
 
-  const handleEdit = () => setIsEditing(true); 
-  
+  const handleEdit = () => setIsEditing(true);
+
   const handleSave = async () => {
-    setIsEditing(false); 
+    setIsEditing(false);
     try{
       const response = await fetch('/api/profile', {
-        method: 'POST', 
-        headers: {'Content-Type': 'aplication/json'}, 
-        body: JSON.stringify(profileData), 
-      }); 
+        method: 'POST',
+        headers: {'Content-Type': 'aplication/json'},
+        body: JSON.stringify(profileData),
+      });
       if(response.ok){
-        console.log('Profile saved:', profileData); 
+        console.log('Profile saved:', profileData);
       }
     }catch(error){
-      console.error('Error saving profile:', error); 
+      console.error('Error saving profile:', error);
     }
   }
 
-  const handleCancel = () => setIsEditing(false); 
+  const handleCancel = () => setIsEditing(false);
 
   return (
     <div className="profile-page">
