@@ -1,56 +1,127 @@
 .profile-page {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    max-width: 600px;
+    max-width: 900px;
     margin: 0 auto;
+    padding: 20px; 
     background-color: #f5f6f7;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
-  .profile-page h2 {
-    font-size: 2rem;
+  .profile-left{
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px; 
+  }
+
+  .profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+  }
+
+  .edit-button {
+    padding: 8px 16px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #000;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .edit-button:hover{
+    background-color: #333;
+  }
+
+  .profile-right {
+    flex: 2;
+    padding: 20px;
+  }
+
+  .profile-right h2 {
+    font-size: 1.8rem;
     color: #333;
     margin-bottom: 20px;
+    text-align: left;
+    padding-left: 80px;
   }
-  
-  .profile-page form {
-    width: 100%;
+
+  form{
+    display: flex; 
+    gap: 20px; 
+  }
+
+  .form-column {
     display: flex;
     flex-direction: column;
     gap: 15px;
   }
-  
-  .profile-page input,
-  .profile-page textarea {
-    padding: 12px;
+
+  .form-group:first-child {
+    margin-left: 40px;
+  }
+
+  form input{
+    padding: 10px;
     font-size: 1rem;
     border: 1px solid #ddd;
     border-radius: 8px;
     outline: none;
     transition: border-color 0.2s;
   }
-  
-  .profile-page input:focus,
-  .profile-page textarea:focus {
-    border-color: #3d5afe;
+
+  form input::placeholder {
+    color: rgba(0, 0, 0, 0.5); 
+    font-size: 1rem;
   }
   
-  .profile-page button {
-    background-color: #3d5afe;
-    color: #fff;
-    padding: 12px;
+  .button-group{
+    display: flex; 
+    gap: 10px; 
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+
+  .button-group button{
+    padding: 10px 20px;
     font-size: 1rem;
+    color: #fff;
+    background-color: #000;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer; 
+    transition: background-color 0.3s;
+  }
+
+  .button-group button:hover{
+    background-color: #333;
+  }
+  
+  .exit-button-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .exit-button {
+    padding: 8px 16px;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #555;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s;
+    margin-top: 10px;
+    transition: background-color 0.3s;
   }
   
-  .profile-page button:hover {
+  .exit-button:hover {
     background-color: #333;
   }
+  
   

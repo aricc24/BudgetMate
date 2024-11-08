@@ -33,3 +33,21 @@ def login_view(request):
         print(f"Email inserted: {email}, Password inserted: {password}")
 
         return Response({"message": "Sorry, invalid data"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['POST'])
+def get_user_info(request):
+    id_user = request.data.get('id')
+    if not id_user:
+        return Response({"error": "ID de usuario no proporcionado"}, status=400)
+    try:
+        user = User.objects.get(id_user=id_user)
+    except User.DoesNotExist:
+        return Response({"error": "User not found."}, status=404)
+    serializer = ReactSerializer(user)
+    return Response(serializer.data)
+
+class UserUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = ReactSerializer
+    lookup_field = 'id_user'
