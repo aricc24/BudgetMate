@@ -1,4 +1,16 @@
 services:
+  db:
+    image: mysql:latest
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: BudgetMateDB
+      MYSQL_DATABASE: BudgetMate_info
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+
   backend: 
     build: ./backend
     container_name: django_backend
@@ -9,13 +21,10 @@ services:
       - "8000:8000"
     depends_on: 
       - db
-    environment:
-      DB_NAME: ${DB_NAME}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      PYTHONUNBUFFERED: 1
+    links:
+      - db
 
+  
   frontend: 
     build: ./frontend
     container_name: react_frontend
@@ -25,17 +34,6 @@ services:
       - "3000:3000"
     stdin_open: true 
     tty: true 
-
-  db:
-   image: mysql:latest
-   container_name: mysql_db
-   environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
-   ports:
-      - "3306:3306"
-   volumes:
-      - mysql_data:/var/lib/mysql
 
 volumes:
   mysql_data:

@@ -77,16 +77,14 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-import os
-
 DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.mysql',
-       'NAME': os.getenv('DB_NAME'),
+       'NAME': 'BudgetMate_info',
        'USER': 'root',
-       'PASSWORD': os.getenv('DB_ROOT_PASSWORD'),
-       'HOST': os.getenv('DB_HOST', 'db'),
-       'PORT': os.getenv('DB_PORT', '3306'),
+       'PASSWORD': 'BudgetMateDB',
+       'HOST': 'db',
+       'PORT': 3306,
     }
 }
 
