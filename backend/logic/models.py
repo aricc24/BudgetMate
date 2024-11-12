@@ -36,3 +36,22 @@ class User(models.Model):
 
     class Meta:
         db_table = 'users'
+
+class Transaction(models.Model):
+    id_transaction = models.AutoField(primary_key=True)
+    id_user = models.ForeignKey('User', on_delete=models.CASCADE)
+    mount = models.FloatField()
+
+    class TransEnum(models.IntegerChoices):
+        INCOME =  0, 'Income'
+        EXPENSE =  1, 'Expense'
+
+    type = models.IntegerField(
+        choices=TransEnum.choices,
+        default=TransEnum.INCOME
+    )
+
+    date = models.DateField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'transactions'
