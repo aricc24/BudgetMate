@@ -21,9 +21,12 @@ const Income = () => {
                 headers: { 'Authorization': `Bearer ${authToken}` }
             });
             const data = await response.json();
-            const incomeTransactions = data.filter(t => t.type === 0); 
-            setTransactions(incomeTransactions);
-            updateChartData(incomeTransactions);
+            //const incomeTransactions = data.filter(t => t.type === 0); 
+            //setTransactions(incomeTransactions);
+            //updateChartData(incomeTransactions);
+
+            setTransactions(data);
+            updateChartData(data);
         };
         
         fetchTransactions();
