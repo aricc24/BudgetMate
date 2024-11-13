@@ -41,6 +41,7 @@ class Transaction(models.Model):
     id_transaction = models.AutoField(primary_key=True)
     id_user = models.ForeignKey('User', on_delete=models.CASCADE)
     mount = models.FloatField()
+    description = models.CharField(max_length=128)
 
     class TransEnum(models.IntegerChoices):
         INCOME =  0, 'Income'
