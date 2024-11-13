@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from .models import User, Transaction
 from rest_framework import status, generics
 from .serializer import ReactSerializer, TransactionSerializer
-from rest_framework.generics import ListAPIView
+#from rest_framework.generics import ListAPIView
 
 
 class ReactView(generics.ListCreateAPIView):
@@ -66,10 +66,9 @@ class TransactionUpdateView(generics.RetrieveUpdateAPIView):
         id_user = self.kwargs['id_user']
         return Transaction.objects.filter(id_user=id_user)
     
+#class UserTransactionListView(ListAPIView):
+    #serializer_class = TransactionSerializer
 
-class UserTransactionListView(ListAPIView):
-    serializer_class = TransactionSerializer
-
-    def get_queryset(self):
-        id_user = self.kwargs['id_user']
-        return Transaction.objects.filter(id_user=id_user)
+    #def get_queryset(self):
+        #id_user = self.kwargs['id_user']
+        #return Transaction.objects.filter(id_user=id_user)

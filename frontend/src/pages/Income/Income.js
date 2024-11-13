@@ -14,10 +14,10 @@ const Income = () => {
             const authToken = localStorage.getItem('authToken');
             const userId = localStorage.getItem('userId');
 
-            if (!authToken || !userId) {
-                navigate('/login');
-                return;
-            }
+            //if (!authToken || !userId) {
+                //navigate('/login');
+                //return;
+           // }
 
             const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/transactions/`, {
                 headers: { 'Authorization': `Bearer ${authToken}` }
