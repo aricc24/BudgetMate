@@ -9,17 +9,22 @@ export const Home = () => {
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
     const [userEmail, setUserEmail] = useState('Usuario');
-    const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);  
+    const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);  //useState(false)
 
     useEffect(() => {
       const storedUserEmail = localStorage.getItem('userEmail') || 'Usuario'; 
       setUserEmail(storedUserEmail); 
-      const timer = setTimeout(() =>{
+
+      //if(!localStorage.getItem('welcomeShown')){
+        //setShowWelcomeMessage(true); 
+      
+        const timer = setTimeout(() =>{
         setShowWelcomeMessage(false); 
       }, 4000); 
 
       return () => clearTimeout(timer); 
-    }, []); 
+      //}
+   },[]); 
 
     const toggleSidebar = () =>{
       setIsSidebarOpen(!isSidebarOpen); 
@@ -27,6 +32,7 @@ export const Home = () => {
 
     const logout = () => {
         localStorage.removeItem('authToken');
+        //localStorage.removeItem('welcomeShown'); 
         console.log("Logged out");
         console.log("localStorage:", localStorage.getItem('authToken'));
         navigate('/login');

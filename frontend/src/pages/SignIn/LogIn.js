@@ -26,6 +26,7 @@ function Login() {
                 const { id, email } = data;
                 localStorage.setItem('authToken', id);
                 localStorage.setItem('userEmail', email); 
+                //localStorage.setItem('welcomeShown', 'true');
                 console.log("lil token: ", sessionStorage.getItem('authToken'));
                 navigate('/home', {state: { id, email }});
                 setMessage(data.message);

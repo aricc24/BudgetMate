@@ -5,7 +5,7 @@ import './SidebarHamburger.css';
 function SidebarHamburger() {
   return (
     <div className="sidebar-hamburger">
-      <Link to="/" className="sidebar-item">
+      <Link to="/home" className="sidebar-item">
         <i className="fas fa-home"></i> Home
       </Link>
       <Link to="/income" className="sidebar-item">
