@@ -32,11 +32,19 @@
     left: 15px;
 }
 
-.welcome-message {
+.welcome-banner {
+    position: fixed;
+    top: 40px;
+    left: 50px;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: #333;
+    z-index: 1100;
 }
+
 
 .summary-card {
     background-color: #f9f9f9;

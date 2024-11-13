@@ -8,11 +8,17 @@ import './Home.css';
 export const Home = () => {
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
-    const [userName, setUserName] = useState('Usuario'); 
+    const [userEmail, setUserEmail] = useState('Usuario');
+    const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);  
 
     useEffect(() => {
-      const storedUserName = localStorage.getItem('userName') || 'Usuario'; 
-      setUserName(storedUserName); 
+      const storedUserEmail = localStorage.getItem('userEmail') || 'Usuario'; 
+      setUserEmail(storedUserEmail); 
+      const timer = setTimeout(() =>{
+        setShowWelcomeMessage(false); 
+      }, 4000); 
+
+      return () => clearTimeout(timer); 
     }, []); 
 
     const toggleSidebar = () =>{
@@ -36,9 +42,14 @@ export const Home = () => {
         </nav>
 
         {isSidebarOpen && <SidebarHamburger />}
+
+        {showWelcomeMessage && (
+           <div className="welcome-banner">
+               Welcome, {userEmail}!
+           </div>
+        )}
     
         <div className="content">
-          <h1 className='welcome-message'>Welcome, {userName}!</h1>
           <div className='sumary-card'>
             <h2>Financial Summary</h2>
           </div>
