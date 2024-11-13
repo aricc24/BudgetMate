@@ -1,10 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
-import SignIn from './SignIn';
-import Login from './LogIn';
-import Home from './Home';
-import ProfilePage from './ProfilePage';
+import Home from './pages/Home/Home';
+import SignIn from './pages/SignIn/SignIn';
+import LogIn from './pages/SignIn/LogIn';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
+//import Navbar from './components/Navbar/Navbar';
+//import Sidebar from './components/Sidebar/Sidebar';
 import './App.css';
 
 function App() {
@@ -12,7 +14,7 @@ function App() {
         <Router>
             <Routes>
                 <Route path="/" element={<SignIn />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/login" element={<LogIn />} />
                 <Route element={<PrivateRoute />}>
                     <Route path="/home" element={<Home />} />
                     <Route path="/profile" element={<ProfilePage />} />

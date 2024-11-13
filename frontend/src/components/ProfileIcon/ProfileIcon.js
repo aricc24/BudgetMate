@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import Sidebar from './Sidebar';
+import Sidebar from '../Sidebar/Sidebar';
 import './ProfileIcon.css';
-import './Home.css';
-import './Sidebar.css';
-import profilepic from './profilepic.png'; 
+import '../Sidebar/Sidebar.css';
+import profilepic from '../../assets/profilepic.png';
 
 
 

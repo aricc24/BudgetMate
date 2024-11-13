@@ -1,5 +1,5 @@
 import React from 'react';
-import ProfileIcon from './ProfileIcon'
+import ProfileIcon from '../../components/ProfileIcon/ProfileIcon';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 

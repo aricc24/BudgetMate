@@ -1,8 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Sidebar.css';
-import './Home.css';
-import ProfilePic from './profilepic.png';
+import ProfilePic from '../../assets/profilepic.png';
 
 function Sidebar({ toggleSidebar, logout }) {
   const navigate = useNavigate();

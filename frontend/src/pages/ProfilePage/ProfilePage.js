@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
-import profilepic from './profilepic.png';
+import profilepic from '../../assets/profilepic.png';
 import axios from 'axios';
 
 function ProfilePage() {
