@@ -12,21 +12,18 @@ const Income = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             const authToken = localStorage.getItem('authToken');
-            const userId = localStorage.getItem('userId');
+            if (!authToken) {
+                navigate('/login');
+                return;
+            }
 
-            //if (!authToken || !userId) {
-                //navigate('/login');
-                //return;
-           // }
-
-            const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/transactions/`, {
+            const response = await fetch('http://127.0.0.1:8000/api/transactions/', {
                 headers: { 'Authorization': `Bearer ${authToken}` }
             });
             const data = await response.json();
-            const incomeTransactions = data.filter(t => t.type === 0); 
+            const incomeTransactions = data.filter(t => t.type === 0); // Filtramos solo ingresos
             setTransactions(incomeTransactions);
             updateChartData(incomeTransactions);
-
         };
         
         fetchTransactions();
