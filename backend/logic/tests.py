@@ -45,32 +45,35 @@ class APITest(TestCase):
         data = {
             "id_user": self.user.id_user,
             "mount": 100.0,
-            "type": Transaction.TransEnum.EXPENSE
+            "type": Transaction.TransEnum.EXPENSE,
+            "description": "This is a transaction test"
         }
         response = self.client.post(self.transaction_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["mount"], 100.0)
         self.assertEqual(response.data["type"], Transaction.TransEnum.EXPENSE)
+        self.assertEqual(response.data["description"], "This is a transaction test")
 
     def test_update_transaction(self):
         transaction = Transaction.objects.create(
-            id_user= self.user,
-            mount= 100.14,
-            type= Transaction.TransEnum.EXPENSE
+            id_user=self.user,
+            mount=100.14,
+            type=Transaction.TransEnum.EXPENSE,
+            description="Initial transaction"
         )
         update_url = reverse('transaction-update', kwargs={
             'id_user': self.user.id_user,
             'id_transaction': transaction.id_transaction
         })
-
         data = {
             "id_user": self.user.id_user,
             "mount": 1502.14,
-            "type": Transaction.TransEnum.INCOME
+            "type": Transaction.TransEnum.INCOME,
+            "description": "Updated transaction description"
         }
         response = self.client.put(update_url, data, format='json')
         print(response.data)
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["mount"], 1502.14)
         self.assertEqual(response.data["type"], Transaction.TransEnum.INCOME)
+        self.assertEqual(response.data["description"], "Updated transaction description")
