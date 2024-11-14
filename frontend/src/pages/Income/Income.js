@@ -10,6 +10,7 @@ const Income = () => {
     const [filter, setFilter] = useState('monthly');
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
+    const [category, setCategory] = useState('');
     const navigate = useNavigate();
 
     
@@ -70,6 +71,7 @@ const Income = () => {
             mount: parseFloat(amount),
             description: description,
             type: 0,
+            category: category,
         };
 
         try {
@@ -88,6 +90,7 @@ const Income = () => {
                 updateChartData([...transactions, savedTransaction]);
                 setAmount('');
                 setDescription('');
+                setCategory('');
             } else {
                 console.error('Failed to add transaction');
             }
@@ -129,6 +132,18 @@ const Income = () => {
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Description"
                 />
+
+                <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                >
+                    <option value="" disabled>Select Category</option>
+                    <option value="Work">Food</option>
+                    <option value="Freelance">Transport</option>
+                    <option value="Investment">Dwelling</option>
+                    <option value="Other">Other</option>
+                </select>
+
                 <button onClick={handleAddIncome}>Add Income</button>
             </div>
 
@@ -146,7 +161,7 @@ const Income = () => {
                     <tbody>
                         {transactions.map(transaction => (
                             <tr key={transaction.id_transaction}>
-                                <td>{transaction.category || "Work"}</td>
+                                <td>{transaction.category || "No category"}</td>
                                 <td>+ ${transaction.mount}</td>
                                 <td>{transaction.description || "No description"}</td>
                                 <td>{transaction.date}</td>
