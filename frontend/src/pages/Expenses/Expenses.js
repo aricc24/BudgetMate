@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import Layout from '../../components/Layout/Layout.js';
-import './Income.css';
+import './Expenses.css';
 
-const Income = () => {
+const Expenses = () => {
     const [transactions, setTransactions] = useState([]);
     const [chartData, setChartData] = useState(null);
     const [filter, setFilter] = useState('monthly');
@@ -13,7 +13,6 @@ const Income = () => {
     const [category, setCategory] = useState('');
     const navigate = useNavigate();
 
-    
     useEffect(() => {
         const fetchTransactions = async () => {
             const authToken = localStorage.getItem('authToken');
@@ -28,19 +27,17 @@ const Income = () => {
                     headers: { 'Authorization': `Bearer ${authToken}` }
                 });
 
-
-                 if (!response.ok) {
-                     console.error('Error en la respuesta:', response.status, response.statusText);
-                     setTransactions([]);
-                     return;
+                if (!response.ok) {
+                    console.error('Error en la respuesta:', response.status, response.statusText);
+                    setTransactions([]);
+                    return;
                 }
 
-                
                 if (response.ok) {
                     const data = await response.json();
-                    const incomeTransactions = data.filter(t => t.type === 0); 
-                    setTransactions(incomeTransactions);
-                    updateChartData(incomeTransactions);
+                    const expenseTransactions = data.filter(t => t.type === 1); 
+                    setTransactions(expenseTransactions);
+                    updateChartData(expenseTransactions);
                 } else {
                     console.error('Failed to fetch transactions');
                 }
@@ -60,8 +57,7 @@ const Income = () => {
         setChartData(filteredData);
     };
 
-
-    const handleAddIncome = async () => {
+    const handleAddExpense = async () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
@@ -70,7 +66,7 @@ const Income = () => {
             id_user: userId,
             mount: parseFloat(amount),
             description: description,
-            type: 0,
+            type: 1,
             category: category,
         };
 
@@ -103,12 +99,9 @@ const Income = () => {
         setFilter(e.target.value);
     };
 
-
-  
     return (
     <Layout>
-        <div className="income-page"> 
-            {/*<h2>Income</h2>*/}
+        <div className="expenses-page"> 
             <div className="filter-container">
                 <label>Show by:</label>
                 <select value={filter} onChange={handleFilterChange}>
@@ -119,7 +112,7 @@ const Income = () => {
                 </select>
             </div>
 
-            <div className="add-income-form">
+            <div className="add-expense-form">
                 <input
                     type="number"
                     value={amount}
@@ -138,13 +131,13 @@ const Income = () => {
                     onChange={(e) => setCategory(e.target.value)}
                 >
                     <option value="" disabled>Select Category</option>
-                    <option value="Work">Food</option>
-                    <option value="Freelance">Transport</option>
-                    <option value="Investment">Dwelling</option>
+                    <option value="Food">Work</option>
+                    <option value="Transport">Scholarship</option>
+                    <option value="Dwelling">Entrepreneurship</option>
                     <option value="Other">Other</option>
                 </select>
 
-                <button onClick={handleAddIncome}>Add Income</button>
+                <button onClick={handleAddExpense}>Add Expense</button>
             </div>
 
         <div className="content-container">
@@ -162,7 +155,7 @@ const Income = () => {
                         {transactions.map(transaction => (
                             <tr key={transaction.id_transaction}>
                                 <td>{transaction.category || "No category"}</td>
-                                <td>+ ${transaction.mount}</td>
+                                <td>- ${transaction.mount}</td>
                                 <td>{transaction.description || "No description"}</td>
                                 <td>{transaction.date}</td>
                             </tr>
@@ -185,7 +178,6 @@ const LineChart = ({ data }) => {
     const chartInstance = React.useRef(null);
 
     useEffect(() => {
-
         if (chartInstance.current) {
             chartInstance.current.destroy(); 
         }
@@ -195,10 +187,10 @@ const LineChart = ({ data }) => {
                     labels: data.map(d => d.date),
                     datasets: [
                         {
-                            label: 'Income',
+                            label: 'Expenses',
                             data: data.map(d => d.amount),
-                            borderColor: 'green',
-                            backgroundColor:'rgba(144, 238, 144, 0.5)', 
+                            borderColor: 'red',
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
                             fill: true,
                         }
                     ]
@@ -223,6 +215,4 @@ const LineChart = ({ data }) => {
     return <canvas ref={chartRef}></canvas>;
 };
 
-export default Income;
-
-
+export default Expenses;

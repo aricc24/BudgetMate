@@ -5,6 +5,7 @@ import Home from './pages/Home/Home';
 import SignIn from './pages/SignIn/SignIn';
 import LogIn from './pages/SignIn/LogIn';
 import Income from './pages/Income/Income';
+import Expenses from './pages/Expenses/Expenses';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 //import Navbar from './components/Navbar/Navbar';
 //import Sidebar from './components/Sidebar/Sidebar';
@@ -20,6 +21,7 @@ function App() {
                     <Route path="/home" element={<Home />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/income" element={<Income />} />
+                    <Route path="/expenses" element={<Expenses />} />
                 </Route>
             </Routes>
         </Router>
