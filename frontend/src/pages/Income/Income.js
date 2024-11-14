@@ -30,7 +30,7 @@ const Income = () => {
 
 
                  if (!response.ok) {
-                     console.error('Error en la respuesta:', response.status, response.statusText);
+                     console.error('Error:', response.status, response.statusText);
                      setTransactions([]);
                      return;
                 }

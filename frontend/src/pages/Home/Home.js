@@ -10,6 +10,7 @@ export const Home = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
     const [userEmail, setUserEmail] = useState('Usuario');
     const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);  //useState(false)
+    
 
     useEffect(() => {
       const storedUserEmail = localStorage.getItem('userEmail') || 'Usuario'; 
