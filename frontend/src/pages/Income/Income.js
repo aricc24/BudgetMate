@@ -108,7 +108,7 @@ const Income = () => {
     return (
     <Layout>
         <div className="income-page"> 
-            <h2>Income</h2>
+            {/*<h2>Income</h2>*/}
             <div className="filter-container">
                 <label>Show by:</label>
                 <select value={filter} onChange={handleFilterChange}>
@@ -147,7 +147,7 @@ const Income = () => {
                 <button onClick={handleAddIncome}>Add Income</button>
             </div>
 
-
+        <div className="content-container">
             <div className="table-container">
                 <table>
                     <thead>
@@ -175,6 +175,7 @@ const Income = () => {
                 {chartData && <LineChart data={chartData} />}
             </div>
         </div>
+    </div>
     </Layout>
     );
 };
@@ -204,6 +205,7 @@ const LineChart = ({ data }) => {
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         x: { display: true, title: { display: true, text: 'Date' } },
                         y: { display: true, title: { display: true, text: 'Amount' } }
