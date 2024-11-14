@@ -54,12 +54,22 @@ class UserUpdateView(generics.RetrieveUpdateAPIView):
 
 class TransactionCreateView(generics.CreateAPIView):
     queryset = Transaction.objects.all()
-    serializer_class = TransactionSerializer
+    serializer_class = TransactionSerializer    
 
-class TransactionUpdateView(generics.RetrieveUpdateAPIView):
-    serializer_class = TransactionSerializer
-    lookup_field = 'id_transaction'
+@api_view(['GET'])
+def get_transactions_by_user(request, id_user):
+    transactions = Transaction.objects.filter(id_user=id_user)
+    serializer = TransactionSerializer(transactions, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def get_queryset(self):
-        id_user = self.kwargs['id_user']
-        return Transaction.objects.filter(id_user=id_user)
+@api_view(['PATCH'])
+def update_user_transaction(request, id_user, id_transaction):
+    try:
+        transaction = Transaction.objects.get(id_transaction=id_transaction, id_user=id_user)
+    except Transaction.DoesNotExist:
+        return Response({"error": "Transaction not found."}, status=status.HTTP_404_NOT_FOUND)
+    serializer = TransactionSerializer(transaction, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
