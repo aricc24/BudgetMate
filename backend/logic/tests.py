@@ -3,6 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 from .models import *
+from logic.serializer import TransactionSerializer
 
 class APITest(TestCase):
     def setUp(self):
@@ -15,9 +16,10 @@ class APITest(TestCase):
             curp="TESTU123456789",
             rfc="TESTRFC1234"
         )
-        self.transaction_url = reverse('transactions-list')
         self.login_url = reverse('user-log')
         self.user_info_url = reverse('user-info')
+        self.transaction_url = reverse('transactions-list')
+        self.get_transactions_url = reverse('transactions-info', kwargs={'id_user': self.user.id_user})
 
     def test_login(self):
         data = {
@@ -66,14 +68,34 @@ class APITest(TestCase):
             'id_transaction': transaction.id_transaction
         })
         data = {
-            "id_user": self.user.id_user,
             "mount": 1502.14,
             "type": Transaction.TransEnum.INCOME,
             "description": "Updated transaction description"
         }
-        response = self.client.put(update_url, data, format='json')
+        response = self.client.patch(update_url, data, format='json')
         print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["mount"], 1502.14)
         self.assertEqual(response.data["type"], Transaction.TransEnum.INCOME)
         self.assertEqual(response.data["description"], "Updated transaction description")
+
+    def test_get_transactions_by_user(self):
+        Transaction.objects.create(
+            id_user=self.user,
+            mount=50.0,
+            type=Transaction.TransEnum.EXPENSE,
+            description="Expense transaction"
+        )
+        Transaction.objects.create(
+            id_user=self.user,
+            mount=2500.0,
+            type=Transaction.TransEnum.INCOME,
+            description="Income transaction"
+        )
+        response = self.client.get(self.get_transactions_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        transactions = Transaction.objects.filter(id_user=self.user.id_user)
+        serializer = TransactionSerializer(transactions, many=True)
+        self.assertEqual(response.data, serializer.data)
+        print(serializer.data)
+        self.assertEqual(len(response.data), 2)
