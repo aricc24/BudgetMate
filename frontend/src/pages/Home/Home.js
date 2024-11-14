@@ -57,7 +57,6 @@ export const Home = () => {
     
         <div className="content">
           <div className='sumary-card'>
-            <h2>Financial Summary</h2>
           </div>
       </div>
     </div>

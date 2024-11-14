@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
+import Layout from '../../components/Layout/Layout.js';
 import './Income.css';
 
 const Income = () => {
@@ -13,20 +14,28 @@ const Income = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             const authToken = localStorage.getItem('authToken');
-            //const userId = localStorage.getItem('userId'); 
+            const userId = localStorage.getItem('userId'); 
             if (!authToken) {
                 navigate('/login');
                 return;
             }
 
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/`, {
+                const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}`, {
                     headers: { 'Authorization': `Bearer ${authToken}` }
                 });
+
+
+                 if (!response.ok) {
+                     console.error('Error en la respuesta:', response.status, response.statusText);
+                     setTransactions([]);
+                     return;
+                }
+
                 
                 if (response.ok) {
                     const data = await response.json();
-                    const incomeTransactions = data.filter(t => t.type === 0); 
+                    const incomeTransactions = data.filter(t => t.type === 0); // Filtramos solo ingresos
                     setTransactions(incomeTransactions);
                     updateChartData(incomeTransactions);
                 } else {
@@ -52,8 +61,11 @@ const Income = () => {
         setFilter(e.target.value);
     };
 
+
+  
     return (
-        <div className="income-page">
+    <Layout>
+        <div className="income-page"> 
             <h2>Income</h2>
             <div className="filter-container">
                 <label>Show by:</label>
@@ -92,6 +104,7 @@ const Income = () => {
                 {chartData && <LineChart data={chartData} />}
             </div>
         </div>
+    </Layout>
     );
 };
 
