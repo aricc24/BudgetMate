@@ -8,6 +8,8 @@ const Income = () => {
     const [transactions, setTransactions] = useState([]);
     const [chartData, setChartData] = useState(null);
     const [filter, setFilter] = useState('monthly');
+    const [amount, setAmount] = useState('');
+    const [description, setDescription] = useState('');
     const navigate = useNavigate();
 
     
@@ -35,7 +37,7 @@ const Income = () => {
                 
                 if (response.ok) {
                     const data = await response.json();
-                    const incomeTransactions = data.filter(t => t.type === 0); // Filtramos solo ingresos
+                    const incomeTransactions = data.filter(t => t.type === 0); 
                     setTransactions(incomeTransactions);
                     updateChartData(incomeTransactions);
                 } else {
@@ -57,6 +59,43 @@ const Income = () => {
         setChartData(filteredData);
     };
 
+
+    const handleAddIncome = async () => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken || !userId) return;
+
+        const newTransaction = {
+            id_user: userId,
+            mount: parseFloat(amount),
+            description: description,
+            type: 0,
+        };
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/transactions/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify(newTransaction)
+            });
+
+            if (response.ok) {
+                const savedTransaction = await response.json();
+                setTransactions(prevTransactions => [...prevTransactions, savedTransaction]);
+                updateChartData([...transactions, savedTransaction]);
+                setAmount('');
+                setDescription('');
+            } else {
+                console.error('Failed to add transaction');
+            }
+        } catch (error) {
+            console.error('Error adding transaction:', error);
+        }
+    };
+
     const handleFilterChange = (e) => {
         setFilter(e.target.value);
     };
@@ -76,7 +115,24 @@ const Income = () => {
                     <option value="yearly">Yearly</option>
                 </select>
             </div>
-            
+
+            <div className="add-income-form">
+                <input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="Amount"
+                />
+                <input
+                    type="text"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Description"
+                />
+                <button onClick={handleAddIncome}>Add Income</button>
+            </div>
+
+
             <div className="table-container">
                 <table>
                     <thead>
@@ -110,11 +166,15 @@ const Income = () => {
 
 const LineChart = ({ data }) => {
     const chartRef = React.useRef(null);
+    const chartInstance = React.useRef(null);
 
     useEffect(() => {
-        if (chartRef.current) {
-            new Chart(chartRef.current, {
-                type: 'line',
+
+        if (chartInstance.current) {
+            chartInstance.current.destroy(); 
+        }
+        chartInstance.current = new Chart(chartRef.current, {
+           type: 'line',
                 data: {
                     labels: data.map(d => d.date),
                     datasets: [
@@ -135,7 +195,12 @@ const LineChart = ({ data }) => {
                     }
                 }
             });
-        }
+
+            return () => {
+                if (chartInstance.current) {
+                    chartInstance.current.destroy();
+                }
+        };
     }, [data]);
 
     return <canvas ref={chartRef}></canvas>;
