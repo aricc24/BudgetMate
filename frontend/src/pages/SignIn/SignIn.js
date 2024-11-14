@@ -69,6 +69,9 @@ function SignIn() {
                     <p>
                         Already have an account? <Link to="/login" className="link-button">Log In</Link>
                     </p>
+                    <p className ="message">
+                        Forgot your password? <Link to="/forgot-password" className="link-button" >Recover</Link>
+                    </p>
                 </div>
             </div>
         </>
