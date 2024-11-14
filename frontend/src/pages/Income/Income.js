@@ -9,23 +9,32 @@ const Income = () => {
     const [filter, setFilter] = useState('monthly');
     const navigate = useNavigate();
 
+    
     useEffect(() => {
         const fetchTransactions = async () => {
             const authToken = localStorage.getItem('authToken');
-            const userId = localStorage.getItem('userId');
-
+            //const userId = localStorage.getItem('userId'); 
             if (!authToken) {
                 navigate('/login');
                 return;
             }
 
-            const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}`, {
-                headers: { 'Authorization': `Bearer ${authToken}` }
-            });
-            const data = await response.json();
-            const incomeTransactions = data.filter(t => t.type === 0); 
-            setTransactions(incomeTransactions);
-            updateChartData(incomeTransactions);
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const incomeTransactions = data.filter(t => t.type === 0); 
+                    setTransactions(incomeTransactions);
+                    updateChartData(incomeTransactions);
+                } else {
+                    console.error('Failed to fetch transactions');
+                }
+            } catch (error) {
+                console.error('Error fetching transactions:', error);
+            }
         };
         
         fetchTransactions();
