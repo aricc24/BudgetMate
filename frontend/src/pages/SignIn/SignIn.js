@@ -42,7 +42,7 @@ function SignIn() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
-                                    placeholder="Enter your email"
+                                    placeholder="Email"
                                 />
                             </div>
                         </div>
@@ -55,7 +55,7 @@ function SignIn() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
-                                    placeholder="Enter your password"
+                                    placeholder="Password"
                                 />
                                 <i
                                     className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} toggle-password`}

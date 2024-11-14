@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function Login() {
@@ -58,7 +59,7 @@ function Login() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
-                                    placeholder="Enter your email"
+                                    placeholder="Email"
                                 />
                             </div>
                         </div>
@@ -71,7 +72,7 @@ function Login() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
-                                    placeholder="Enter your password"
+                                    placeholder="Password"
                                 />
                                 <i
                                     className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} toggle-password`}
@@ -82,6 +83,10 @@ function Login() {
                         <button type="submit" className="button">Log In</button>
                     </form>
                     {message && <p className="message">{message}</p>}
+
+                    <p className ="message">
+                        Don´t have an account? <Link to="/signup" className="link-button">Sign up</Link>
+                    </p>
                 </div>
             </div>
         </>

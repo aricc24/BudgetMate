@@ -1,6 +1,22 @@
+:root {
+  --body-bg: #c1bdba;
+  --form-bg: #13232f;
+  --blanco: #fff;
+  --color-principal: #1ab188;
+  --color-principal-light: #23c9a4;
+  --color-principal-dark: #158e70;
+  --gris-light: #a0b3b0;
+  --gris: #ddd;
+  --fuente-principal: "Ubuntu", helvetica, sans-serif;
+  --fuente-secundaria: "Raleway", arial, sans-serif;
+
+
+
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: #f5f6f7;
+  font-family: var(--fuente-principal);
+  background-color: var(--body-bg);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,18 +34,19 @@ body {
 }
 
 .card {
-  background-color: #ffffff;
+  background-color:var(--form-bg);
   padding: 40px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
   text-align: center;
+  color: var(--blanco);
 }
 
 .title {
   font-size: 1.8rem;
-  color: #333;
+  color: var(--blanco);
   font-weight: 600;
   margin-bottom: 20px;
 }
@@ -43,27 +60,31 @@ body {
 .form-group label {
   display: block;
   font-weight: 500;
-  color: #555;
+  color: var(--blanco);
   margin-bottom: 5px;
   font-size: 0.9rem;
 }
 
 .form-group input {
-  padding: 12px;
+  padding: 13px;
   font-size: 1rem;
-  border: 1px solid #ddd;
+  width: 100%;
+  flex: 1;
+  border: 1px solid var(--gris-light);
   border-radius: 8px;
   outline: none;
   transition: border-color 0.2s;
+  background: none;
+  color: var(--blanco);
 }
 
 .form-group input:focus {
-  border-color: #3d5afe;
+  border-color: var(--color-principal);
 }
 
 .button {
-  background-color: #000;
-  color: #fff;
+  background-color: var(--color-principal);
+  color: var(--blanco);
   padding: 12px;
   font-size: 1rem;
   border: none;
@@ -74,17 +95,17 @@ body {
 }
 
 .button:hover {
-  background-color: #333;
+  background-color: var(--color-principal-dark);
 }
 
 .message {
   margin-top: 20px;
-  color: #333;
+  color: var(--blanco);
   font-size: 0.9rem;
 }
 
 .link-button {
-  color: #3d5afe;
+  color: var(--color-principal);
   text-decoration: none;
   font-weight: bold;
   cursor: pointer;
@@ -98,41 +119,48 @@ body {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .input-container .icon {
   position: absolute;
   left: 12px;
   font-size: 1rem;
-  color: #888;
+  color: var(--gris-light) ;
 }
 
 .input-container input {
+  flex: 1;
   padding-left: 35px;
   padding-right: 35px;
   width: 100%;
   font-size: 1rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--gris-light);
   border-radius: 8px;
   outline: none;
   transition: border-color 0.2s;
 }
 
 .input-container input:focus {
-  border-color: #3d5afe;
+  border-color: var(--color-principal);
 }
+.input-container input::placeholder {
+  color: #ffffff;
+  opacity: 1;
+}
+
 
 .toggle-password {
   position: absolute;
   right: 12px;
   font-size: 1rem;
-  color: #888;
+  color: var(--gris-light);
   cursor: pointer;
   transition: color 0.2s;
 }
 
 .toggle-password:hover {
-  color: #333;
+  color: var(--color-principal-dark);
 }
 
 .background-container {
@@ -141,7 +169,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('./assets/backgroundI.jpg') no-repeat center center fixed;
+  background: url('./assets/background.jpg') no-repeat center center fixed;
   background-size: cover;
   filter: blur(3px);
   z-index: -1;
