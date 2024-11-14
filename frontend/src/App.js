@@ -4,6 +4,7 @@ import PrivateRoute from './PrivateRoute';
 import Home from './pages/Home/Home';
 import SignIn from './pages/SignIn/SignIn';
 import LogIn from './pages/SignIn/LogIn';
+import Income from './pages/Income/Income';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 //import Navbar from './components/Navbar/Navbar';
 //import Sidebar from './components/Sidebar/Sidebar';
@@ -18,6 +19,7 @@ function App() {
                 <Route element={<PrivateRoute />}>
                     <Route path="/home" element={<Home />} />
                     <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/income" element={<Income />} />
                 </Route>
             </Routes>
         </Router>

@@ -4,6 +4,8 @@ from rest_framework.decorators import api_view
 from .models import User, Transaction
 from rest_framework import status, generics
 from .serializer import ReactSerializer, TransactionSerializer
+#from rest_framework.generics import ListAPIView
+
 
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
