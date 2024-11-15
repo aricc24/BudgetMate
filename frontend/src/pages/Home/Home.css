@@ -45,15 +45,17 @@
     z-index: 1100;
 }
 
-
-.summary-card {
-    background-color: #f9f9f9;
+.chart-block {
+    width: 100%;
+    max-width: 1000px;
+    height: 400px;
+    margin: 20px auto; 
     padding: 20px;
+    background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    margin-top: 80px;
 }
+
 
 .content {
     padding-top: 60px;
