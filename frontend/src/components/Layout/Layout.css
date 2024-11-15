@@ -1,0 +1,24 @@
+.home-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 20px;
+    background-color: #000000;
+    color: white; 
+    position: fixed; 
+    top:0; 
+    left:0; 
+    right:0;
+    z-index: 1000;
+}
+
+.menu-icon {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+}
