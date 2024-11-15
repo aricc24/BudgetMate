@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ProfileIcon from '../../components/ProfileIcon/ProfileIcon';
 import { useNavigate } from 'react-router-dom';
 import SidebarHamburger from '../../components/SidebarHamburger/SidebarHamburger';
+import Layout from '../../components/Layout/Layout.js';
 import Chart from 'chart.js/auto';
 import './Home.css';
 
@@ -57,13 +58,19 @@ export const Home = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
+    const logout = () => {
+        localStorage.removeItem('authToken');
+        navigate('/login');
+    };
+
     return (
+      <Layout>
         <div className="home">
             <nav className="home-navbar">
                 <button className="menu-icon" onClick={toggleSidebar}>
                     <i className="fas fa-bars"></i>
                 </button>
-                <ProfileIcon />
+                <ProfileIcon logout={logout} />
             </nav>
 
             {isSidebarOpen && <SidebarHamburger />}
@@ -83,6 +90,7 @@ export const Home = () => {
                 </div>
             </div>
         </div>
+      </Layout>
     );
 };
 

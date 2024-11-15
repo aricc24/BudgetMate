@@ -29,12 +29,10 @@ const Layout = ({ children }) => {
         <button className="menu-icon" onClick={toggleSidebarHamburger}>
           <i className="fas fa-bars"></i>
         </button>
-        
-        <ProfileIcon onClick={toggleSidebar} />
+        <ProfileIcon logout={logout} onClick={toggleSidebar} />
       </nav>
 
       {isSidebarHamburgerOpen && <SidebarHamburger />}
-
       {isSidebarOpen && <Sidebar toggleSidebar={toggleSidebar} logout={logout} />}
       
       <div className="layout-content" style={{ paddingTop: '120px' }}>

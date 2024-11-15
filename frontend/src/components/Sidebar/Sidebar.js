@@ -5,7 +5,11 @@ import ProfilePic from '../../assets/profilepic.png';
 
 function Sidebar({ toggleSidebar, logout }) {
   const navigate = useNavigate();
-  const navigateToProfile = () => navigate('/profile');
+
+  const navigateToProfile = () => {
+    toggleSidebar(); 
+    navigate('/profile');
+  };
 
   return (
     <div className="sidebar">
