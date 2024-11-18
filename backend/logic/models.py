@@ -54,6 +54,12 @@ class Transaction(models.Model):
     )
 
     date = models.DateField(auto_now_add=True)
-
+    category = models.ManyToManyField('Category', related_name='transactions')
     class Meta:
         db_table = 'transactions'
+
+class Category(models.Model):
+    id_category = models.AutoField(primary_key=True)
+    category_name = models.CharField(max_length=35, null=False, blank=False, unique=True)
+    class Meta:
+        db_table = 'categories'
