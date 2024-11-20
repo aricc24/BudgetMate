@@ -127,3 +127,177 @@
     max-width: 45%;
     height: 300px;
 }
+
+/*dialog style*/
+
+dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    z-index: 1000;
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px); 
+}
+
+dialog h3 {
+    font-size: 1.8rem;
+    color: #4a90e2;
+    margin-bottom: 20px;
+}
+
+dialog select,
+dialog input {
+    width: calc(100% - 40px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Arial', sans-serif;
+}
+
+.dialog-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.dialog-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.dialog-buttons button:first-child {
+    background-color: #4a90e2;
+    color: white;
+}
+
+.dialog-buttons button:first-child:hover {
+    background-color: #357ABD;
+}
+
+.dialog-buttons button:last-child {
+    background-color: #ddd;
+    color: #333;
+}
+
+.dialog-buttons button:last-child:hover {
+    background-color: #bbb;
+}
+/*add category*/
+
+.new-category-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    max-width: 300px;
+    width: 90%;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    z-index: 1000;
+}
+
+.new-category-dialog h3 {
+    font-size: 1.5rem;
+    color: #4a90e2;
+    margin-bottom: 15px;
+}
+
+.new-category-dialog input {
+    width: calc(100% - 30px);
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.dialog-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.dialog-buttons button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.dialog-buttons button:first-child {
+    background-color: #4a90e2;
+    color: white;
+}
+
+.dialog-buttons button:first-child:hover {
+    background-color: #357ABD;
+}
+
+.dialog-buttons button:last-child {
+    background-color: #ddd;
+    color: #333;
+}
+
+.dialog-buttons button:last-child:hover {
+    background-color: #bbb;
+}
+
+
+/* Botón "+" */
+.add-category-button {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-category-button:hover {
+    background-color: #357ABD;
+    transform: scale(1.1); 
+}
+
+.add-category-button:active {
+    background-color: #2a5a8c;
+    transform: scale(0.95); 
+}
+
