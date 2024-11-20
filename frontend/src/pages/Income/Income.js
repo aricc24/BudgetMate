@@ -11,7 +11,7 @@ const Income = () => {
     const [filter, setFilter] = useState('monthly');
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
-    const [selectedCategories, setSelectedCategories] = useState([]); 
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [newCategory, setNewCategory] = useState('');
     const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
     const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
@@ -65,7 +65,7 @@ const Income = () => {
             mount: parseFloat(amount),
             description: description,
             type: 0,
-            categories: selectedCategories, 
+            categories: selectedCategories,
         };
 
         try {
@@ -123,7 +123,7 @@ const Income = () => {
 
     const handleCategoryChange = (event) => {
         const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
-        setSelectedCategories(selectedOptions); 
+        setSelectedCategories(selectedOptions);
     };
 
     return (
@@ -192,7 +192,6 @@ const Income = () => {
                     </div>
                 </div>
 
-                {/* Dialog for selecting categories */}
                 {isCategoryDialogOpen && (
                     <dialog className="category-dialog" open>
                         <h3>Select Categories</h3>
@@ -217,7 +216,6 @@ const Income = () => {
                     </dialog>
                 )}
 
-                {/* Dialog for adding a new category */}
                 {isNewCategoryDialogOpen && (
                     <dialog className="new-category-dialog" open>
                         <h3>Add New Category</h3>
