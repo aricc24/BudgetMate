@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
 import profilepic from '../../assets/profilepic.png';
 import axios from 'axios';
+import Avatar from 'react-avatar'
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ function ProfilePage() {
     email: '',
     password: '',
     phone_number: '',
+    avatar: null,
   });
 
   const[isEditing, setIsEditing] = useState(false);
@@ -78,7 +80,22 @@ function ProfilePage() {
   return (
     <div className="profile-page">
       <div className="profile-sidebar">
-        <img src={profilepic} alt="Profile" className="profile-image" />
+        <Avatar
+          name = {profileData.email || 'User'}
+          round={true}
+          size="100"
+          src={profileData.avatar}
+          color={profileData.avatar ? null: '#6c63ff'}
+        />
+        {isEditing && (
+          <input
+            type="file"
+            accept="image/"
+            onChange={(e) =>
+              setProfileData({ ...profileData, avatar: e.target.files[0]})
+            }
+          />
+        )}
         <button type="button" className="edit-button" onClick={handleEdit}>
           Edit
         </button>
@@ -136,7 +153,7 @@ function ProfilePage() {
               type="password"
               value={profileData.password}
               onChange={handleChange}
-              placeholder="Password"
+              placehol  der="Password"
               disabled={!isEditing}
             />
             <input
