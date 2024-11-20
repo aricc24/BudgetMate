@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
+import 'chartjs-adapter-date-fns'; 
 import Layout from '../../components/Layout/Layout.js';
 import './Income.css';
 
@@ -49,8 +50,8 @@ const Income = () => {
 
     const updateChartData = (transactions) => {
         const filteredData = transactions.map(transaction => ({
-            date: transaction.date,
-            amount: transaction.mount
+            date: new Date(transaction.date), 
+            amount: parseFloat(transaction.mount) 
         }));
         setChartData(filteredData);
     };
@@ -236,6 +237,8 @@ const Income = () => {
     );
 };
 
+
+
 const LineChart = ({ data }) => {
     const chartRef = React.useRef(null);
     const chartInstance = React.useRef(null);
@@ -244,26 +247,63 @@ const LineChart = ({ data }) => {
         if (chartInstance.current) {
             chartInstance.current.destroy();
         }
+
+        const sortedData = data
+            .filter(d => d.amount && d.date) 
+            .sort((a, b) => new Date(a.date) - new Date(b.date)); 
+
         chartInstance.current = new Chart(chartRef.current, {
             type: 'line',
             data: {
-                labels: data.map(d => d.date),
+                labels: sortedData.map(d => new Date(d.date).toLocaleString()), 
                 datasets: [
                     {
                         label: 'Income',
-                        data: data.map(d => d.amount),
+                        data: sortedData.map(d => d.amount),
                         borderColor: 'green',
                         backgroundColor: 'rgba(144, 238, 144, 0.5)',
                         fill: true,
+                        tension: 0.4,
+                        pointRadius: 10,
+                        pointBackgroundColor: 'blue',
+                        pointBorderColor: 'darkblue',
+                        pointHoverRadius: 7,
                     }
                 ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `Amount: $${context.raw.toFixed(2)}`
+                        }
+                    }
+                },
                 scales: {
-                    x: { display: true, title: { display: true, text: 'Date' } },
-                    y: { display: true, title: { display: true, text: 'Amount' } }
+                    x: {
+                        type: 'time', 
+                        time: {
+                            unit: 'minute',
+                            displayFormats: {
+                                minute: 'MMM d, h:mm a',
+                            },
+                        },
+                        title: {
+                            display: true,
+                            text: 'Timestamp',
+                        },
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Amount',
+                        },
+                        ticks: {
+                            callback: (value) => `$${value.toFixed(2)}`,
+                        }
+                    }
                 }
             }
         });
@@ -278,6 +318,8 @@ const LineChart = ({ data }) => {
     return <canvas ref={chartRef}></canvas>;
 };
 
+
 export default Income;
+
 
 
