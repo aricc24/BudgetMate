@@ -6,18 +6,21 @@ import './Income.css';
 
 const Income = () => {
     const [transactions, setTransactions] = useState([]);
+    const [categories, setCategories] = useState(['Food', 'Transport', 'Dwelling']);
     const [chartData, setChartData] = useState(null);
     const [filter, setFilter] = useState('monthly');
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
-    const [category, setCategory] = useState('');
+    const [selectedCategories, setSelectedCategories] = useState([]); 
+    const [newCategory, setNewCategory] = useState('');
+    const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
+    const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
     const navigate = useNavigate();
 
-    
     useEffect(() => {
         const fetchTransactions = async () => {
             const authToken = localStorage.getItem('authToken');
-            const userId = localStorage.getItem('userId'); 
+            const userId = localStorage.getItem('userId');
             if (!authToken) {
                 navigate('/login');
                 return;
@@ -28,17 +31,9 @@ const Income = () => {
                     headers: { 'Authorization': `Bearer ${authToken}` }
                 });
 
-
-                 if (!response.ok) {
-                     console.error('Error:', response.status, response.statusText);
-                     setTransactions([]);
-                     return;
-                }
-
-                
                 if (response.ok) {
                     const data = await response.json();
-                    const incomeTransactions = data.filter(t => t.type === 0); 
+                    const incomeTransactions = data.filter(t => t.type === 0);
                     setTransactions(incomeTransactions);
                     updateChartData(incomeTransactions);
                 } else {
@@ -48,7 +43,7 @@ const Income = () => {
                 console.error('Error fetching transactions:', error);
             }
         };
-        
+
         fetchTransactions();
     }, [filter, navigate]);
 
@@ -60,7 +55,6 @@ const Income = () => {
         setChartData(filteredData);
     };
 
-
     const handleAddIncome = async () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
@@ -71,7 +65,7 @@ const Income = () => {
             mount: parseFloat(amount),
             description: description,
             type: 0,
-            category: category,
+            categories: selectedCategories, 
         };
 
         try {
@@ -90,7 +84,7 @@ const Income = () => {
                 updateChartData([...transactions, savedTransaction]);
                 setAmount('');
                 setDescription('');
-                setCategory('');
+                setSelectedCategories([]);
             } else {
                 console.error('Failed to add transaction');
             }
@@ -99,84 +93,148 @@ const Income = () => {
         }
     };
 
-    const handleFilterChange = (e) => {
-        setFilter(e.target.value);
+    const handleAddCategory = async () => {
+        if (!newCategory.trim()) return;
+
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/categories/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({ id_user: userId, name: newCategory })
+            });
+
+            if (response.ok) {
+                setCategories(prevCategories => [...prevCategories, newCategory]);
+                setNewCategory('');
+                setIsNewCategoryDialogOpen(false);
+            } else {
+                console.error('Failed to add category');
+            }
+        } catch (error) {
+            console.error('Error adding category:', error);
+        }
     };
 
+    const handleCategoryChange = (event) => {
+        const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
+        setSelectedCategories(selectedOptions); 
+    };
 
-  
     return (
-    <Layout>
-        <div className="income-page"> 
-            {/*<h2>Income</h2>*/}
-            <div className="filter-container">
-                <label>Show by:</label>
-                <select value={filter} onChange={handleFilterChange}>
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
-                </select>
+        <Layout>
+            <div className="income-page">
+                <div className="filter-container">
+                    <label>Show by:</label>
+                    <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+
+                <div className="add-income-form">
+                    <input
+                        type="number"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        placeholder="Amount"
+                    />
+                    <input
+                        type="text"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Description"
+                    />
+
+                    <button
+                        className="select-category-button"
+                        onClick={() => setIsCategoryDialogOpen(true)}
+                    >
+                        Select Category
+                    </button>
+
+                    <button onClick={handleAddIncome}>Add Income</button>
+                </div>
+
+                <div className="content-container">
+                    <div className="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Amount</th>
+                                    <th>Description</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {transactions.map(transaction => (
+                                    <tr key={transaction.id_transaction}>
+                                        <td>{transaction.categories ? transaction.categories.join(', ') : "No category"}</td>
+                                        <td>+ ${transaction.mount}</td>
+                                        <td>{transaction.description || "No description"}</td>
+                                        <td>{transaction.date}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="chart-container">
+                        {chartData && <LineChart data={chartData} />}
+                    </div>
+                </div>
+
+                {/* Dialog for selecting categories */}
+                {isCategoryDialogOpen && (
+                    <dialog className="category-dialog" open>
+                        <h3>Select Categories</h3>
+                        <select
+                            multiple
+                            value={selectedCategories}
+                            onChange={handleCategoryChange}
+                        >
+                            {categories.map((cat, index) => (
+                                <option key={index} value={cat}>{cat}</option>
+                            ))}
+                        </select>
+                        <button
+                            className="add-category-button"
+                            onClick={() => setIsNewCategoryDialogOpen(true)}
+                        >
+                            +
+                        </button>
+                        <div className="dialog-buttons">
+                            <button onClick={() => setIsCategoryDialogOpen(false)}>Done</button>
+                        </div>
+                    </dialog>
+                )}
+
+                {/* Dialog for adding a new category */}
+                {isNewCategoryDialogOpen && (
+                    <dialog className="new-category-dialog" open>
+                        <h3>Add New Category</h3>
+                        <input
+                            type="text"
+                            value={newCategory}
+                            onChange={(e) => setNewCategory(e.target.value)}
+                            placeholder="Category Name"
+                        />
+                        <div className="dialog-buttons">
+                            <button onClick={handleAddCategory}>Add</button>
+                            <button onClick={() => setIsNewCategoryDialogOpen(false)}>Cancel</button>
+                        </div>
+                    </dialog>
+                )}
             </div>
-
-            <div className="add-income-form">
-                <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="Amount"
-                />
-                <input
-                    type="text"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Description"
-                />
-
-                <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                >
-                    <option value="" disabled>Select Category</option>
-                    <option value="Work">Food</option>
-                    <option value="Freelance">Transport</option>
-                    <option value="Investment">Dwelling</option>
-                    <option value="Other">Other</option>
-                </select>
-
-                <button onClick={handleAddIncome}>Add Income</button>
-            </div>
-
-        <div className="content-container">
-            <div className="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Amount</th>
-                            <th>Description</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {transactions.map(transaction => (
-                            <tr key={transaction.id_transaction}>
-                                <td>{transaction.category || "No category"}</td>
-                                <td>+ ${transaction.mount}</td>
-                                <td>{transaction.description || "No description"}</td>
-                                <td>{transaction.date}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            <div className="chart-container">
-                {chartData && <LineChart data={chartData} />}
-            </div>
-        </div>
-    </div>
-    </Layout>
+        </Layout>
     );
 };
 
@@ -185,38 +243,37 @@ const LineChart = ({ data }) => {
     const chartInstance = React.useRef(null);
 
     useEffect(() => {
-
         if (chartInstance.current) {
-            chartInstance.current.destroy(); 
+            chartInstance.current.destroy();
         }
         chartInstance.current = new Chart(chartRef.current, {
-           type: 'line',
-                data: {
-                    labels: data.map(d => d.date),
-                    datasets: [
-                        {
-                            label: 'Income',
-                            data: data.map(d => d.amount),
-                            borderColor: 'green',
-                            backgroundColor:'rgba(144, 238, 144, 0.5)', 
-                            fill: true,
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: { display: true, title: { display: true, text: 'Date' } },
-                        y: { display: true, title: { display: true, text: 'Amount' } }
+            type: 'line',
+            data: {
+                labels: data.map(d => d.date),
+                datasets: [
+                    {
+                        label: 'Income',
+                        data: data.map(d => d.amount),
+                        borderColor: 'green',
+                        backgroundColor: 'rgba(144, 238, 144, 0.5)',
+                        fill: true,
                     }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { display: true, title: { display: true, text: 'Date' } },
+                    y: { display: true, title: { display: true, text: 'Amount' } }
                 }
-            });
+            }
+        });
 
-            return () => {
-                if (chartInstance.current) {
-                    chartInstance.current.destroy();
-                }
+        return () => {
+            if (chartInstance.current) {
+                chartInstance.current.destroy();
+            }
         };
     }, [data]);
 
