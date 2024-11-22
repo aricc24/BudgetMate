@@ -189,7 +189,18 @@ const Expenses = () => {
                     </div>
 
                     <div className="chart-container">
+                        <h4>Line Chart</h4>
                         {chartData && <LineChart data={chartData} />}
+                    </div>
+
+                    <div className="chart-container">
+                        <h4>Pie Chart</h4>
+                        {transactions.length > 0 && (
+                            <PieChart
+                                data={transactions.map((t) => t.mount)}
+                                labels={transactions.map((t) => t.description || 'No Description')}
+                            />
+                        )}
                     </div>
                 </div>
 
@@ -303,6 +314,54 @@ const LineChart = ({ data }) => {
             }
         };
     }, [data]);
+
+    return <canvas ref={chartRef}></canvas>;
+};
+const PieChart = ({ data, labels }) => {
+    const chartRef = React.useRef(null);
+    const chartInstance = React.useRef(null);
+
+    useEffect(() => {
+        if (chartInstance.current) {
+            chartInstance.current.destroy();
+        }
+        chartInstance.current = new Chart(chartRef.current, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        data: data,
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 206, 86, 1)',
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Expenses Breakdown' },
+                },
+            },
+        });
+
+        return () => {
+            if (chartInstance.current) {
+                chartInstance.current.destroy();
+            }
+        };
+    }, [data, labels]);
 
     return <canvas ref={chartRef}></canvas>;
 };
