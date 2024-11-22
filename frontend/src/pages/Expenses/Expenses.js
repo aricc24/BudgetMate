@@ -7,7 +7,7 @@ import './Expenses.css';
 
 const Expenses = () => {
     const [transactions, setTransactions] = useState([]);
-    const [categories, setCategories] = useState(['Food', 'Transport', 'Dwelling']);
+    const [categories, setCategories] = useState([]);
     const [chartData, setChartData] = useState(null);
     const [filter, setFilter] = useState('monthly');
     const [amount, setAmount] = useState('');
@@ -44,8 +44,25 @@ const Expenses = () => {
                 console.error('Error fetching transactions:', error);
             }
         };
-
+        const fetchCategories = async () => {
+            const authToken = localStorage.getItem('authToken');
+            const userId = localStorage.getItem('userId');
+            fetch(`http://localhost:8000/api/get_categories/${userId}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Error fetching user categories");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setCategories(data);
+            })
+            .catch((error) => {
+                console.error("Error fetching user categories:", error)
+            });
+        };
         fetchTransactions();
+        fetchCategories();
     }, [filter, navigate]);
 
     const updateChartData = (transactions) => {
@@ -101,17 +118,22 @@ const Expenses = () => {
         const userId = localStorage.getItem('userId');
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/categories/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/create_category/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${authToken}`
                 },
-                body: JSON.stringify({ id_user: userId, name: newCategory })
+                body: JSON.stringify({ id_user: userId, category_name: newCategory })
             });
 
             if (response.ok) {
-                setCategories(prevCategories => [...prevCategories, newCategory]);
+                const result = await response.json();
+                const newCat = {
+                    id_category: result.category_id,
+                    category_name: result.category_name
+                }
+                setCategories(prevCategories => [...prevCategories, newCat]);
                 setNewCategory('');
                 setIsNewCategoryDialogOpen(false);
             } else {
@@ -178,7 +200,14 @@ const Expenses = () => {
                             <tbody>
                                 {transactions.map(transaction => (
                                     <tr key={transaction.id_transaction}>
-                                        <td>{transaction.categories ? transaction.categories.join(', ') : "No category"}</td>
+                                        <td>
+                                        {transaction.categories.map((category, index) => (
+                                            <span key={category.id_category}>
+                                                {category.category_name}
+                                                {index < transaction.categories.length - 1 && ", "}
+                                            </span>
+                                        )) || "No category"}
+                                        </td>
                                         <td>- ${transaction.mount}</td>
                                         <td>{transaction.description || "No description"}</td>
                                         <td>{transaction.date}</td>
@@ -212,8 +241,8 @@ const Expenses = () => {
                             value={selectedCategories}
                             onChange={handleCategoryChange}
                         >
-                            {categories.map((cat, index) => (
-                                <option key={index} value={cat}>{cat}</option>
+                            {categories.map((category) => (
+                                <option key={category.id_category} value={category.id_category}>{category.category_name}</option>
                             ))}
                         </select>
                         <button
