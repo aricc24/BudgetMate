@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 
 class ReactSerializer(serializers.ModelSerializer):
+    categories = serializers.PrimaryKeyRelatedField(many=True, queryset=Category.objects.all(), required=False)
     class Meta:
         model = User
         fields = '__all__'

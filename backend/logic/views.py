@@ -11,6 +11,13 @@ class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = ReactSerializer
 
+    # def dispatch(self, request, *args, **kwargs):
+    #     print(f"Request method: {request.method}")  # Muestra el método HTTP
+    #     response = super().dispatch(request, *args, **kwargs)
+    #     print(f"Response status: {response.status_code}")  # Muestra el código de estado de la respuesta
+    #     print(f"Response data: {response.data}")  # Muestra los datos de la respuesta
+    #     return response
+
 @api_view(['POST'])
 def login_view(request):
     email = request.data.get('email')
