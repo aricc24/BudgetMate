@@ -160,15 +160,13 @@ export const Home = () => {
                         <h3>Financial Summary</h3>
                     </div>
 
-                    <div className="chart-block">
-                        <div className="chart">
-                            <h4>Line Chart</h4>
-                            <canvas ref={lineChartRef}></canvas>
-                        </div>
-                        <div className="chart">
-                            <h4>Pie Chart</h4>
-                            <canvas ref={pieChartRef}></canvas>
-                        </div>
+                    <div className="chart-container">
+                        <h4>Line Chart</h4>
+                        <canvas ref={lineChartRef}></canvas>
+                    </div>
+                    <div className="chart-contanier">
+                        <h4>Pie Chart</h4>
+                        <canvas ref={pieChartRef}></canvas>
                     </div>
                 </div>
             </div>

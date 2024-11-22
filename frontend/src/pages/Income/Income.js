@@ -13,11 +13,11 @@ const Income = () => {
     const [category, setCategory] = useState('');
     const navigate = useNavigate();
 
-    
+
     useEffect(() => {
         const fetchTransactions = async () => {
             const authToken = localStorage.getItem('authToken');
-            const userId = localStorage.getItem('userId'); 
+            const userId = localStorage.getItem('userId');
             if (!authToken) {
                 navigate('/login');
                 return;
@@ -35,10 +35,10 @@ const Income = () => {
                      return;
                 }
 
-                
+
                 if (response.ok) {
                     const data = await response.json();
-                    const incomeTransactions = data.filter(t => t.type === 0); 
+                    const incomeTransactions = data.filter(t => t.type === 0);
                     setTransactions(incomeTransactions);
                     updateChartData(incomeTransactions);
                 } else {
@@ -48,7 +48,7 @@ const Income = () => {
                 console.error('Error fetching transactions:', error);
             }
         };
-        
+
         fetchTransactions();
     }, [filter, navigate]);
 
@@ -104,10 +104,10 @@ const Income = () => {
     };
 
 
-  
+
     return (
     <Layout>
-        <div className="income-page"> 
+        <div className="income-page">
             {/*<h2>Income</h2>*/}
             <div className="filter-container">
                 <label>Show by:</label>
@@ -172,7 +172,13 @@ const Income = () => {
             </div>
 
             <div className="chart-container">
-                {chartData && <LineChart data={chartData} />}
+                <h4>Pie Chart</h4>
+                {transactions.length > 0 && (
+                    <PieChart
+                        data={transactions.map((t) => t.mount)}
+                        labels={transactions.map((t) => t.category || 'No category')}
+                    />
+                )}
             </div>
         </div>
     </div>
@@ -187,7 +193,7 @@ const LineChart = ({ data }) => {
     useEffect(() => {
 
         if (chartInstance.current) {
-            chartInstance.current.destroy(); 
+            chartInstance.current.destroy();
         }
         chartInstance.current = new Chart(chartRef.current, {
            type: 'line',
@@ -198,7 +204,7 @@ const LineChart = ({ data }) => {
                             label: 'Income',
                             data: data.map(d => d.amount),
                             borderColor: 'green',
-                            backgroundColor:'rgba(144, 238, 144, 0.5)', 
+                            backgroundColor:'rgba(144, 238, 144, 0.5)',
                             fill: true,
                         }
                     ]
@@ -222,7 +228,58 @@ const LineChart = ({ data }) => {
 
     return <canvas ref={chartRef}></canvas>;
 };
+const PieChart = ({ data, labels }) => {
+    const chartRef = React.useRef(null);
+    const chartInstance = React.useRef(null);
 
+    useEffect(() => {
+        if (chartInstance.current) {
+            chartInstance.current.destroy();
+        }
+        chartInstance.current = new Chart(chartRef.current, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Pie Chart' },
+                },
+            },
+        });
+
+        return () => {
+            if (chartInstance.current) {
+                chartInstance.current.destroy();
+            }
+        };
+    }, [data, labels]);
+
+    return <canvas ref={chartRef}></canvas>;
+};
 export default Income;
 
 
