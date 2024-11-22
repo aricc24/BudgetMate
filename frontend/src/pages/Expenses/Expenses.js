@@ -28,7 +28,7 @@ const Expenses = () => {
             }
 
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}`, {
+                const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}/`, {
                     headers: { 'Authorization': `Bearer ${authToken}` }
                 });
 
@@ -47,7 +47,7 @@ const Expenses = () => {
         const fetchCategories = async () => {
             const authToken = localStorage.getItem('authToken');
             const userId = localStorage.getItem('userId');
-            fetch(`http://localhost:8000/api/get_categories/${userId}`)
+            fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Error fetching user categories");
@@ -188,33 +188,40 @@ const Expenses = () => {
 
                 <div className="content-container">
                     <div className="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Amount</th>
-                                    <th>Description</th>
-                                    <th>Date</th>
+                    <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {transactions.map(transaction => {
+                            console.log(transaction);  // Esto está bien para debuguear
+                            return (  // Aquí debe ir el `return` para devolver el JSX
+                                <tr key={transaction.id_transaction}>
+                                    <td>
+                                        {transaction.categories.map((categoryId, index) => {
+                                            const category = categories.find(c => c.id_category === categoryId);
+                                            return (
+                                                <span key={categoryId}>
+                                                    {category ? category.category_name : 'Unknown category'}
+                                                    {index < transaction.categories.length - 1 && ", "}
+                                                </span>
+                                            );
+                                        }) || "No category"}
+                                    </td>
+                                    <td>- ${transaction.mount}</td>
+                                    <td>{transaction.description || "No description"}</td>
+                                    <td>{transaction.date}</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {transactions.map(transaction => (
-                                    <tr key={transaction.id_transaction}>
-                                        <td>
-                                        {transaction.categories.map((category, index) => (
-                                            <span key={category.id_category}>
-                                                {category.category_name}
-                                                {index < transaction.categories.length - 1 && ", "}
-                                            </span>
-                                        )) || "No category"}
-                                        </td>
-                                        <td>- ${transaction.mount}</td>
-                                        <td>{transaction.description || "No description"}</td>
-                                        <td>{transaction.date}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                            );
+                        })}
+                    </tbody>
+                    </table>
+
                     </div>
 
                     <div className="chart-container">
