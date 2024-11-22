@@ -27,15 +27,16 @@ class TransactionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         categories = validated_data.pop('categories', [])
         transaction = Transaction.objects.create(**validated_data)
-        transaction.category.set(categories)
+        transaction.categories.set(categories)
         return transaction
 
-    def validate_categories(self, value):
-        user_id = self.initial_data.get('id_user')
-        invalid_categories = Category.objects.filter(id__in=[cat.id for cat in value]).exclude(users__id=user_id)
-        if invalid_categories.exists():
-            raise serializers.ValidationError("Some categories do not belong to this user.")
-        return value
+    # def validate_categories(self, value):
+    #     user_id = self.initial_data.get('id_user')
+    #     category_ids = [category.id_category for category in value]
+    #     invalid_categories = Category.objects.filter(id_category__in=category_ids).exclude(users__id=user_id)
+    #     if invalid_categories.exists():
+    #         raise serializers.ValidationError("Some categories do not belong to this user.")
+    #     return value
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

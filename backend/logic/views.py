@@ -1,9 +1,9 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-from .models import User, Transaction
+from .models import User, Transaction, Category
 from rest_framework import status, generics
-from .serializer import ReactSerializer, TransactionSerializer
+from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer
 #from rest_framework.generics import ListAPIView
 
 
@@ -64,13 +64,13 @@ class UserUpdateView(generics.RetrieveUpdateAPIView):
 class TransactionCreateView(generics.CreateAPIView):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
-    
-    def dispatch(self, request, *args, **kwargs):
-        print(f"Request method: {request.method}")  # Muestra el método HTTP (POST)
-        response = super().dispatch(request, *args, **kwargs)
-        print(f"Response status: {response.status_code}")  # Muestra el código de estado de la respuesta (400, 201, etc.)
-        print(f"Response data: {response.data}")  # Muestra los datos de la respuesta (cuerpo)
-        return response
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     print(f"Request method: {request.method}")  # Muestra el método HTTP (POST)
+    #     response = super().dispatch(request, *args, **kwargs)
+    #     print(f"Response status: {response.status_code}")  # Muestra el código de estado de la respuesta (400, 201, etc.)
+    #     print(f"Response data: {response.data}")  # Muestra los datos de la respuesta (cuerpo)
+    #     return response
 
 @api_view(['GET'])
 def get_transactions_by_user(request, id_user):

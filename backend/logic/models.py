@@ -54,7 +54,7 @@ class Transaction(models.Model):
     )
 
     date = models.DateField(auto_now_add=True)
-    category = models.ManyToManyField('Category', related_name='transactions')
+    categories = models.ManyToManyField('Category', related_name='transactions')
     class Meta:
         db_table = 'transactions'
 
