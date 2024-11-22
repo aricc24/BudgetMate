@@ -165,7 +165,17 @@ const Expenses = () => {
             </div>
 
             <div className="chart-container">
-                {chartData && <LineChart data={chartData} />}
+                <h4>Line Chart</h4>
+                {transactions.length > 0 && <LineChart data={transactions.map((t) => ({ date: t.date, amount: t.mount }))} />}
+            </div>
+            <div className="chart-container">
+                <h4>Pie Chart</h4>
+                {transactions.length > 0 && (
+                    <PieChart
+                        data={transactions.map((t) => t.mount)}
+                        labels={transactions.map((t) => t.category || 'No category')}
+                    />
+                )}
             </div>
         </div>
     </div>
@@ -211,6 +221,59 @@ const LineChart = ({ data }) => {
                 }
         };
     }, [data]);
+
+    return <canvas ref={chartRef}></canvas>;
+};
+
+const PieChart = ({ data, labels }) => {
+    const chartRef = React.useRef(null);
+    const chartInstance = React.useRef(null);
+
+    useEffect(() => {
+        if (chartInstance.current) {
+            chartInstance.current.destroy();
+        }
+        chartInstance.current = new Chart(chartRef.current, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Pie Chart' },
+                },
+            },
+        });
+
+        return () => {
+            if (chartInstance.current) {
+                chartInstance.current.destroy();
+            }
+        };
+    }, [data, labels]);
 
     return <canvas ref={chartRef}></canvas>;
 };

@@ -126,5 +126,11 @@
     flex: 1;
     max-width: 45%;
     max-width: 60%; 
-    height: 200px; 
+    height: 200px;
+    position: relative;
+}
+.chart-container canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
 }

@@ -172,6 +172,10 @@ const Income = () => {
             </div>
 
             <div className="chart-container">
+                <h4>Line Chart</h4>
+            {transactions.length > 0 && <LineChart data={transactions.map((t) => ({ date: t.date, amount: t.mount }))} />}
+            </div>
+            <div className="chart-container">
                 <h4>Pie Chart</h4>
                 {transactions.length > 0 && (
                     <PieChart
