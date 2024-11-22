@@ -11,6 +11,13 @@ class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = ReactSerializer
 
+    # def dispatch(self, request, *args, **kwargs):
+    #     print(f"Request method: {request.method}")  # Muestra el método HTTP
+    #     response = super().dispatch(request, *args, **kwargs)
+    #     print(f"Response status: {response.status_code}")  # Muestra el código de estado de la respuesta
+    #     print(f"Response data: {response.data}")  # Muestra los datos de la respuesta
+    #     return response
+
 @api_view(['POST'])
 def login_view(request):
     email = request.data.get('email')
@@ -56,7 +63,14 @@ class UserUpdateView(generics.RetrieveUpdateAPIView):
 
 class TransactionCreateView(generics.CreateAPIView):
     queryset = Transaction.objects.all()
-    serializer_class = TransactionSerializer    
+    serializer_class = TransactionSerializer
+    
+    def dispatch(self, request, *args, **kwargs):
+        print(f"Request method: {request.method}")  # Muestra el método HTTP (POST)
+        response = super().dispatch(request, *args, **kwargs)
+        print(f"Response status: {response.status_code}")  # Muestra el código de estado de la respuesta (400, 201, etc.)
+        print(f"Response data: {response.data}")  # Muestra los datos de la respuesta (cuerpo)
+        return response
 
 @api_view(['GET'])
 def get_transactions_by_user(request, id_user):
@@ -75,3 +89,41 @@ def update_user_transaction(request, id_user, id_transaction):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_categories_by_user(request, id_user):
+    try:
+        user = User.objects.get(id_user=id_user)
+    except User.DoesNotExist:
+        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+    categories = user.categories.all()
+    serializer = CategorySerializer(categories, many=True)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def create_or_associate_category(request):
+    category_name = request.data.get('category_name')
+    id_user = request.data.get('id_user')
+    if not category_name or not id_user:
+        return Response({"error": "Both category name and user ID are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = User.objects.get(id_user=id_user)
+    except User.DoesNotExist:
+        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    category, created = Category.objects.get_or_create(
+        category_name=category_name,
+        defaults={'is_universal': False}
+    )
+
+    if not user.categories.filter(id_category=category.id_category).exists():
+        user.categories.add(category)
+
+    return Response({
+        "message": "Category created and associated" if created else "Category already exists and associated",
+        "category_name": category.category_name,
+        "category_id": category.id_category,
+        "user_id": user.id_user
+    }, status=status.HTTP_200_OK)

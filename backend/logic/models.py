@@ -33,7 +33,7 @@ class User(models.Model):
         default=SINGLE,
         null=True
     )
-
+    categories = models.ManyToManyField('Category', related_name='users')
     class Meta:
         db_table = 'users'
 
@@ -54,6 +54,13 @@ class Transaction(models.Model):
     )
 
     date = models.DateField(auto_now_add=True)
-
+    category = models.ManyToManyField('Category', related_name='transactions')
     class Meta:
         db_table = 'transactions'
+
+class Category(models.Model):
+    id_category = models.AutoField(primary_key=True)
+    category_name = models.CharField(max_length=35, unique=True)
+    is_universal = models.BooleanField(default=False)
+    class Meta:
+        db_table = 'categories'
