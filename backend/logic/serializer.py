@@ -17,7 +17,8 @@ class ReactSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     categories = serializers.PrimaryKeyRelatedField(
         many=True,
-        queryset=Category.objects.all()
+        queryset=Category.objects.all(),
+        required=False
     )
     class Meta:
         model = Transaction

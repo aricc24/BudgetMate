@@ -64,6 +64,13 @@ class UserUpdateView(generics.RetrieveUpdateAPIView):
 class TransactionCreateView(generics.CreateAPIView):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
+    
+    def dispatch(self, request, *args, **kwargs):
+        print(f"Request method: {request.method}")  # Muestra el método HTTP (POST)
+        response = super().dispatch(request, *args, **kwargs)
+        print(f"Response status: {response.status_code}")  # Muestra el código de estado de la respuesta (400, 201, etc.)
+        print(f"Response data: {response.data}")  # Muestra los datos de la respuesta (cuerpo)
+        return response
 
 @api_view(['GET'])
 def get_transactions_by_user(request, id_user):
