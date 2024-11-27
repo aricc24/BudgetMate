@@ -4,6 +4,12 @@ from rest_framework.decorators import api_view
 from .models import User, Transaction, Category
 from rest_framework import status, generics
 from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer
+
+
+from django.core.mail import send_mail
+from django.conf import settings
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.urls import reverse
 #from rest_framework.generics import ListAPIView
 
 
