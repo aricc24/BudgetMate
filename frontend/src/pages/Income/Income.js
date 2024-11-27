@@ -4,6 +4,8 @@ import Chart from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
 import Layout from '../../components/Layout/Layout.js';
 import './Income.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 const Income = () => {
     const [transactions, setTransactions] = useState([]);
@@ -16,6 +18,8 @@ const Income = () => {
     const [newCategory, setNewCategory] = useState('');
     const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
     const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
+    const [isEditDeleteOpen, setIsEditDeleteOpen] = useState(false);
+    const [selectedTransactionId, setSelectedTransactionId] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -110,7 +114,7 @@ const Income = () => {
         }
     };
 
-    const handleDeleteTransaction = async (transactionId) => {
+    const handleDeleteIncome = async (transactionId) => {
         const authToken = localStorage.getItem('authToken');
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/delete_transaction/${transactionId}/`, {
@@ -130,7 +134,11 @@ const Income = () => {
             console.error('Error deleting transaction:', error);
             alert('An error occurred while trying to delete the transaction.');
         }
-    };
+    }; 
+
+    const handleEditIncome = async (transactionId) => {
+
+    }
 
     const handleAddCategory = async () => {
         if (!newCategory.trim()) return;
@@ -244,9 +252,13 @@ const Income = () => {
                                             <td>{transaction.date}</td>
                                             <td>
                                                 <button
-                                                    className="delete-button"
-                                                    onClick={() => handleDeleteTransaction(transaction.id_transaction)} >
-                                                    Delete
+                                                    className="three-dots"
+                                                    onClick={() => {
+                                                        setSelectedTransactionId(transaction.id_transaction);
+                                                        setIsEditDeleteOpen(true);
+                                                    }}
+                                                >
+                                                    <i className="fas fa-ellipsis-v"></i>
                                                 </button>
                                             </td>
                                         </tr>
@@ -272,6 +284,25 @@ const Income = () => {
                         )}
                     </div>
                 </div>
+
+                {isEditDeleteOpen && (
+                    <dialog className='' open>
+                        <button
+                            className='delete-button'
+                            onClick={() => {
+                                handleDeleteIncome(selectedTransactionId)
+                                setIsEditDeleteOpen(false);
+                            }}
+                        >
+                            Delete
+                        </button>
+                        <button
+                            onClick={() => setIsEditDeleteOpen(false)}
+                        > 
+                            Cancel
+                        </button>
+                    </dialog>
+                )}
 
                 {isCategoryDialogOpen && (
                     <dialog className="category-dialog" open>

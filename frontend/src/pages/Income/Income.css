@@ -309,6 +309,18 @@ dialog input {
     font-size: 40px;
 }
 
+.three-dots {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #333;
+}
+
+.three-dots:hover {
+    color: #007BFF;
+}
+
 .delete-button {
     background-color: #ff4d4d;
     color: white;
