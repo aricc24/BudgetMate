@@ -84,6 +84,7 @@ const Income = () => {
             description: description,
             type: 0,
             categories: selectedCategories,
+            date: new Date().toISOString(),
         };
 
         try {
@@ -295,13 +296,17 @@ const LineChart = ({ data }) => {
         }
 
         const sortedData = data
-            .filter(d => d.amount && d.date)
-            .sort((a, b) => new Date(a.date) - new Date(b.date));
+            .filter(d => d.amount && d.date && !isNaN(new Date(d.date).getTime()))
+            .map(d => ({
+                 date: new Date(d.date),
+                 amount: d.amount,
+            }))
+            .sort((a, b) => a.date- b.date);
 
         chartInstance.current = new Chart(chartRef.current, {
             type: 'line',
             data: {
-                labels: sortedData.map(d => new Date(d.date).toLocaleString()),
+                labels: sortedData.map(d => d.date),
                 datasets: [
                     {
                         label: 'Income',
@@ -361,7 +366,7 @@ const LineChart = ({ data }) => {
         };
     }, [data]);
 
-    return <canvas ref={chartRef}></canvas>;
+    return <canvas ref={chartRef} style={{ display: "flex", maxWidth: "100%", maxHeight: "85%" }}></canvas>
 };
 
 const PieChart = ({ data, labels }) => {
@@ -410,7 +415,7 @@ const PieChart = ({ data, labels }) => {
         };
     }, [data, labels]);
 
-    return <canvas ref={chartRef}></canvas>;
+    return <canvas ref={chartRef} style={{ display: "flex", maxWidth: "100%", maxHeight: "85%" }}></canvas>
 };
 
 
