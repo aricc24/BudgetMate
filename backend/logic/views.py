@@ -63,6 +63,15 @@ def get_transactions_by_user(request, id_user):
     serializer = TransactionSerializer(transactions, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(['DELETE'])
+def delete_transaction(request, transaction_id):
+    try:
+        transaction = Transaction.objects.get(id_transaction=transaction_id)
+        transaction.delete()
+        return Response({'message': 'Transaction deleted successfully!'}, status=status.HTTP_200_OK)
+    except Transaction.DoesNotExist:
+        return Response({'error': 'Transaction not found!'}, status=status.HTTP_404_NOT_FOUND)
+
 @api_view(['PATCH'])
 def update_user_transaction(request, id_user, id_transaction):
     try:
@@ -112,12 +121,3 @@ def create_or_associate_category(request):
         "category_id": category.id_category,
         "user_id": user.id_user
     }, status=status.HTTP_200_OK)
-
-@api_view(['DELETE'])
-def delete_transaction(request, transaction_id):
-    try:
-        transaction = Transaction.objects.get(id_transaction=transaction_id)
-        transaction.delete()
-        return Response({'message': 'Transaction deleted successfully!'}, status=status.HTTP_200_OK)
-    except Transaction.DoesNotExist:
-        return Response({'error': 'Transaction not found!'}, status=status.HTTP_404_NOT_FOUND)

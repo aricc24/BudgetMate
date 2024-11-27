@@ -25,9 +25,9 @@ urlpatterns = [
     path('api/get_user/', get_user_info, name="user-info"),
     path('api/update_user/<int:id_user>/', UserUpdateView.as_view(), name="user-update"),
     path('api/transactions/', TransactionCreateView.as_view(), name="transactions-list"),
+    path('api/delete_transaction/<int:transaction_id>/', delete_transaction, name='delete_transaction'),
     path('api/get_transactions/<int:id_user>/', get_transactions_by_user, name="transactions-info"),
     path('api/update_transaction/<int:id_user>/<int:id_transaction>/', update_user_transaction, name="transaction-update"),
     path('api/get_categories/<int:id_user>/', get_categories_by_user, name="get-categories"),
     path('api/create_category/', create_or_associate_category, name="create-category"),
-    path('api/delete_transaction/<int:transaction_id>/', delete_transaction, name='delete_transaction'),
 ]

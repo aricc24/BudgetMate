@@ -18,7 +18,7 @@ const Income = () => {
     const [newCategory, setNewCategory] = useState('');
     const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
     const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
-    const [isEditDeleteOpen, setIsEditDeleteOpen] = useState(false);
+    const [isOptionsOpen, setisOptionsOpen] = useState(false);
     const [selectedTransactionId, setSelectedTransactionId] = useState(null);
     const navigate = useNavigate();
 
@@ -255,7 +255,7 @@ const Income = () => {
                                                     className="three-dots"
                                                     onClick={() => {
                                                         setSelectedTransactionId(transaction.id_transaction);
-                                                        setIsEditDeleteOpen(true);
+                                                        setisOptionsOpen(true);
                                                     }}
                                                 >
                                                     <i className="fas fa-ellipsis-v"></i>
@@ -285,19 +285,28 @@ const Income = () => {
                     </div>
                 </div>
 
-                {isEditDeleteOpen && (
+                {isOptionsOpen && (
                     <dialog className='' open>
                         <button
                             className='delete-button'
                             onClick={() => {
                                 handleDeleteIncome(selectedTransactionId)
-                                setIsEditDeleteOpen(false);
+                                setisOptionsOpen(false);
                             }}
                         >
                             Delete
                         </button>
                         <button
-                            onClick={() => setIsEditDeleteOpen(false)}
+                            className='edited-button'
+                            onClick={() => {
+                                handleEditIncome(selectedTransactionId)
+                                setisOptionsOpen(false);
+                            }}
+                        >
+                            Edit
+                        </button>
+                        <button
+                            onClick={() => setisOptionsOpen(false)}
                         > 
                             Cancel
                         </button>
