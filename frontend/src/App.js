@@ -8,7 +8,7 @@ import Income from './pages/Income/Income';
 import Expenses from './pages/Expenses/Expenses';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import ForgotPassword from './pages/SignIn/ForgotPassword';
-import EmailVerification from './pages/SigIn/EmailVerification'; 
+import EmailVerification from './pages/SignIn/EmailVerification'; 
 //import Navbar from './components/Navbar/Navbar';
 //import Sidebar from './components/Sidebar/Sidebar';
 import './App.css';
