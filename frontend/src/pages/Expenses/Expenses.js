@@ -84,6 +84,7 @@ const Expenses = () => {
             description: description,
             type: 1,
             categories: selectedCategories,
+            date: new Date().toISOString(),
         };
 
         try {
@@ -293,12 +294,12 @@ const LineChart = ({ data }) => {
             chartInstance.current.destroy();
         }
 
-        const sortedData = data.sort((a, b) => new Date(a.date) - new Date(b.date));
+        const sortedData = data.sort((a, b) => a.date- b.date);
 
         chartInstance.current = new Chart(chartRef.current, {
             type: 'line',
             data: {
-                labels: sortedData.map(d => new Date(d.date).toLocaleString()),
+                labels: sortedData.map(d => d.date),
                 datasets: [
                     {
                         label: 'Expenses',
@@ -321,9 +322,9 @@ const LineChart = ({ data }) => {
                     x: {
                         type: 'time',
                         time: {
-                            unit: 'day',
+                            unit: 'minute',
                             displayFormats: {
-                                day: 'MMM d',
+                                day: 'MMM d, h:mm a',
                             },
                         },
                         title: {
@@ -351,7 +352,10 @@ const LineChart = ({ data }) => {
         };
     }, [data]);
 
-    return <canvas ref={chartRef}></canvas>;
+    return <canvas ref={chartRef} style={{ display: "flex", maxWidth: "100%", maxHeight: "85%" }}></canvas>
+
+
+
 };
 const PieChart = ({ data, labels }) => {
     const chartRef = React.useRef(null);
@@ -399,7 +403,7 @@ const PieChart = ({ data, labels }) => {
         };
     }, [data, labels]);
 
-    return <canvas ref={chartRef}></canvas>;
+    return <canvas ref={chartRef} style={{ display: "flex", maxWidth: "100%", maxHeight: "85%" }}></canvas>
 };
 
 export default Expenses;
