@@ -184,7 +184,7 @@ const Income = () => {
                         Select Category
                     </button>
 
-                    <button onClick={handleAddIncome}>Add Income</button>
+                    <button className="add-income-button" onClick={handleAddIncome}>Add Income</button>
                 </div>
 
                 <div className="content-container">

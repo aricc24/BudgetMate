@@ -171,8 +171,8 @@ const CombinedPieChart = ({ data }) => {
                     {
                         data: [incomeTotal, expensesTotal],
                         backgroundColor: [
-                            'rgba(75, 192, 192, 0.5)', // Income
-                            'rgba(255, 99, 132, 0.5)', // Expenses
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(255, 99, 132, 0.5)',
                         ],
                         borderColor: [
                             'rgba(75, 192, 192, 1)',
