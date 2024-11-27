@@ -122,9 +122,9 @@ const Income = () => {
                 setTransactions((prevTransactions) =>
                     prevTransactions.filter((transaction) => transaction.id_transaction !== transactionId)
                 );
-                alert('Transaction deleted successfully!');
+                alert('Transaction deleted successfully.');
             } else {
-                alert('Failed to delete transaction.');
+                alert('Fail on delete transaction.');
             }
         } catch (error) {
             console.error('Error deleting transaction:', error);
@@ -224,21 +224,25 @@ const Income = () => {
                                     return (
                                         <tr key={transaction.id_transaction}>
                                             <td>
-                                                {transaction.categories.map((categoryId, index) => {
-                                                    const category = categories.find((c) => c.id_category === categoryId);
-                                                    return (
-                                                        <span key={categoryId}>
-                                                            {category ? category.category_name : 'Unknown category'}
-                                                            {index < transaction.categories.length - 1 && ', '}
-                                                        </span>
-                                                    );
-                                                }) || 'No category'}
+                                                {transaction.categories && transaction.categories.length > 0 ? (
+                                                    transaction.categories.map((categoryId, index) => {
+                                                        const category = categories.find((c) => c.id_category === categoryId);
+                                                        return (
+                                                            <span key={categoryId}>
+                                                                {category ? category.category_name : 'Unknown category'}
+                                                                {index < transaction.categories.length - 1 && ', '}
+                                                            </span>
+                                                        );
+                                                    })
+                                                ) : (
+                                                    <span>No category</span>
+                                                )}
                                             </td>
+
                                             <td>- ${transaction.mount}</td>
                                             <td>{transaction.description || 'No description'}</td>
                                             <td>{transaction.date}</td>
                                             <td>
-                                                {}
                                                 <button
                                                     className="delete-button"
                                                     onClick={() => handleDeleteTransaction(transaction.id_transaction)} >
