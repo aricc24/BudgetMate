@@ -21,6 +21,7 @@ from logic.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', ReactView.as_view(), name="user-list"),
+    path('verify-email/', verify_email, name='verify_email'), 
     path('api/login/', login_view, name="user-log"),
     path('api/get_user/', get_user_info, name="user-info"),
     path('api/update_user/<int:id_user>/', UserUpdateView.as_view(), name="user-update"),
@@ -29,5 +30,4 @@ urlpatterns = [
     path('api/update_transaction/<int:id_user>/<int:id_transaction>/', update_user_transaction, name="transaction-update"),
     path('api/get_categories/<int:id_user>/', get_categories_by_user, name="get-categories"),
     path('api/create_category/', create_or_associate_category, name="create-category"), 
-    path('verify-email/', verify_email, name='verify_email'), 
 ]

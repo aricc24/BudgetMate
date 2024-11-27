@@ -23,14 +23,13 @@ class ReactView(generics.ListCreateAPIView):
         """
         email = request.data.get('email')
         password = request.data.get('password')
-        first_name = request.data.get('first_name', '')
 
         if not email or not password:
             return Response({"error": "Email and password are required."}, status=400)
 
         try:
             # Crear el usuario
-            user = User.objects.create(email=email, password=password, first_name=first_name)
+            user = User.objects.create(email=email, password=password)
 
             # Generar el token de verificación
             refresh = RefreshToken.for_user(user)
@@ -52,6 +51,7 @@ class ReactView(generics.ListCreateAPIView):
             }, status=201)
 
         except Exception as e:
+            print(f"Error: {str(e)}") 
             return Response({"error": str(e)}, status=500)
         
 
