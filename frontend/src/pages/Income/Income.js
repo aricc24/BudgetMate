@@ -45,7 +45,6 @@ const Income = () => {
             }
         };
         const fetchCategories = async () => {
-            const authToken = localStorage.getItem('authToken');
             const userId = localStorage.getItem('userId');
             fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`)
             .then((response) => {
@@ -152,6 +151,7 @@ const Income = () => {
     return (
         <Layout>
             <div className="income-page">
+                <div className="top-left">Incomes</div>
                 <div className="filter-container">
                     <label>Show by:</label>
                     <select value={filter} onChange={(e) => setFilter(e.target.value)}>
@@ -199,8 +199,8 @@ const Income = () => {
                             </thead>
                             <tbody>
                                 {transactions.map(transaction => {
-                                    console.log(transaction);  // Esto está bien para debuguear
-                                    return (  // Aquí debe ir el `return` para devolver el JSX
+                                    console.log(transaction);
+                                    return (
                                         <tr key={transaction.id_transaction}>
                                             <td>
                                                 {transaction.categories.map((categoryId, index) => {

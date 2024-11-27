@@ -1,4 +1,5 @@
 .income-page {
+    position: relative;
     padding: 20px;
     color: #333;
     font-family: 'Arial', sans-serif;
@@ -129,7 +130,6 @@
     height: 200px; 
 }
 
-/* General Dialog Styles */
 dialog {
     position: fixed;
     top: 50%;
@@ -204,7 +204,6 @@ dialog input {
 .dialog-buttons button:last-child:hover {
     background-color: #bbb;
 }
-/*add category*/
 
 .new-category-dialog {
     position: fixed;
@@ -273,8 +272,6 @@ dialog input {
     background-color: #bbb;
 }
 
-
-/* Botón "+" */
 .add-category-button {
     width: 40px;
     height: 40px;
@@ -301,3 +298,13 @@ dialog input {
     transform: scale(0.95); 
 }
 
+.top-left {
+    position: absolute;
+    color: white;
+    background-color: #2a5a8c;
+    border-radius: 5%;
+    top: -100px;
+    left: 475px;
+    margin: 10px;
+    font-size: 40px;
+}
