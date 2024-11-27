@@ -144,12 +144,14 @@ const Income = () => {
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
 
+        const currentTransaction = transactions.find(t => t.id_transaction === transactionId);
+
         const updateTransaction = {
             id_user: userId,
-            mount: parseFloat(editAmount),
-            description: editDescription,
+            mount: editAmount ? parseFloat(editAmount) : currentTransaction.mount,
+            description: editDescription || currentTransaction.description,
             type: 0,
-            categories: selectedCategories,
+            categories: selectedCategories.length > 0 ? selectedCategories : currentTransaction.categories,
         };
 
         try {
