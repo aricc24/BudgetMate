@@ -20,6 +20,9 @@ const Income = () => {
     const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
     const [isOptionsOpen, setisOptionsOpen] = useState(false);
     const [selectedTransactionId, setSelectedTransactionId] = useState(null);
+    const [editAmount, setEditAmount] = useState('');
+    const [editDescription, setEditDescription] = useState('');
+    const [isEditOpen, setisEditOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -137,8 +140,47 @@ const Income = () => {
     }; 
 
     const handleEditIncome = async (transactionId) => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken || !userId) return;
 
-    }
+        const updateTransaction = {
+            id_user: userId,
+            mount: parseFloat(editAmount),
+            description: editDescription,
+            type: 0,
+            categories: selectedCategories,
+        };
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/update_transaction/${userId}/${transactionId}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify(updateTransaction)
+            });
+            if (response.ok) {
+                const savedTransaction = await response.json();
+                setTransactions(prevTransactions =>
+                    prevTransactions.map(transaction =>
+                        transaction.id_transaction === transactionId
+                            ? savedTransaction
+                            : transaction
+                    )
+                );                
+                updateChartData([...transactions, savedTransaction]);
+                setEditAmount('');
+                setEditDescription('');
+                setSelectedCategories([]);
+            } else {
+                console.error('Failed to update transaction');
+            }
+        } catch (error) {
+            console.error('Error updating transaction:', error);
+        }
+    };
 
     const handleAddCategory = async () => {
         if (!newCategory.trim()) return;
@@ -299,14 +341,52 @@ const Income = () => {
                         <button
                             className='edited-button'
                             onClick={() => {
-                                handleEditIncome(selectedTransactionId)
                                 setisOptionsOpen(false);
+                                setisEditOpen(true);
                             }}
                         >
                             Edit
                         </button>
                         <button
                             onClick={() => setisOptionsOpen(false)}
+                        > 
+                            Cancel
+                        </button>
+                    </dialog>
+                )}
+
+                {isEditOpen && (
+                    <dialog className='' open>
+                        <input
+                        type="number"
+                        value={editAmount}
+                        onChange={(e) => setEditAmount(e.target.value)}
+                        placeholder="New amount"
+                        />
+                        <input
+                            type="text"
+                            value={editDescription}
+                            onChange={(e) => setEditDescription(e.target.value)}
+                            placeholder="New description"
+                        />
+
+                        <button
+                            className="select-category-button"
+                            onClick={() => setIsCategoryDialogOpen(true)}
+                        >
+                            Select Category
+                        </button>
+                        <button
+                            className='edited-button'
+                            onClick={() => {
+                                handleEditIncome(selectedTransactionId)
+                                setisEditOpen(false);
+                            }}
+                        >
+                            Accept
+                        </button>
+                        <button
+                            onClick={() => setisEditOpen(false)}
                         > 
                             Cancel
                         </button>
