@@ -42,12 +42,22 @@ const Home = () => {
         <Layout>
             <div className="home">
                 <h2>Financial Overview</h2>
-                <div className="chart-container">
-                    {chartData ? (
-                        <CombinedChart data={chartData} />
-                    ) : (
-                        <p>Loading chart...</p>
-                    )}
+                <div className="charts-container">
+                    <div className="chart-block">
+                        <h4>Combined Line Chart</h4>
+                        {chartData && <CombinedChart data={chartData} />}
+                    </div>
+                    <div className="chart-block">
+                        <h4>Combined Pie Chart</h4>
+                        {chartData && (
+                            <CombinedPieChart
+                                data={{
+                                    income: chartData.income,
+                                    expenses: chartData.expenses,
+                                }}
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
         </Layout>
@@ -93,8 +103,8 @@ const CombinedChart = ({ data }) => {
                 ],
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                responsive: false,
+                maintainAspectRatio: true,
                 plugins: {
                     tooltip: {
                         callbacks: {
@@ -134,6 +144,62 @@ const CombinedChart = ({ data }) => {
     }, [data]);
 
     return <canvas ref={chartRef} style={{ maxWidth: '100%', height: '400px' }}></canvas>;
+};
+
+const CombinedPieChart = ({ data }) => {
+    const chartRef = React.useRef(null);
+    const chartInstance = React.useRef(null);
+
+    useEffect(() => {
+        if (chartInstance.current) {
+            chartInstance.current.destroy();
+        }
+
+        const incomeTotal = data.income.reduce((acc, t) => acc + parseFloat(t.amount || 0), 0);
+        const expensesTotal = data.expenses.reduce((acc, t) => acc + parseFloat(t.amount || 0), 0);
+
+        if (incomeTotal === 0 && expensesTotal === 0) {
+            console.error("Both incomeTotal and expensesTotal are zero.");
+            return;
+        }
+
+        chartInstance.current = new Chart(chartRef.current, {
+            type: 'pie',
+            data: {
+                labels: ['Income', 'Expenses'],
+                datasets: [
+                    {
+                        data: [incomeTotal, expensesTotal],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.5)', // Income
+                            'rgba(255, 99, 132, 0.5)', // Expenses
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Income vs Expenses' },
+                },
+            },
+        });
+
+        return () => {
+            if (chartInstance.current) {
+                chartInstance.current.destroy();
+            }
+        };
+    }, [data]);
+
+    return <canvas ref={chartRef} style={{ maxWidth: '100%', height: '500px' }}></canvas>;
 };
 
 export default Home;
