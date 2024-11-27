@@ -4,19 +4,11 @@ from rest_framework.decorators import api_view
 from .models import User, Transaction, Category
 from rest_framework import status, generics
 from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer
-#from rest_framework.generics import ListAPIView
 
 
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = ReactSerializer
-
-    # def dispatch(self, request, *args, **kwargs):
-    #     print(f"Request method: {request.method}")  # Muestra el método HTTP
-    #     response = super().dispatch(request, *args, **kwargs)
-    #     print(f"Response status: {response.status_code}")  # Muestra el código de estado de la respuesta
-    #     print(f"Response data: {response.data}")  # Muestra los datos de la respuesta
-    #     return response
 
 @api_view(['POST'])
 def login_view(request):
@@ -64,13 +56,6 @@ class UserUpdateView(generics.RetrieveUpdateAPIView):
 class TransactionCreateView(generics.CreateAPIView):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
-
-    # def dispatch(self, request, *args, **kwargs):
-    #     print(f"Request method: {request.method}")  # Muestra el método HTTP (POST)
-    #     response = super().dispatch(request, *args, **kwargs)
-    #     print(f"Response status: {response.status_code}")  # Muestra el código de estado de la respuesta (400, 201, etc.)
-    #     print(f"Response data: {response.data}")  # Muestra los datos de la respuesta (cuerpo)
-    #     return response
 
 @api_view(['GET'])
 def get_transactions_by_user(request, id_user):
@@ -127,3 +112,12 @@ def create_or_associate_category(request):
         "category_id": category.id_category,
         "user_id": user.id_user
     }, status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+def delete_transaction(request, transaction_id):
+    try:
+        transaction = Transaction.objects.get(id_transaction=transaction_id)
+        transaction.delete()
+        return Response({'message': 'Transaction deleted successfully!'}, status=status.HTTP_200_OK)
+    except Transaction.DoesNotExist:
+        return Response({'error': 'Transaction not found!'}, status=status.HTTP_404_NOT_FOUND)
