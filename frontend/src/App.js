@@ -8,6 +8,7 @@ import Income from './pages/Income/Income';
 import Expenses from './pages/Expenses/Expenses';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import ForgotPassword from './pages/SignIn/ForgotPassword';
+import EmailVerification from './pages/SigIn/EmailVerification'; 
 //import Navbar from './components/Navbar/Navbar';
 //import Sidebar from './components/Sidebar/Sidebar';
 import './App.css';
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/" element={<LogIn />} />
                 <Route path="/login" element={<LogIn />} />
                 <Route path="/signup" element={<SignIn />} />
+                <Route path="/verify-email" component={EmailVerification} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route element={<PrivateRoute />}>
                     <Route path="/home" element={<Home />} />
