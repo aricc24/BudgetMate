@@ -21,6 +21,8 @@ from logic.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', ReactView.as_view(), name="user-list"),
+    path('api/register/',register_user, name='register_user'),
+    path('verify-email/', verify_email, name='verify_email'), 
     path('api/login/', login_view, name="user-log"),
     path('api/get_user/', get_user_info, name="user-info"),
     path('api/update_user/<int:id_user>/', UserUpdateView.as_view(), name="user-update"),

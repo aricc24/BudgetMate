@@ -5,8 +5,8 @@ class ReactSerializer(serializers.ModelSerializer):
     categories = serializers.PrimaryKeyRelatedField(many=True, queryset=Category.objects.all(), required=False)
     class Meta:
         model = User
-        fields = '__all__'
-
+        fields = ['id_user', 'email', 'password', 'first_name', 'last_name_father', 'last_name_mother', 'tax_address', 'curp', 'rfc', 'phone_number', 'marital_status', 'categories']
+        
     def create(self, validated_data):
         print("Datos validados:", validated_data)
         user = super().create(validated_data)
