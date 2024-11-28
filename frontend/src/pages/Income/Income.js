@@ -24,6 +24,8 @@ const Income = () => {
     const [editDescription, setEditDescription] = useState('');
     const [isEditOpen, setisEditOpen] = useState(false);
     const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
+    const [editCategory, setEditCategory] = useState('');
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -223,6 +225,69 @@ const Income = () => {
         setSelectedCategories(selectedOptions);
     };
 
+    const handleEditCategory = async (categoryId) => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken || !userId) return;
+    
+        const currentCategory = categories.find(t => t.id_category === categoryId);
+    
+        const updateCategory = {
+            category_name: editCategory || currentCategory.category_name,
+        };
+    
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/update_category/${userId}/${categoryId}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify(updateCategory)
+            });
+    
+            if (response.ok) {
+                const updatedCategory = await response.json();
+                const transactionsToUpdate = transactions.filter(t =>
+                    t.categories.includes(categoryId) && t.id_user === userId
+                );
+                const updatedTransactions = transactions.map(transaction => {
+                    if (transactionsToUpdate.some(t => t.id_transaction === transaction.id_transaction)) {
+                        return {
+                            ...transaction,
+                            categories: transaction.categories.map(c =>
+                                c === categoryId ? updatedCategory.category_name : c
+                            ),
+                        };
+                    }
+                    return transaction;
+                });
+                setTransactions(updatedTransactions);
+                for (let transaction of transactionsToUpdate) {
+                    const updateTransaction = {
+                        ...transaction,
+                        categories: transaction.categories.map(c =>
+                            c === categoryId ? updatedCategory.category_name : c
+                        ),
+                    };
+                    await fetch(`http://127.0.0.1:8000/api/update_transaction/${userId}/${transaction.id_transaction}/`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify(updateTransaction)
+                    });
+                }
+            } else {
+                console.error('Failed to update category');
+            }
+        } catch (error) {
+            console.error('Error updating category:', error);
+        }
+    };
+    
+
     return (
         <Layout>
             <div className="income-page">
@@ -417,7 +482,9 @@ const Income = () => {
                         <div className="dialog-buttons">
                             <button 
                                 onClick={() => {
-                                    setIsCategoryDialogOpen(false);
+                                    const selectedCategory = categories.find(c => c.id_category === selectedCategoryId);
+                                    setEditCategory(selectedCategory ? selectedCategory.category_name : '');
+                                    setIsCategoryDialogOpen(false)
                                     setIsEditCategoryOpen(true);
                                 }}
                             >
@@ -450,7 +517,10 @@ const Income = () => {
                         <h3>Edit Category</h3>
                         <select
                             value={selectedCategories}
-                            onChange={(e) => setSelectedCategories(e.target.value)}
+                            onChange={(e) => {
+                                setSelectedCategories(e.target.value);
+                                setSelectedCategoryId(selectedCategories.id_category);
+                            }}
                         >
                             {categories.map((category) => (
                                 <option key={category.id_category} value={category.id_category}>{category.category_name}</option>
@@ -458,14 +528,14 @@ const Income = () => {
                         </select>
                         <input
                             type="text"
-                            value={editDescription}
-                            onChange={(e) => setEditDescription(e.target.value)}
+                            value={editCategory}
+                            onChange={(e) => setEditCategory(e.target.value)}
                             placeholder="New name"
                         />
                         <button
                             className='edited-button'
                             onClick={() => {
-                                handleEditIncome(selectedTransactionId)
+                                
                                 setIsEditCategoryOpen(false);
                             }}
                         >
