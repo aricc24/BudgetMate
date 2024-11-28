@@ -10,6 +10,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.urls import reverse
+from django.shortcuts import redirect
 
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -167,7 +168,7 @@ def register_user(request):
         return Response({"error": f"Internal server error: {str(e)}"}, status=500)
 
     
-
+"""
 @api_view(['GET'])
 def verify_email(request):
     token = request.GET.get('token')
@@ -185,3 +186,9 @@ def verify_email(request):
     except Exception as e:
         return Response({"error": f"Invalid token. {str(e)}"}, status=400)
 
+"""
+
+@api_view(['GET'])
+def verify_email(request):
+    token = request.GET.get('token')
+    return redirect('http://127.0.0.1:3000/login')  #Frontend!!!

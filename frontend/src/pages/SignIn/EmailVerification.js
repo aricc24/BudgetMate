@@ -1,40 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function EmailVerification() {
-    const [message, setMessage] = useState('');
-    const location = useLocation();  
+    const navigate = useNavigate(); 
 
     useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const token = params.get('token');
-        if (token) {
-            verifyEmail(token);
-        }
-    }, [location]);
-
-    const verifyEmail = async (token) => {
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/verify-email/?token=${token}`, {
-                method: 'GET',
-            });
-
-            if (response.ok) {
-                setMessage('Email verified successfully!');
-            } else {
-                setMessage('Invalid verification link.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            setMessage('Error verifying email.');
-        }
-    };
+        navigate('/login');
+    }, [navigate]);
 
     return (
         <div className="verification-container">
-            <h2>{message}</h2>
+            <h2>Redirecting to login...</h2>
         </div>
     );
 }
 
 export default EmailVerification;
+
+/*agregar la verificación como se debe , esto se encuentra en feature/frontend-email_PDFs*/
