@@ -23,6 +23,7 @@ const Income = () => {
     const [editAmount, setEditAmount] = useState('');
     const [editDescription, setEditDescription] = useState('');
     const [isEditOpen, setisEditOpen] = useState(false);
+    const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -414,7 +415,16 @@ const Income = () => {
                             +
                         </button>
                         <div className="dialog-buttons">
+                            <button 
+                                onClick={() => {
+                                    setIsCategoryDialogOpen(false);
+                                    setIsEditCategoryOpen(true);
+                                }}
+                            >
+                                Edit category
+                            </button>
                             <button onClick={() => setIsCategoryDialogOpen(false)}>Done</button>
+                            <button onClick={() => setIsCategoryDialogOpen(false)}>Cancel</button>
                         </div>
                     </dialog>
                 )}
@@ -432,6 +442,40 @@ const Income = () => {
                             <button onClick={handleAddCategory}>Add</button>
                             <button onClick={() => setIsNewCategoryDialogOpen(false)}>Cancel</button>
                         </div>
+                    </dialog>
+                )}
+
+                {isEditCategoryOpen && (
+                    <dialog className='' open>
+                        <h3>Edit Category</h3>
+                        <select
+                            value={selectedCategories}
+                            onChange={(e) => setSelectedCategories(e.target.value)}
+                        >
+                            {categories.map((category) => (
+                                <option key={category.id_category} value={category.id_category}>{category.category_name}</option>
+                            ))}
+                        </select>
+                        <input
+                            type="text"
+                            value={editDescription}
+                            onChange={(e) => setEditDescription(e.target.value)}
+                            placeholder="New name"
+                        />
+                        <button
+                            className='edited-button'
+                            onClick={() => {
+                                handleEditIncome(selectedTransactionId)
+                                setIsEditCategoryOpen(false);
+                            }}
+                        >
+                            Accept
+                        </button>
+                        <button
+                            onClick={() => setIsEditCategoryOpen(false)}
+                        > 
+                            Cancel
+                        </button>
                     </dialog>
                 )}
             </div>
