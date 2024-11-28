@@ -4,11 +4,27 @@ from rest_framework.decorators import api_view
 from .models import User, Transaction, Category
 from rest_framework import status, generics
 from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer
+from django.db import transaction
 
 
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = ReactSerializer
+
+    def perform_create(self, serializer):
+        with transaction.atomic():
+            user = serializer.save()
+            default_categories = [
+                {"category_name": "Housing", "is_universal": True},
+                {"category_name": "Food", "is_universal": True},
+                {"category_name": "Transportation", "is_universal": True},
+            ]
+            created_categories = []
+            for category_data in default_categories:
+                category, created = Category.objects.get_or_create(**category_data)
+                created_categories.append(category)
+            user.categories.add(*created_categories)
+
 
 @api_view(['POST'])
 def login_view(request):
