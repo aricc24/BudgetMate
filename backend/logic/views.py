@@ -20,61 +20,6 @@ from django.urls import reverse
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = ReactSerializer
-<<<<<<< HEAD
-
-    def create(self, request, *args, **kwargs):
-        """
-        Override the default 'create' method to handle user creation and sending verification email.
-        """
-        email = request.data.get('email')
-        password = request.data.get('password')
-
-        if not email or not password:
-            return Response({"error": "Email and password are required."}, status=400)
-
-        try:
-            # Crear el usuario
-            user = User.objects.create(email=email, password=password)
-
-            # Generar el token de verificación
-            refresh = RefreshToken.for_user(user)
-            verification_link = request.build_absolute_uri(
-                reverse('verify_email') + f'?token={refresh.access_token}'
-            )
-
-            # Enviar el correo de verificación
-            send_mail(
-                'Verify your BudgetMate account',
-                f'Click the link to verify your account: {verification_link}',
-                settings.DEFAULT_FROM_EMAIL,
-                [email],
-                fail_silently=False,
-            )
-
-            return Response({
-                "message": "User registered successfully. Check your email for verification."
-            }, status=201)
-
-        except Exception as e:
-            print(f"Error: {str(e)}") 
-            return Response({"error": str(e)}, status=500)
-        
-
-@api_view(['GET'])
-def verify_email(request):
-    token = request.GET.get('token')
-    try:
-        user = User.objects.get(id=RefreshToken(token).payload['user_id'])
-        user.is_active = True  
-        user.save()
-        return Response({"message": "Email verified successfully."}, status=200)
-    except Exception as e:
-        return Response({"error": f"Invalid token. {str(e)}"}, status=400)
-
-
-
-=======
->>>>>>> feature/email-PDFs2.0
     # def dispatch(self, request, *args, **kwargs):
     #     print(f"Request method: {request.method}")  # Muestra el método HTTP
     #     response = super().dispatch(request, *args, **kwargs)

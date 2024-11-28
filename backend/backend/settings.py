@@ -117,15 +117,6 @@ DATABASES = {
     }
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'ariadnamich10@gmail.com'  
-EMAIL_HOST_PASSWORD = 'majos2024#24'  
-DEFAULT_FROM_EMAIL = 'BudgetMate <ariadnamich10@gmail.com>' 
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -173,24 +164,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
-<<<<<<< HEAD
-    ], 
-=======
-    ],
->>>>>>> feature/email-PDFs2.0
-
-     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
-<<<<<<< HEAD
-    
-=======
->>>>>>> feature/email-PDFs2.0
-}
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),     
-    'ROTATE_REFRESH_TOKENS': False,  
-    'BLACKLIST_AFTER_ROTATION': True,
 }

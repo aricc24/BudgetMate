@@ -37,8 +37,4 @@ function EmailVerification() {
     );
 }
 
-<<<<<<< HEAD
 export default EmailVerification;
-=======
-export default EmailVerification;
->>>>>>> feature/email-PDFs2.0

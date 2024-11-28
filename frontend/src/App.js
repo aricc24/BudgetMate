@@ -11,7 +11,6 @@ import ForgotPassword from './pages/SignIn/ForgotPassword';
 import EmailVerification from './pages/SignIn/EmailVerification'; 
 //import Navbar from './components/Navbar/Navbar';
 //import Sidebar from './components/Sidebar/Sidebar';
-import EmailVerification from './pages/SignIn/EmailVerification'; 
 
 import './App.css';
 
