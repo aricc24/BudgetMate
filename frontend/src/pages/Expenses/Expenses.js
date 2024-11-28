@@ -4,6 +4,8 @@ import Chart from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
 import Layout from '../../components/Layout/Layout.js';
 import './Expenses.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 const Expenses = () => {
     const [transactions, setTransactions] = useState([]);
@@ -16,6 +18,14 @@ const Expenses = () => {
     const [newCategory, setNewCategory] = useState('');
     const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
     const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
+    const [isOptionsOpen, setisOptionsOpen] = useState(false);
+    const [selectedTransactionId, setSelectedTransactionId] = useState(null);
+    const [editAmount, setEditAmount] = useState('');
+    const [editDescription, setEditDescription] = useState('');
+    const [isEditOpen, setisEditOpen] = useState(false);
+    const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
+    const [editCategory, setEditCategory] = useState('');
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -45,7 +55,6 @@ const Expenses = () => {
             }
         };
         const fetchCategories = async () => {
-            const authToken = localStorage.getItem('authToken');
             const userId = localStorage.getItem('userId');
             fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`)
             .then((response) => {
@@ -111,6 +120,73 @@ const Expenses = () => {
         }
     };
 
+    const handelDeleteExpense = async (transactionId) => {
+        const authToken = localStorage.getItem('authToken');
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/delete_transaction/${transactionId}/`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${authToken}` },
+            });
+    
+            if (response.ok) {
+                setTransactions((prevTransactions) =>
+                    prevTransactions.filter((transaction) => transaction.id_transaction !== transactionId)
+                );
+                alert('Transaction deleted successfully.');
+            } else {
+                alert('Fail on delete transaction.');
+            }
+        } catch (error) {
+            console.error('Error deleting transaction:', error);
+            alert('An error occurred while trying to delete the transaction.');
+        }
+    }; 
+
+    const handleEditExpense = async (transactionId) => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken || !userId) return;
+
+        const currentTransaction = transactions.find(t => t.id_transaction === transactionId);
+
+        const updateTransaction = {
+            id_user: userId,
+            mount: editAmount ? parseFloat(editAmount) : currentTransaction.mount,
+            description: editDescription || currentTransaction.description,
+            type: 1,
+            categories: selectedCategories.length > 0 ? selectedCategories : currentTransaction.categories,
+        };
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/update_transaction/${userId}/${transactionId}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify(updateTransaction)
+            });
+            if (response.ok) {
+                const savedTransaction = await response.json();
+                setTransactions(prevTransactions =>
+                    prevTransactions.map(transaction =>
+                        transaction.id_transaction === transactionId
+                            ? savedTransaction
+                            : transaction
+                    )
+                );                
+                updateChartData([...transactions, savedTransaction]);
+                setEditAmount('');
+                setEditDescription('');
+                setSelectedCategories([]);
+            } else {
+                console.error('Failed to update transaction');
+            }
+        } catch (error) {
+            console.error('Error updating transaction:', error);
+        }
+    };
+
     const handleAddCategory = async () => {
         if (!newCategory.trim()) return;
 
@@ -152,6 +228,7 @@ const Expenses = () => {
     return (
         <Layout>
             <div className="expenses-page">
+                <div className="top-left">Expenses</div>
                 <div className="filter-container">
                     <label>Show by:</label>
                     <select value={filter} onChange={(e) => setFilter(e.target.value)}>
@@ -199,23 +276,38 @@ const Expenses = () => {
                     </thead>
                     <tbody>
                         {transactions.map(transaction => {
-                            console.log(transaction);  // Esto está bien para debuguear
-                            return (  // Aquí debe ir el `return` para devolver el JSX
+                            console.log(transaction);
+                            return (
                                 <tr key={transaction.id_transaction}>
                                     <td>
-                                        {transaction.categories.map((categoryId, index) => {
-                                            const category = categories.find(c => c.id_category === categoryId);
-                                            return (
-                                                <span key={categoryId}>
-                                                    {category ? category.category_name : 'Unknown category'}
-                                                    {index < transaction.categories.length - 1 && ", "}
-                                                </span>
-                                            );
-                                        }) || "No category"}
+                                        {transaction.categories && transaction.categories.length > 0 ? (
+                                            transaction.categories.map((categoryId, index) => {
+                                                const category = categories.find((c) => c.id_category === categoryId);
+                                                return (
+                                                    <span key={categoryId}>
+                                                        {category ? category.category_name : 'Unknown category'}
+                                                        {index < transaction.categories.length - 1 && ', '}
+                                                    </span>
+                                                );
+                                            })
+                                        ) : (
+                                            <span>No category</span>
+                                        )}
                                     </td>
                                     <td>- ${transaction.mount}</td>
                                     <td>{transaction.description || "No description"}</td>
                                     <td>{transaction.date}</td>
+                                    <td>
+                                        <button
+                                            className="three-dots"
+                                            onClick={() => {
+                                                setSelectedTransactionId(transaction.id_transaction);
+                                                setisOptionsOpen(true);
+                                            }}
+                                        >
+                                            <i className="fas fa-ellipsis-v"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             );
                         })}
@@ -240,9 +332,76 @@ const Expenses = () => {
                     </div>
                 </div>
 
+                {isOptionsOpen && (
+                    <dialog className='' open>
+                        <button
+                            className='delete-button'
+                            onClick={() => {
+                                handelDeleteExpense(selectedTransactionId)
+                                setisOptionsOpen(false);
+                            }}
+                        >
+                            Delete
+                        </button>
+                        <button
+                            className='edited-button'
+                            onClick={() => {
+                                setisOptionsOpen(false);
+                                setisEditOpen(true);
+                            }}
+                        >
+                            Edit
+                        </button>
+                        <button
+                            onClick={() => setisOptionsOpen(false)}
+                        > 
+                            Cancel
+                        </button>
+                    </dialog>
+                )}
+
+                {isEditOpen && (
+                    <dialog className='' open>
+                        <input
+                        type="number"
+                        value={editAmount}
+                        onChange={(e) => setEditAmount(e.target.value)}
+                        placeholder="New amount"
+                        />
+                        <input
+                            type="text"
+                            value={editDescription}
+                            onChange={(e) => setEditDescription(e.target.value)}
+                            placeholder="New description"
+                        />
+
+                        <button
+                            className="select-category-button"
+                            onClick={() => setIsCategoryDialogOpen(true)}
+                        >
+                            Select Category
+                        </button>
+                        <button
+                            className='edited-button'
+                            onClick={() => {
+                                handleEditExpense(selectedTransactionId)
+                                setisEditOpen(false);
+                            }}
+                        >
+                            Accept
+                        </button>
+                        <button
+                            onClick={() => setisEditOpen(false)}
+                        > 
+                            Cancel
+                        </button>
+                    </dialog>
+                )}
+
                 {isCategoryDialogOpen && (
                     <dialog className="category-dialog" open>
                         <h3>Select Categories</h3>
+                        <h6>Hold ctrl to select multiple categories</h6>
                         <select
                             multiple
                             value={selectedCategories}
@@ -259,7 +418,18 @@ const Expenses = () => {
                             +
                         </button>
                         <div className="dialog-buttons">
+                            <button 
+                                onClick={() => {
+                                    const selectedCategory = categories.find(c => c.id_category === selectedCategoryId);
+                                    setEditCategory(selectedCategory ? selectedCategory.category_name : '');
+                                    setIsCategoryDialogOpen(false)
+                                    setIsEditCategoryOpen(true);
+                                }}
+                            >
+                                Edit category
+                            </button>
                             <button onClick={() => setIsCategoryDialogOpen(false)}>Done</button>
+                            <button onClick={() => setIsCategoryDialogOpen(false)}>Cancel</button>
                         </div>
                     </dialog>
                 )}
@@ -277,6 +447,43 @@ const Expenses = () => {
                             <button onClick={handleAddCategory}>Add</button>
                             <button onClick={() => setIsNewCategoryDialogOpen(false)}>Cancel</button>
                         </div>
+                    </dialog>
+                )}
+
+                {isEditCategoryOpen && (
+                    <dialog className='' open>
+                        <h3>Edit Category</h3>
+                        <select
+                            value={selectedCategories}
+                            onChange={(e) => {
+                                setSelectedCategories(e.target.value);
+                                setSelectedCategoryId(selectedCategories.id_category);
+                            }}
+                        >
+                            {categories.map((category) => (
+                                <option key={category.id_category} value={category.id_category}>{category.category_name}</option>
+                            ))}
+                        </select>
+                        <input
+                            type="text"
+                            value={editCategory}
+                            onChange={(e) => setEditCategory(e.target.value)}
+                            placeholder="New name"
+                        />
+                        <button
+                            className='edited-button'
+                            onClick={() => {
+                                
+                                setIsEditCategoryOpen(false);
+                            }}
+                        >
+                            Accept
+                        </button>
+                        <button
+                            onClick={() => setIsEditCategoryOpen(false)}
+                        > 
+                            Cancel
+                        </button>
                     </dialog>
                 )}
             </div>

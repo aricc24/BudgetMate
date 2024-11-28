@@ -320,7 +320,7 @@ const Income = () => {
                         className="select-category-button"
                         onClick={() => setIsCategoryDialogOpen(true)}
                     >
-                        Select Category
+                        Select Categories
                     </button>
 
                     <button onClick={handleAddIncome}>Add Income</button>
@@ -464,6 +464,7 @@ const Income = () => {
                 {isCategoryDialogOpen && (
                     <dialog className="category-dialog" open>
                         <h3>Select Categories</h3>
+                        <h6>Hold ctrl to select multiple categories</h6>
                         <select
                             multiple
                             value={selectedCategories}
