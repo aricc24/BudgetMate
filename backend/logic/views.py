@@ -12,11 +12,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.urls import reverse
 #from rest_framework.generics import ListAPIView
 
-from django.core.mail import send_mail
-from django.conf import settings
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.urls import reverse
-
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = ReactSerializer
