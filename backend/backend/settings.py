@@ -38,8 +38,26 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ariadnamich10@gmail.com'  
-EMAIL_HOST_PASSWORD = 'majos2024#24'  
+EMAIL_HOST_PASSWORD = 'eqaf allp zevq yhgv '  
 DEFAULT_FROM_EMAIL = 'BudgetMate <ariadnamich10@gmail.com>' 
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'ERROR',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
 
 
 INSTALLED_APPS = [

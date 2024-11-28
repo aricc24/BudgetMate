@@ -148,7 +148,6 @@ def register_user(request):
     try:
         user = User.objects.create(email=email, password=password)
         refresh = CustomRefreshToken(user)
-
         verification_link = request.build_absolute_uri(
             reverse('verify_email') + f'?token={refresh.access_token}'
         )
@@ -162,8 +161,11 @@ def register_user(request):
         )
 
         return Response({"message": "User registered successfully. Check your email for verification."}, status=201)
+
     except Exception as e:
-        return Response({"error": str(e)}, status=500)
+        print(f"Error durante el registro del usuario: {str(e)}")
+        return Response({"error": f"Internal server error: {str(e)}"}, status=500)
+
     
 
 @api_view(['GET'])
