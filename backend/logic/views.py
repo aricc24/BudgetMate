@@ -12,10 +12,15 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.urls import reverse
 #from rest_framework.generics import ListAPIView
 
+from django.core.mail import send_mail
+from django.conf import settings
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.urls import reverse
 
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = ReactSerializer
+<<<<<<< HEAD
 
     def create(self, request, *args, **kwargs):
         """
@@ -68,6 +73,8 @@ def verify_email(request):
 
 
 
+=======
+>>>>>>> feature/email-PDFs2.0
     # def dispatch(self, request, *args, **kwargs):
     #     print(f"Request method: {request.method}")  # Muestra el método HTTP
     #     response = super().dispatch(request, *args, **kwargs)
@@ -184,3 +191,58 @@ def create_or_associate_category(request):
         "category_id": category.id_category,
         "user_id": user.id_user
     }, status=status.HTTP_200_OK)
+
+
+class CustomRefreshToken(RefreshToken):
+    def __init__(self, user):
+        super().__init__()
+        self.payload['user_id'] = user.id_user
+
+@api_view(['POST'])
+def register_user(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+
+    if not email or not password:
+        return Response({"error": "Email and password are required."}, status=400)
+
+    try:
+        user = User.objects.create(email=email, password=password)
+        refresh = CustomRefreshToken(user)
+        verification_link = request.build_absolute_uri(
+            reverse('verify_email') + f'?token={refresh.access_token}'
+        )
+
+        send_mail(
+            'Verify your BudgetMate account',
+            f'Click the link to verify your account: {verification_link}',
+            settings.DEFAULT_FROM_EMAIL,
+            [email],
+            fail_silently=False,
+        )
+
+        return Response({"message": "User registered successfully. Check your email for verification."}, status=201)
+
+    except Exception as e:
+        print(f"Error durante el registro del usuario: {str(e)}")
+        return Response({"error": f"Internal server error: {str(e)}"}, status=500)
+
+    
+
+@api_view(['GET'])
+def verify_email(request):
+    token = request.GET.get('token')
+    try:
+        payload = RefreshToken(token).payload
+        user_id = payload.get('user_id')
+        if not user_id:
+            return Response({"error": "User ID not found in token."}, status=400)
+
+        user = User.objects.get(id_user=user_id)
+        user.is_active = True
+        user.save()
+
+        return Response({"message": "Email verified successfully."}, status=200)
+    except Exception as e:
+        return Response({"error": f"Invalid token. {str(e)}"}, status=400)
+

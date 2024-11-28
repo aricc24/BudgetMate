@@ -32,6 +32,34 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ariadnamich10@gmail.com'  
+EMAIL_HOST_PASSWORD = 'eqaf allp zevq yhgv '  
+DEFAULT_FROM_EMAIL = 'BudgetMate <ariadnamich10@gmail.com>' 
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'ERROR',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
+
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -145,12 +173,19 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
+<<<<<<< HEAD
     ], 
+=======
+    ],
+>>>>>>> feature/email-PDFs2.0
 
      'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
+<<<<<<< HEAD
     
+=======
+>>>>>>> feature/email-PDFs2.0
 }
 
 SIMPLE_JWT = {
