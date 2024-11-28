@@ -6,6 +6,7 @@ class User(models.Model):
     id_user = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
+    is_active = models.BooleanField(default=False) 
 
     first_name = models.CharField(max_length=50, null=True)
     last_name_father = models.CharField(max_length=50, null=True)

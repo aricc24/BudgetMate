@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function EmailVerification() {
     const [message, setMessage] = useState('');
-    const location = useLocation();  
+    const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -21,6 +22,9 @@ function EmailVerification() {
 
             if (response.ok) {
                 setMessage('Email verified successfully!');
+                setTimeout(() => {
+                    navigate('/login');
+                }, 3000);
             } else {
                 setMessage('Invalid verification link.');
             }

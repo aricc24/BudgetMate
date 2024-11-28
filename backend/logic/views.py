@@ -32,20 +32,27 @@ def login_view(request):
 
     try:
         user = User.objects.get(email=email)
-        # this if for our logs
         print(f"Email inserted: {email}, Password inserted: {password}")
         print(f"Password in database: {user.password}")
 
+        if not user.is_active:
+            return Response({"message": "Your account is not active. Please verify your email."}, 
+                            status=status.HTTP_403_FORBIDDEN)
+
         if user.password == password:
-            return Response({"message": "Logged in successfully!", "id": user.id_user, "email": user.email}, status=status.HTTP_200_OK)
+            return Response({"message": "Logged in successfully!", 
+                             "id": user.id_user, 
+                             "email": user.email}, 
+                            status=status.HTTP_200_OK)
         else:
-            return Response({"message": "Sorry, invalid data"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"message": "Sorry, invalid data"}, 
+                            status=status.HTTP_401_UNAUTHORIZED)
 
     except User.DoesNotExist:
-        # this if for our logs
         print(f"Email inserted: {email}, Password inserted: {password}")
+        return Response({"message": "Sorry, invalid data"}, 
+                        status=status.HTTP_401_UNAUTHORIZED)
 
-        return Response({"message": "Sorry, invalid data"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 @api_view(['POST'])
@@ -147,7 +154,7 @@ def register_user(request):
         return Response({"error": "Email and password are required."}, status=400)
 
     try:
-        user = User.objects.create(email=email, password=password)
+        user = User.objects.create(email=email, password=password, is_active=False),
         refresh = CustomRefreshToken(user)
         verification_link = request.build_absolute_uri(
             reverse('verify_email') + f'?token={refresh.access_token}'
