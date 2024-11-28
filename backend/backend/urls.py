@@ -30,4 +30,5 @@ urlpatterns = [
     path('api/update_transaction/<int:id_user>/<int:id_transaction>/', update_user_transaction, name="transaction-update"),
     path('api/get_categories/<int:id_user>/', get_categories_by_user, name="get-categories"),
     path('api/create_category/', create_or_associate_category, name="create-category"),
+    path('api/update_category/<int:id_user>/<int:id_category>/', update_user_category, name="category-update"),
 ]

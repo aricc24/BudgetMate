@@ -137,3 +137,22 @@ def create_or_associate_category(request):
         "category_id": category.id_category,
         "user_id": user.id_user
     }, status=status.HTTP_200_OK)
+
+@api_view(['PATCH'])
+def update_user_category(request, id_user, id_category):
+    try:
+        user = User.objects.get(id_user=id_user)
+    except User.DoesNotExist:
+        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+    try:
+        category = Category.objects.get(id_category=id_category)
+    except Category.DoesNotExist:
+        return Response({"error": "Category not found."}, status=status.HTTP_404_NOT_FOUND)
+    if category.is_universal:
+        return Response({"error": "Cannot modify global categories."}, status=status.HTTP_400_BAD_REQUEST)
+    if not user.categories.filter(id_category=category.id_category).exists():
+        return Response({"error": "Category is not associated with this user."}, status=status.HTTP_400_BAD_REQUEST)
+    if 'category_name' in request.data:
+        category.category_name = request.data['category_name']
+        category.save()
+    return Response({"message": "Category updated successfully", "category": category.category_name}, status=status.HTTP_200_OK)
