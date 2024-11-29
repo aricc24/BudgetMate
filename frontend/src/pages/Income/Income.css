@@ -19,11 +19,15 @@
 }
 
 .filter-container {
+    position: absolute;
+    left: 155px;
+    top: 260px;
     display: flex;
-    align-items: center;
+    align-items:left;
     gap: 10px;
     margin-bottom: 30px;
-    justify-content: center;
+    justify-content: left;
+
 }
 
 .filter-container label {
@@ -33,13 +37,14 @@
 
 .filter-container select {
     padding: 8px 12px;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid #ddd;
     background-color: #4a90e2;
     color: white;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    justify-content: left;
 }
 
 .filter-container select:hover {
@@ -50,32 +55,38 @@
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: right;
     max-width: 600px;
     margin-bottom: 30px;
 }
 
 .add-income-form input,
 .add-income-form select {
-    padding: 10px;
+    padding: 8px;
     border: 1px solid #ddd;
     border-radius: 8px;
     min-width: 150px;
 }
 
 .add-income-form button {
-    padding: 10px 20px;
+
+    padding: 15px;
     background-color: #4a90e2;
     color: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.3s ease;
 }
 
 .add-income-form button:hover {
+
     background-color: #357ABD;
+}
+.add-income-button {
+    position:absolute;
+    left: 1030px;
 }
 
 .content-container {
