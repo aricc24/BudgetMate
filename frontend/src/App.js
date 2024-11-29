@@ -8,6 +8,7 @@ import Income from './pages/Income/Income';
 import Expenses from './pages/Expenses/Expenses';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import ForgotPassword from './pages/SignIn/ForgotPassword';
+import Debts from './pages/Debts/Debts';
 //import Navbar from './components/Navbar/Navbar';
 //import Sidebar from './components/Sidebar/Sidebar';
 import './App.css';
@@ -25,6 +26,7 @@ function App() {
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/income" element={<Income />} />
                     <Route path="/expenses" element={<Expenses />} />
+                    <Route path="/debts" element={<Debts />} />
                 </Route>
             </Routes>
         </Router>

@@ -14,6 +14,9 @@ function SidebarHamburger() {
       <Link to="/expenses" className="sidebar-item">
         <i className="fas fa-wallet"></i> Expenses
       </Link>
+      <Link to="/debts" className="sidebar-item">
+        <i className="fas fa-file-invoice"></i> Debts
+      </Link>
       <Link to="/history" className="sidebar-item">
         <i className="fas fa-history"></i> History
       </Link>
