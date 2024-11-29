@@ -160,3 +160,9 @@ def update_user_category(request, id_user, id_category):
 class DebtsCreateView(generics.CreateAPIView):
     queryset = Debts.objects.all()
     serializer_class = DebtsSerializer
+
+@api_view(['GET'])
+def get_debts_by_user(request, id_user):
+    debts = Debts.objects.filter(id_user=id_user)
+    serializer = TransactionSerializer(debts, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

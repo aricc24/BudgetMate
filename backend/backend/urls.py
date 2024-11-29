@@ -32,4 +32,5 @@ urlpatterns = [
     path('api/create_category/', create_or_associate_category, name="create-category"),
     path('api/update_category/<int:id_user>/<int:id_category>/', update_user_category, name="category-update"),
     path('api/debts/', DebtsCreateView.as_view(), name="debts-list"),
+    path('api/get_debts/<int:id_user>/', get_debts_by_user, name="debts-info"),
 ]
