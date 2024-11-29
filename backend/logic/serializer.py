@@ -46,4 +46,4 @@ class CategorySerializer(serializers.ModelSerializer):
 class DebtsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Debts
-        fields = '_all_'
+        fields = '__all__'

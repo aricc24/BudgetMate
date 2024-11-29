@@ -75,11 +75,15 @@ class Debts(models.Model):
     interestAmount = models.FloatField(default=0)
     init_date = models.DateField()
     due_date = models.DateField()
-    paid_date = models.DateField(null=True, blank=True)
-    status = models.CharField(
-        max_length=32, 
-        choices=[('pending', 'Pending'), ('paid', 'Paid'), ('overdue', 'Overdue')], 
-        default='pending'
+    paid_date = models.DateField(null=True, blank=True)    
+    class StatusEnum(models.IntegerChoices):
+        PENDING =  0, 'Pending'
+        PAID =  1, 'Paid'
+        OVERDUE = 2, 'Overdue'
+
+    status = models.IntegerField(
+        choices=StatusEnum.choices,
+        default=StatusEnum.PENDING
     )
     class Meta:
         db_table = 'debts'

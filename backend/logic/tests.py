@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from .models import *
 from logic.serializer import TransactionSerializer
+from datetime import date
 
 class APITest(TestCase):
     def setUp(self):
@@ -22,6 +23,7 @@ class APITest(TestCase):
         self.get_transactions_url = reverse('transactions-info', kwargs={'id_user': self.user.id_user})
         self.category = Category.objects.create(category_name="Example Category", is_universal=False)
         self.user.categories.add(self.category)
+        self.debt_url = reverse('debts-list')
 
 
     def test_login(self):
@@ -154,3 +156,21 @@ class APITest(TestCase):
         response = self.client.patch(update_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["error"], "Category is not associated with this user.")
+
+    def test_create_debt(self):
+        data = {
+            "id_user": self.user.id_user,
+            "mount": 10.0,
+            "description": "School",
+            "lender": "Carlos",
+            "hasInterest": False,
+            "interestAmount": 0.0,
+            "init_date": str(date.today()),
+            "due_date": str(date(2025, 12, 31)),
+            "status": 0
+        }
+        response = self.client.post(self.debt_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["mount"], 10.0)
+        self.assertEqual(response.data["lender"], "Carlos")
+        self.assertEqual(response.data["status"], 0)
