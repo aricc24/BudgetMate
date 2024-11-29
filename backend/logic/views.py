@@ -6,6 +6,12 @@ from rest_framework import status, generics
 from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer
 #from rest_framework.generics import ListAPIView
 
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.core.mail import EmailMessage
+import io
+
 
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -127,3 +133,59 @@ def create_or_associate_category(request):
         "category_id": category.id_category,
         "user_id": user.id_user
     }, status=status.HTTP_200_OK)
+
+
+# views.py
+from django.shortcuts import render
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.http import HttpResponse
+
+def generate_pdf(request, id_user):
+    try:
+        print(f"Generating PDF for user {id_user}")
+        template = get_template('logic/pdf_template.html')
+        
+        context = {'id_user': id_user}  
+        html = template.render(context)
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="user_{id_user}_report.pdf"'
+        
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        
+        if pisa_status.err:
+            print(f"Error generating PDF: {pisa_status.err}")
+            return HttpResponse('We had some errors generating the PDF.')
+        
+        print("PDF generated successfully")
+        return response
+    except Exception as e:
+        print(f"Error in generate_pdf view: {str(e)}")
+        return HttpResponse(f'Error: {str(e)}')
+
+
+@api_view(['GET'])
+def email_pdf(request, id_user):
+    transactions = Transaction.objects.filter(id_user=id_user)
+    categories = Category.objects.filter(users__id_user=id_user)
+    
+    template = get_template('pdf_template.html')
+    context = {
+        'transactions': transactions,
+        'categories': categories,
+    }
+    html = template.render(context)
+    
+    pdf_file = io.BytesIO()
+    pisa.CreatePDF(html, dest=pdf_file)
+    pdf_file.seek(0)
+
+    email = EmailMessage(
+        'Your Financial Report',
+        'Please find your financial report attached.',
+        'your-email@example.com',
+        ['user@example.com'],
+    )
+    email.attach(f'report_{id_user}.pdf', pdf_file.read(), 'application/pdf')
+    email.send()
+    return Response({"message": "PDF sent successfully!"}, status=200)
