@@ -12,6 +12,11 @@ from xhtml2pdf import pisa
 from django.core.mail import EmailMessage
 import io
 
+from django.shortcuts import render
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.http import HttpResponse
+
 
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -135,11 +140,6 @@ def create_or_associate_category(request):
     }, status=status.HTTP_200_OK)
 
 
-# views.py
-from django.shortcuts import render
-from django.template.loader import get_template
-from xhtml2pdf import pisa
-from django.http import HttpResponse
 
 def generate_pdf(request, id_user):
     try:
