@@ -293,7 +293,7 @@ const Income = () => {
         <Layout>
             <div className="income-page">
                 <div className="top-left">Incomes</div>
-                <div className="filter-container">
+                {/* <div className="filter-container">
                     <label>Show by:</label>
                     <select value={filter} onChange={(e) => setFilter(e.target.value)}>
                         <option value="daily">Daily</option>
@@ -301,7 +301,7 @@ const Income = () => {
                         <option value="monthly">Monthly</option>
                         <option value="yearly">Yearly</option>
                     </select>
-                </div>
+                </div> */}
 
                 <div className="add-income-form">
                     <input

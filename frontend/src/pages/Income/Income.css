@@ -20,8 +20,8 @@
 
 .filter-container {
     position: absolute;
-    left: 155px;
-    top: 260px;
+    left: 900px;
+    top: 70px;
     display: flex;
     align-items:left;
     gap: 10px;
