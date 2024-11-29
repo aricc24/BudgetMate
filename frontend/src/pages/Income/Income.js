@@ -226,75 +226,6 @@ const Income = () => {
         setSelectedCategories(selectedOptions);
     };
 
-<<<<<<< HEAD
-    const handleEditCategory = async (categoryId) => {
-        const authToken = localStorage.getItem('authToken');
-        const userId = localStorage.getItem('userId');
-        if (!authToken || !userId) return;
-    
-        const currentCategory = categories.find(t => t.id_category === categoryId);
-    
-        const updateCategory = {
-            category_name: editCategory || currentCategory.category_name,
-        };
-    
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/update_category/${userId}/${categoryId}/`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`
-                },
-                body: JSON.stringify(updateCategory)
-            });
-    
-            if (response.ok) {
-                const updatedCategory = await response.json();
-                const transactionsToUpdate = transactions.filter(t =>
-                    t.categories.includes(categoryId) && t.id_user === userId
-                );
-                const updatedTransactions = transactions.map(transaction => {
-                    if (transactionsToUpdate.some(t => t.id_transaction === transaction.id_transaction)) {
-                        return {
-                            ...transaction,
-                            categories: transaction.categories.map(c =>
-                                c === categoryId ? updatedCategory.category_name : c
-                            ),
-                        };
-                    }
-                    return transaction;
-                });
-                setTransactions(updatedTransactions);
-                for (let transaction of transactionsToUpdate) {
-                    const updateTransaction = {
-                        ...transaction,
-                        categories: transaction.categories.map(c =>
-                            c === categoryId ? updatedCategory.category_name : c
-                        ),
-                    };
-                    await fetch(`http://127.0.0.1:8000/api/update_transaction/${userId}/${transaction.id_transaction}/`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${authToken}`
-                        },
-                        body: JSON.stringify(updateTransaction)
-                    });
-                }
-            } else {
-                console.error('Failed to update category');
-            }
-        } catch (error) {
-            console.error('Error updating category:', error);
-        }
-    };
-    
-
-    return (
-        <Layout>
-            <div className="income-page">
-                <div className="top-left">Incomes</div>
-=======
     const handleDownloadPDF = async () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
@@ -342,7 +273,6 @@ const Income = () => {
             <button onClick={handleDownloadPDF}>Generate PDF</button>
             <button onClick={handleEmailPDF}>Send PDF to Email</button>
 
->>>>>>> feature/PDFs+sendEmail
                 <div className="filter-container">
                     <label>Show by:</label>
                     <select value={filter} onChange={(e) => setFilter(e.target.value)}>
@@ -753,9 +683,4 @@ const PieChart = ({ data, categories}) => {
 };
 
 
-<<<<<<< HEAD
 export default Income;
-=======
-
-export default Income;
->>>>>>> feature/PDFs+sendEmail

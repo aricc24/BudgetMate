@@ -149,7 +149,6 @@ def create_or_associate_category(request):
         "user_id": user.id_user
     }, status=status.HTTP_200_OK)
 
-<<<<<<< HEAD
 @api_view(['PATCH'])
 def update_user_category(request, id_user, id_category):
     try:
@@ -168,7 +167,7 @@ def update_user_category(request, id_user, id_category):
         category.category_name = request.data['category_name']
         category.save()
     return Response({"message": "Category updated successfully", "category": category.category_name}, status=status.HTTP_200_OK)
-=======
+
 
 
 def generate_pdf(request, id_user):
@@ -219,4 +218,3 @@ def email_pdf(request, id_user):
     email.attach(f'report_{id_user}.pdf', pdf_file.read(), 'application/pdf')
     email.send()
     return Response({"message": "PDF sent successfully!"}, status=200)
->>>>>>> feature/PDFs+sendEmail
