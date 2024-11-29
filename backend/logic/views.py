@@ -127,3 +127,21 @@ def create_or_associate_category(request):
         "category_id": category.id_category,
         "user_id": user.id_user
     }, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def filter_transactions(request, id_user):
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    categories = request.GET.getlist('categories')
+
+    transactions = Transaction.objects.filter(id_user=id_user)
+
+    if start_date:
+        transactions = transactions.filter(date__gte=parse_date(start_date))
+    if end_date:
+        transactions = transactions.filter(date__lte=parse_date(end_date))
+    if categories:
+        transactions = transactions.filter(categories__in=categories).distinct()
+
+    serializer = TransactionSerializer(transactions, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
