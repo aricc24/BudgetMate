@@ -120,6 +120,8 @@ def filter_transactions(request, id_user):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
     categories = request.GET.getlist('categories')
+    min_amount = request.GET.get('min_amount')
+    max_amount = request.GET.get('max_amount')
 
     transactions = Transaction.objects.filter(id_user=id_user, type=Transaction.TransEnum.EXPENSE)
 
@@ -127,6 +129,10 @@ def filter_transactions(request, id_user):
         transactions = transactions.filter(date__gte=parse_date(start_date))
     if end_date:
         transactions = transactions.filter(date__lte=parse_date(end_date))
+    if min_amount:
+        transactions = transactions.filter(mount__gte=float(min_amount))
+    if max_amount:
+        transactions = transactions.filter(mount__lte=float(max_amount))
     if categories:
         transactions = transactions.filter(categories__in=categories).distinct()
 

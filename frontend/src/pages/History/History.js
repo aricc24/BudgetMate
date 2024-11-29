@@ -8,6 +8,8 @@ const History = () => {
     const [categories, setCategories] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [minAmount, setMinAmount] = useState('');
+    const [maxAmount, setMaxAmount] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
     const navigate = useNavigate();
 
@@ -67,9 +69,17 @@ const History = () => {
                 return;
             }
         }
+        if (minAmount && maxAmount) {
+            if (parseFloat(minAmount) > parseFloat(maxAmount)) {
+                alert("La fecha de inicio no puede ser posterior a la fecha de fin.");
+                return;
+            }
+        }
         const params = new URLSearchParams();
         if (startDate) params.append('start_date', startDate);
         if (endDate) params.append('end_date', endDate);
+        if (minAmount) params.append('min_amount', minAmount);
+        if (maxAmount) params.append('max_amount', maxAmount);
         if (selectedCategories.length > 0) {
             selectedCategories.forEach(category => params.append('categories', category));
         }
@@ -117,7 +127,18 @@ const History = () => {
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
                     />
-
+                    <input
+                        type="number"
+                        value={minAmount}
+                        onChange={(e) => setMinAmount(e.target.value)}
+                        placeholder="Monto mínimo"
+                    />
+                    <input
+                        type="number"
+                        value={maxAmount}
+                        onChange={(e) => setMaxAmount(e.target.value)}
+                        placeholder="Monto máximo"
+                    />
                     <button
                         className="select-category-button"
                         onClick={() => setIsCategoryDialogOpen(true)}
