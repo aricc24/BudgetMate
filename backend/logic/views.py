@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from .models import User, Transaction, Category
 from rest_framework import status, generics
+from django.utils.dateparse import parse_date
 from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer
 #from rest_framework.generics import ListAPIView
 
@@ -10,13 +11,6 @@ from .serializer import ReactSerializer, TransactionSerializer, CategorySerializ
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = ReactSerializer
-
-    # def dispatch(self, request, *args, **kwargs):
-    #     print(f"Request method: {request.method}")  # Muestra el método HTTP
-    #     response = super().dispatch(request, *args, **kwargs)
-    #     print(f"Response status: {response.status_code}")  # Muestra el código de estado de la respuesta
-    #     print(f"Response data: {response.data}")  # Muestra los datos de la respuesta
-    #     return response
 
 @api_view(['POST'])
 def login_view(request):
@@ -64,13 +58,6 @@ class UserUpdateView(generics.RetrieveUpdateAPIView):
 class TransactionCreateView(generics.CreateAPIView):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
-
-    # def dispatch(self, request, *args, **kwargs):
-    #     print(f"Request method: {request.method}")  # Muestra el método HTTP (POST)
-    #     response = super().dispatch(request, *args, **kwargs)
-    #     print(f"Response status: {response.status_code}")  # Muestra el código de estado de la respuesta (400, 201, etc.)
-    #     print(f"Response data: {response.data}")  # Muestra los datos de la respuesta (cuerpo)
-    #     return response
 
 @api_view(['GET'])
 def get_transactions_by_user(request, id_user):
@@ -134,7 +121,7 @@ def filter_transactions(request, id_user):
     end_date = request.GET.get('end_date')
     categories = request.GET.getlist('categories')
 
-    transactions = Transaction.objects.filter(id_user=id_user)
+    transactions = Transaction.objects.filter(id_user=id_user, type=Transaction.TransEnum.EXPENSE)
 
     if start_date:
         transactions = transactions.filter(date__gte=parse_date(start_date))
