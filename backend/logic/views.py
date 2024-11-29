@@ -1,9 +1,9 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-from .models import User, Transaction, Category
+from .models import User, Transaction, Category, Debts
 from rest_framework import status, generics
-from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer
+from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer, DebtsSerializer
 from django.db import transaction
 
 
@@ -156,3 +156,7 @@ def update_user_category(request, id_user, id_category):
         category.category_name = request.data['category_name']
         category.save()
     return Response({"message": "Category updated successfully", "category": category.category_name}, status=status.HTTP_200_OK)
+    
+class DebtsCreateView(generics.CreateAPIView):
+    queryset = Debts.objects.all()
+    serializer_class = DebtsSerializer
