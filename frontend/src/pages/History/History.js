@@ -115,13 +115,14 @@ const History = () => {
             <div className="expenses-page">
 
                 <div className="add-expense-form">
-
+                    <label htmlFor="start-date">Start Date</label>
                     <input
                         type="date"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                     />
 
+                    <label htmlFor="end-date">End Date</label>
                     <input
                         type="date"
                         value={endDate}
