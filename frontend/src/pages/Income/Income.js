@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import Layout from '../../components/Layout/Layout.js';
 import './Income.css';
 
@@ -12,6 +14,7 @@ const Income = () => {
     const [filter, setFilter] = useState('monthly');
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [newCategory, setNewCategory] = useState('');
     const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
@@ -84,7 +87,7 @@ const Income = () => {
             description: description,
             type: 0,
             categories: selectedCategories,
-            date: new Date().toISOString(),
+            date: selectedDate.toISOString(),
         };
 
         try {
@@ -104,6 +107,7 @@ const Income = () => {
                 setAmount('');
                 setDescription('');
                 setSelectedCategories([]);
+                setSelectedDate(new Date());
             } else {
                 console.error('Failed to add transaction');
             }
@@ -175,6 +179,13 @@ const Income = () => {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Description"
+                    />
+
+                    <DatePicker
+                        selected={selectedDate}
+                        onChange={date => setSelectedDate(date)}
+                        dateFormat="yyyy-MM-dd"
+                        className="datepicker"
                     />
 
                     <button
@@ -331,10 +342,9 @@ const LineChart = ({ data }) => {
                     x: {
                         type: 'time',
                         time: {
-                            unit: 'minute',
-                            displayFormats: {
-                                minute: 'MMM d, h:mm a',
-                            },
+                            unit: 'day',
+                            stepSize: 1,
+
                         },
                         title: {
                             display: true,
