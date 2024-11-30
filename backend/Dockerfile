@@ -4,15 +4,21 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     libmariadb-dev \
     gcc \
+    libpango1.0-0 \
+    libcairo2 \
+    libgdk-pixbuf2.0-0 \
+    libglib2.0-0 \
+    libxml2 \
+    libxslt1.1 \
+    python3-cffi \
     && rm -rf /var/lib/apt/lists/*
-    
+
 RUN mkdir /app
 WORKDIR /app
 ADD . /app/
 RUN pip install --upgrade pip
 RUN pip install mysqlclient
 RUN pip install -r requirements.txt
-COPY . /app/
 COPY wait-for-it.sh /app/wait-for-it.sh
 RUN chmod +x /app/wait-for-it.sh
 EXPOSE 8000

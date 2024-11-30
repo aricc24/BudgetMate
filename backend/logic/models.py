@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 
@@ -53,7 +54,7 @@ class Transaction(models.Model):
         default=TransEnum.INCOME
     )
 
-    date = models.DateField(auto_now_add=True)
+    date = models.DateTimeField(default=timezone.now)
     categories = models.ManyToManyField('Category', related_name='transactions')
     class Meta:
         db_table = 'transactions'

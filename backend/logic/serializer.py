@@ -20,6 +20,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         queryset=Category.objects.all(),
         required=False
     )
+    date = serializers.DateTimeField(required=False)
     class Meta:
         model = Transaction
         fields = '__all__'

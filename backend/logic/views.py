@@ -3,8 +3,19 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from .models import User, Transaction, Category, Debts
 from rest_framework import status, generics
+from django.utils.dateparse import parse_date
+from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer
 from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer, DebtsSerializer
 from django.db import transaction
+
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.shortcuts import render
+from io import BytesIO
+from .models import User, Transaction
+import matplotlib.pyplot as plt
+import base64
 
 
 class ReactView(generics.ListCreateAPIView):
@@ -156,6 +167,69 @@ def update_user_category(request, id_user, id_category):
         category.category_name = request.data['category_name']
         category.save()
     return Response({"message": "Category updated successfully", "category": category.category_name}, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def filter_transactions(request, id_user):
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    categories = request.GET.getlist('categories')
+    min_amount = request.GET.get('min_amount')
+    max_amount = request.GET.get('max_amount')
+
+    transactions = Transaction.objects.filter(id_user=id_user, type=Transaction.TransEnum.EXPENSE)
+
+    if start_date:
+        transactions = transactions.filter(date__gte=parse_date(start_date))
+    if end_date:
+        transactions = transactions.filter(date__lte=parse_date(end_date))
+    if min_amount:
+        transactions = transactions.filter(mount__gte=float(min_amount))
+    if max_amount:
+        transactions = transactions.filter(mount__lte=float(max_amount))
+    if categories:
+        transactions = transactions.filter(categories__in=categories).distinct()
+
+    serializer = TransactionSerializer(transactions, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+def generate_pdf(request, id_user):
+   user = User.objects.get(id_user=id_user)
+   transactions = Transaction.objects.filter(id_user=user)
+
+
+   fig, ax = plt.subplots()
+   ax.plot([1, 2, 3], [1, 4, 9]) 
+   line_chart_image = BytesIO()
+   fig.savefig(line_chart_image, format='png')
+   line_chart_image.seek(0)
+   chart_base64 = base64.b64encode(line_chart_image.read()).decode('utf-8')
+
+
+   fig, ax = plt.subplots()
+   ax.pie([10, 20, 30], labels=["A", "B", "C"], autopct='%1.1f%%') 
+   pie_chart_image = BytesIO()
+   fig.savefig(pie_chart_image, format='png')
+   pie_chart_image.seek(0)
+   pie_chart_base64 = base64.b64encode(pie_chart_image.read()).decode('utf-8')
+
+
+   context = {
+       'transactions': transactions,
+       'chart_base64': chart_base64,
+       'pie_chart_base64': pie_chart_base64,
+   }
+
+
+   response = HttpResponse(content_type='application/pdf')
+   response['Content-Disposition'] = f'attachment; filename="report_{id_user}.pdf"'
+   from weasyprint import HTML
+   html = render(request, 'pdf_template.html', context)
+   pdf = HTML(string=html.content.decode('utf-8')).write_pdf()
+
+
+   response.write(pdf)
+   return response
     
 class DebtsCreateView(generics.CreateAPIView):
     queryset = Debts.objects.all()

@@ -1,31 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import ProfileIcon from '../../components/ProfileIcon/ProfileIcon';
 import { useNavigate } from 'react-router-dom';
-import SidebarHamburger from '../../components/SidebarHamburger/SidebarHamburger';
-import Layout from '../../components/Layout/Layout.js';
 import Chart from 'chart.js/auto';
+import Layout from '../../components/Layout/Layout.js';
 import './Home.css';
 
-export const Home = () => {
+const Home = () => {
     const navigate = useNavigate();
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [userEmail, setUserEmail] = useState('Usuario');
-    const [showWelcomeMessage, setShowWelcomeMessage] = useState(true); 
     const [chartData, setChartData] = useState(null);
+    const [filter, setFilter] = useState('all');
 
     useEffect(() => {
-        const storedUserEmail = localStorage.getItem('userEmail') || 'Usuario';
-        setUserEmail(storedUserEmail);
-
-        const timer = setTimeout(() => {
-            setShowWelcomeMessage(false);
-        }, 4000);
-
-        return () => clearTimeout(timer);
-    }, []);
-
-    useEffect(() => {
-        const fetchFinancialData = async () => {
+        const fetchTransactions = async () => {
             const authToken = localStorage.getItem('authToken');
             const userId = localStorage.getItem('userId');
             if (!authToken || !userId) {
@@ -34,67 +19,64 @@ export const Home = () => {
             }
 
             try {
-                const incomeResponse = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}`, {
+                const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}/`, {
                     headers: { 'Authorization': `Bearer ${authToken}` },
                 });
-                const data = await incomeResponse.json();
-                
-                const incomeData = data.filter(t => t.type === 0).map(t => ({ date: t.date, amount: t.mount }));
-                const expenseData = data.filter(t => t.type === 1).map(t => ({ date: t.date, amount: t.mount }));
 
-                setChartData({
-                    income: incomeData,
-                    expenses: expenseData,
-                });
+                if (response.ok) {
+                    const data = await response.json();
+                    const filteredData = applyTimeFilter(data, filter);
+                    const incomeData = data.filter(t => t.type === 0).map(t => ({ date: t.date, amount: t.mount }));
+                    const expenseData = data.filter(t => t.type === 1).map(t => ({ date: t.date, amount: t.mount }));
+                    setChartData({ income: incomeData, expenses: expenseData });
+                } else {
+                    console.error('Failed to fetch transactions');
+                }
             } catch (error) {
-                console.error('Error fetching financial data:', error);
+                console.error('Error fetching transactions:', error);
             }
         };
 
-        fetchFinancialData();
-    }, [navigate]);
-
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
-    };
-
-    const logout = () => {
-        localStorage.removeItem('authToken');
-        navigate('/login');
-    };
+        fetchTransactions();
+    }, [navigate, filter]);
 
     return (
-      <Layout>
-        <div className="home">
-            <nav className="home-navbar">
-                <button className="menu-icon" onClick={toggleSidebar}>
-                    <i className="fas fa-bars"></i>
-                </button>
-                <ProfileIcon logout={logout} />
-            </nav>
-
-            {isSidebarOpen && <SidebarHamburger />}
-
-            {showWelcomeMessage && (
-                <div className="welcome-banner">
-                    Welcome, {userEmail}!
+        <Layout>
+            <div className="home">
+                <h2>Financial Overview</h2>
+                 <div className="filter-container">
+                    <label>Show data by: </label>
+                    <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+                        <option value="all">All</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
                 </div>
-            )}
-
-            <div className="content">
-                <div className="summary-card">
-                    <h3>Financial Summary</h3>
-                </div>
-                <div className="chart-block">
-                    {chartData && <FinancialChart data={chartData} />}
+                <div className="charts-container">
+                    <div className="chart-block">
+                        <h4>Combined Line Chart</h4>
+                        {chartData && <CombinedChart data={chartData} />}
+                    </div>
+                    <div className="chart-block">
+                        <h4>Combined Pie Chart</h4>
+                        {chartData && (
+                            <CombinedPieChart
+                                data={{
+                                    income: chartData.income,
+                                    expenses: chartData.expenses,
+                                }}
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
-      </Layout>
+        </Layout>
     );
 };
 
-const FinancialChart = ({ data }) => {
+const CombinedChart = ({ data }) => {
     const chartRef = React.useRef(null);
     const chartInstance = React.useRef(null);
 
@@ -102,21 +84,30 @@ const FinancialChart = ({ data }) => {
         if (chartInstance.current) {
             chartInstance.current.destroy();
         }
+
+        const sortedIncome = data.income
+            .map(item => ({ date: new Date(item.date), amount: item.amount }))
+            .sort((a, b) => a.date - b.date);
+
+        const sortedExpenses = data.expenses
+            .map(item => ({ date: new Date(item.date), amount: item.amount }))
+            .sort((a, b) => a.date - b.date);
+
         chartInstance.current = new Chart(chartRef.current, {
             type: 'line',
             data: {
-                labels: data.income.map((item) => item.date),
+                labels: sortedIncome.map(d => d.date),
                 datasets: [
                     {
                         label: 'Income',
-                        data: data.income.map((item) => item.amount),
+                        data: sortedIncome.map(d => d.amount),
                         borderColor: 'green',
                         backgroundColor: 'rgba(144, 238, 144, 0.5)',
                         fill: true,
                     },
                     {
                         label: 'Expenses',
-                        data: data.expenses.map((item) => item.amount),
+                        data: sortedExpenses.map(d => d.amount),
                         borderColor: 'red',
                         backgroundColor: 'rgba(255, 99, 132, 0.5)',
                         fill: true,
@@ -124,11 +115,35 @@ const FinancialChart = ({ data }) => {
                 ],
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                responsive: false,
+                maintainAspectRatio: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `${context.dataset.label}: $${context.raw}`,
+                        },
+                    },
+                },
                 scales: {
-                    x: { display: true, title: { display: true, text: 'Date' } },
-                    y: { display: true, title: { display: true, text: 'Amount' } },
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date',
+                        },
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Amount',
+                        },
+                        ticks: {
+                            callback: (value) => `$${value}`,
+                        },
+                    },
                 },
             },
         });
@@ -140,7 +155,87 @@ const FinancialChart = ({ data }) => {
         };
     }, [data]);
 
-    return <canvas ref={chartRef}></canvas>;
+    return <canvas ref={chartRef} style={{ maxWidth: '100%', height: '400px' }}></canvas>;
+};
+
+const CombinedPieChart = ({ data }) => {
+    const chartRef = React.useRef(null);
+    const chartInstance = React.useRef(null);
+
+    useEffect(() => {
+        if (chartInstance.current) {
+            chartInstance.current.destroy();
+        }
+
+        const incomeTotal = data.income.reduce((acc, t) => acc + parseFloat(t.amount || 0), 0);
+        const expensesTotal = data.expenses.reduce((acc, t) => acc + parseFloat(t.amount || 0), 0);
+
+        if (incomeTotal === 0 && expensesTotal === 0) {
+            console.error("Both incomeTotal and expensesTotal are zero.");
+            return;
+        }
+
+        chartInstance.current = new Chart(chartRef.current, {
+            type: 'pie',
+            data: {
+                labels: ['Income', 'Expenses'],
+                datasets: [
+                    {
+                        data: [incomeTotal, expensesTotal],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(255, 99, 132, 0.5)',
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Income vs Expenses' },
+                },
+            },
+        });
+
+        return () => {
+            if (chartInstance.current) {
+                chartInstance.current.destroy();
+            }
+        };
+    }, [data]);
+
+    return <canvas ref={chartRef} style={{ maxWidth: '100%', height: '500px' }}></canvas>;
+};
+
+const applyTimeFilter = (transactions, filter) => {
+    const now = new Date();
+    return transactions.filter((transaction) => {
+        const transactionDate = new Date(transaction.date);
+        switch (filter) {
+            case 'daily':
+                return transactionDate.toDateString() === now.toDateString();
+            case 'weekly':
+                const weekAgo = new Date();
+                weekAgo.setDate(now.getDate() - 7);
+                return transactionDate >= weekAgo && transactionDate <= now;
+            case 'monthly':
+                return (
+                    transactionDate.getMonth() === now.getMonth() &&
+                    transactionDate.getFullYear() === now.getFullYear()
+                );
+            case 'yearly':
+                return transactionDate.getFullYear() === now.getFullYear();
+            default:
+                return true;
+        }
+    });
 };
 
 export default Home;

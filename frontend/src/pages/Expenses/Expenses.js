@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import Layout from '../../components/Layout/Layout.js';
 import './Expenses.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -14,6 +16,7 @@ const Expenses = () => {
     const [filter, setFilter] = useState('monthly');
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [newCategory, setNewCategory] = useState('');
     const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
@@ -93,6 +96,7 @@ const Expenses = () => {
             description: description,
             type: 1,
             categories: selectedCategories,
+            date: selectedDate.toISOString(),
         };
 
         try {
@@ -112,6 +116,7 @@ const Expenses = () => {
                 setAmount('');
                 setDescription('');
                 setSelectedCategories([]);
+                setSelectedDate(new Date());
             } else {
                 console.error('Failed to add transaction');
             }
@@ -155,6 +160,7 @@ const Expenses = () => {
             description: editDescription || currentTransaction.description,
             type: 1,
             categories: selectedCategories.length > 0 ? selectedCategories : currentTransaction.categories,
+            date: selectedDate ? selectedDate.toISOString() : currentTransaction.date,
         };
 
         try {
@@ -179,6 +185,7 @@ const Expenses = () => {
                 setEditAmount('');
                 setEditDescription('');
                 setSelectedCategories([]);
+                setSelectedDate(new Date());
             } else {
                 console.error('Failed to update transaction');
             }
@@ -225,11 +232,37 @@ const Expenses = () => {
         setSelectedCategories(selectedOptions);
     };
 
+    const handleDownloadPDF = async () => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/generate_pdf/${userId}/`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `report_${userId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } else {
+                console.error('Failed to generate PDF');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+     };
+     
+    
+
     return (
         <Layout>
             <div className="expenses-page">
                 <div className="top-left">Expenses</div>
-                <div className="filter-container">
+                {/* <div className="filter-container">
                     <label>Show by:</label>
                     <select value={filter} onChange={(e) => setFilter(e.target.value)}>
                         <option value="daily">Daily</option>
@@ -237,7 +270,11 @@ const Expenses = () => {
                         <option value="monthly">Monthly</option>
                         <option value="yearly">Yearly</option>
                     </select>
-                </div>
+                </div> */}
+
+                <button onClick={handleDownloadPDF} className="btn btn-primary">Downlad PDF</button>
+
+
 
                 <div className="add-expense-form">
                     <input
@@ -251,6 +288,13 @@ const Expenses = () => {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Description"
+                    />
+
+                    <DatePicker
+                        selected={selectedDate}
+                        onChange={date => setSelectedDate(date)}
+                        dateFormat="yyyy-MM-dd"
+                        className="datepicker"
                     />
 
                     <button
@@ -323,12 +367,7 @@ const Expenses = () => {
 
                     <div className="chart-container">
                         <h4>Pie Chart</h4>
-                        {transactions.length > 0 && (
-                            <PieChart
-                                data={transactions.map((t) => t.mount)}
-                                labels={transactions.map((t) => t.description || 'No Description')}
-                            />
-                        )}
+                         {transactions.length > 0 && <PieChart data={transactions} categories={categories} />}
                     </div>
                 </div>
 
@@ -346,6 +385,8 @@ const Expenses = () => {
                         <button
                             className='edited-button'
                             onClick={() => {
+                                const transactionToEdit = transactions.find(t => t.id_transaction === selectedTransactionId);
+                                setSelectedDate(new Date(transactionToEdit.date));
                                 setisOptionsOpen(false);
                                 setisEditOpen(true);
                             }}
@@ -373,6 +414,13 @@ const Expenses = () => {
                             value={editDescription}
                             onChange={(e) => setEditDescription(e.target.value)}
                             placeholder="New description"
+                        />
+
+                        <DatePicker
+                            selected={selectedDate}
+                            onChange={(date) => setSelectedDate(date)}
+                            dateFormat="yyyy-MM-dd"
+                            className="datepicker"
                         />
 
                         <button
@@ -500,12 +548,12 @@ const LineChart = ({ data }) => {
             chartInstance.current.destroy();
         }
 
-        const sortedData = data.sort((a, b) => new Date(a.date) - new Date(b.date));
+        const sortedData = data.sort((a, b) => a.date- b.date);
 
         chartInstance.current = new Chart(chartRef.current, {
             type: 'line',
             data: {
-                labels: sortedData.map(d => new Date(d.date).toLocaleString()),
+                labels: sortedData.map(d => d.date),
                 datasets: [
                     {
                         label: 'Expenses',
@@ -529,9 +577,8 @@ const LineChart = ({ data }) => {
                         type: 'time',
                         time: {
                             unit: 'day',
-                            displayFormats: {
-                                day: 'MMM d',
-                            },
+                            stepSize: 1,
+
                         },
                         title: {
                             display: true,
@@ -558,9 +605,12 @@ const LineChart = ({ data }) => {
         };
     }, [data]);
 
-    return <canvas ref={chartRef}></canvas>;
+    return <canvas ref={chartRef} style={{ display: "flex", maxWidth: "100%", maxHeight: "85%" }}></canvas>
+
+
+
 };
-const PieChart = ({ data, labels }) => {
+const PieChart = ({ data, categories}) => {
     const chartRef = React.useRef(null);
     const chartInstance = React.useRef(null);
 
@@ -568,22 +618,40 @@ const PieChart = ({ data, labels }) => {
         if (chartInstance.current) {
             chartInstance.current.destroy();
         }
+
+
+        const groupedData = data.reduce((acc, transaction) => {
+            const categoryId = transaction.categories?.[0];
+            const category = categories.find(c => c.id_category === categoryId)?.category_name || 'Uncategorized';
+            acc[category] = (acc[category] || 0) + transaction.mount;
+            return acc;
+        }, {});
+
+        const labels = Object.keys(groupedData);
+        const amounts = Object.values(groupedData);
+
         chartInstance.current = new Chart(chartRef.current, {
             type: 'pie',
             data: {
-                labels: labels,
+                labels,
                 datasets: [
                     {
-                        data: data,
+                        data: amounts,
                         backgroundColor: [
                             'rgba(75, 192, 192, 0.5)',
                             'rgba(255, 99, 132, 0.5)',
                             'rgba(255, 206, 86, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(255, 159, 64, 0.5)',
                         ],
                         borderColor: [
                             'rgba(75, 192, 192, 1)',
                             'rgba(255, 99, 132, 1)',
                             'rgba(255, 206, 86, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
                         ],
                         borderWidth: 1,
                     },
@@ -594,7 +662,7 @@ const PieChart = ({ data, labels }) => {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: { position: 'top' },
-                    title: { display: true, text: 'Expenses Breakdown' },
+                    title: { display: true, text: 'Income Breakdown' },
                 },
             },
         });
@@ -604,9 +672,9 @@ const PieChart = ({ data, labels }) => {
                 chartInstance.current.destroy();
             }
         };
-    }, [data, labels]);
+    }, [data]);
 
-    return <canvas ref={chartRef}></canvas>;
+    return <canvas ref={chartRef} style={{ maxWidth: '100%', maxHeight: '85%' }}></canvas>;
 };
 
 export default Expenses;
