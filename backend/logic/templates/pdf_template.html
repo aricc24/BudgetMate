@@ -1,14 +1,60 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>PDF Repsort</title>
+   <title>PDF Report</title>
+   <style>
+       body {
+           font-family: Arial, sans-serif;
+           margin: 20px;
+           color: #000;
+       }
+
+       h1 {
+           text-align: center;
+           color: #333; 
+       }
+
+       table {
+           width: 100%;
+           border-collapse: collapse;
+           margin: 20px 0;
+           font-size: 16px;
+           text-align: left;
+       }
+
+       table thead {
+           background-color: #d3d3d3; 
+           color: #000; 
+       }
+
+       table th, table td {
+           padding: 12px 15px;
+           border: 1px solid #ddd;
+       }
+
+       table tbody tr:nth-child(even) {
+           background-color: #f9f9f9; 
+       }
+
+       table tbody tr:hover {
+           background-color: #f1f1f1;
+       }
+
+       img {
+           display: block;
+           margin: 20px auto;
+           max-width: 80%;
+           height: auto;
+       }
+   </style>
 </head>
 <body>
    <h1>Financial Report</h1>
    <h2>Transactions</h2>
-   <table border="1">
+   <table>
        <thead>
            <tr>
                <th>Category</th>
@@ -20,7 +66,11 @@
        <tbody>
            {% for transaction in transactions %}
            <tr>
-               <td>{{ transaction.categories.all|join:", " }}</td>
+               <td>
+                   {% for category in transaction.categories.all %}
+                       {{ category.category_name }}{% if not forloop.last %}, {% endif %}
+                   {% endfor %}
+               </td>
                <td>{{ transaction.mount }}</td>
                <td>{{ transaction.description }}</td>
                <td>{{ transaction.date }}</td>
@@ -28,7 +78,6 @@
            {% endfor %}
        </tbody>
    </table>
-
 
    <h2>Charts</h2>
    <img src="data:image/png;base64,{{ chart_base64 }}" alt="Line Chart">
