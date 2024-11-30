@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>PDF Repsort</title>
+</head>
+<body>
+   <h1>Financial Report</h1>
+   <h2>Transactions</h2>
+   <table border="1">
+       <thead>
+           <tr>
+               <th>Category</th>
+               <th>Amount</th>
+               <th>Description</th>
+               <th>Date</th>
+           </tr>
+       </thead>
+       <tbody>
+           {% for transaction in transactions %}
+           <tr>
+               <td>{{ transaction.categories.all|join:", " }}</td>
+               <td>{{ transaction.mount }}</td>
+               <td>{{ transaction.description }}</td>
+               <td>{{ transaction.date }}</td>
+           </tr>
+           {% endfor %}
+       </tbody>
+   </table>
+
+
+   <h2>Charts</h2>
+   <img src="data:image/png;base64,{{ chart_base64 }}" alt="Line Chart">
+   <img src="data:image/png;base64,{{ pie_chart_base64 }}" alt="Pie Chart">
+</body>
+</html>
