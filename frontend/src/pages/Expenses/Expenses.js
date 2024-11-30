@@ -160,6 +160,7 @@ const Expenses = () => {
             description: editDescription || currentTransaction.description,
             type: 1,
             categories: selectedCategories.length > 0 ? selectedCategories : currentTransaction.categories,
+            date: selectedDate ? selectedDate.toISOString() : currentTransaction.date,
         };
 
         try {
@@ -184,6 +185,7 @@ const Expenses = () => {
                 setEditAmount('');
                 setEditDescription('');
                 setSelectedCategories([]);
+                setSelectedDate(new Date());
             } else {
                 console.error('Failed to update transaction');
             }
@@ -383,6 +385,8 @@ const Expenses = () => {
                         <button
                             className='edited-button'
                             onClick={() => {
+                                const transactionToEdit = transactions.find(t => t.id_transaction === selectedTransactionId);
+                                setSelectedDate(new Date(transactionToEdit.date));
                                 setisOptionsOpen(false);
                                 setisEditOpen(true);
                             }}
@@ -410,6 +414,13 @@ const Expenses = () => {
                             value={editDescription}
                             onChange={(e) => setEditDescription(e.target.value)}
                             placeholder="New description"
+                        />
+
+                        <DatePicker
+                            selected={selectedDate}
+                            onChange={(date) => setSelectedDate(date)}
+                            dateFormat="yyyy-MM-dd"
+                            className="datepicker"
                         />
 
                         <button
