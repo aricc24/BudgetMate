@@ -7,6 +7,16 @@ from django.utils.dateparse import parse_date
 from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer
 from django.db import transaction
 
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.shortcuts import render
+from django.http import HttpResponse
+from io import BytesIO
+from .models import User, Transaction
+import matplotlib.pyplot as plt
+import base64
+
 
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -181,3 +191,42 @@ def filter_transactions(request, id_user):
 
     serializer = TransactionSerializer(transactions, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+def generate_pdf(request, id_user):
+   user = User.objects.get(id_user=id_user)
+   transactions = Transaction.objects.filter(id_user=user)
+
+
+   fig, ax = plt.subplots()
+   ax.plot([1, 2, 3], [1, 4, 9]) 
+   line_chart_image = BytesIO()
+   fig.savefig(line_chart_image, format='png')
+   line_chart_image.seek(0)
+   chart_base64 = base64.b64encode(line_chart_image.read()).decode('utf-8')
+
+
+   fig, ax = plt.subplots()
+   ax.pie([10, 20, 30], labels=["A", "B", "C"], autopct='%1.1f%%') 
+   pie_chart_image = BytesIO()
+   fig.savefig(pie_chart_image, format='png')
+   pie_chart_image.seek(0)
+   pie_chart_base64 = base64.b64encode(pie_chart_image.read()).decode('utf-8')
+
+
+   context = {
+       'transactions': transactions,
+       'chart_base64': chart_base64,
+       'pie_chart_base64': pie_chart_base64,
+   }
+
+
+   response = HttpResponse(content_type='application/pdf')
+   response['Content-Disposition'] = f'attachment; filename="report_{id_user}.pdf"'
+   from weasyprint import HTML
+   html = render(request, 'pdf_template.html', context)
+   pdf = HTML(string=html.content.decode('utf-8')).write_pdf()
+
+
+   response.write(pdf)
+   return response
