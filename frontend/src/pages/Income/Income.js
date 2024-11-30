@@ -328,7 +328,7 @@ const Income = () => {
                     </select>
                 </div> */}
                 
-                <button onClick={handleDownloadPDF}>Downlad PDF</button>
+                <button onClick={handleDownloadPDF} className="btn btn-primary">Downlad PDF</button>
 
 
                 <div className="add-income-form">
