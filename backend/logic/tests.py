@@ -171,6 +171,8 @@ class APITest(TestCase):
         }
         response = self.client.post(self.debt_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["mount"], 10.0)
+        self.assertEqual(response.data["init_date"], str(date.today()))
+        self.assertEqual(response.data["due_date"], str(date(2025, 12, 31)))
         self.assertEqual(response.data["lender"], "Carlos")
         self.assertEqual(response.data["status"], 0)
+        self.assertEqual(response.data["interestAmount"], 0.0)

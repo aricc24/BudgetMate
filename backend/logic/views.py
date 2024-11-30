@@ -3,9 +3,9 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from .models import User, Transaction, Category, Debts
 from rest_framework import status, generics
+from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer, DebtsSerializer
 from django.utils.dateparse import parse_date
 from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer
-from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer, DebtsSerializer
 from django.db import transaction
 
 from django.http import HttpResponse
@@ -167,6 +167,16 @@ def update_user_category(request, id_user, id_category):
         category.category_name = request.data['category_name']
         category.save()
     return Response({"message": "Category updated successfully", "category": category.category_name}, status=status.HTTP_200_OK)
+    
+class DebtsCreateView(generics.CreateAPIView):
+    queryset = Debts.objects.all()
+    serializer_class = DebtsSerializer
+
+@api_view(['GET'])
+def get_debts_by_user(request, id_user):
+    debts = Debts.objects.filter(id_user=id_user)
+    serializer = TransactionSerializer(debts, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def filter_transactions(request, id_user):
@@ -230,13 +240,3 @@ def generate_pdf(request, id_user):
 
    response.write(pdf)
    return response
-    
-class DebtsCreateView(generics.CreateAPIView):
-    queryset = Debts.objects.all()
-    serializer_class = DebtsSerializer
-
-@api_view(['GET'])
-def get_debts_by_user(request, id_user):
-    debts = Debts.objects.filter(id_user=id_user)
-    serializer = TransactionSerializer(debts, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
