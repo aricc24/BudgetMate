@@ -230,11 +230,26 @@ def generate_pdf(request, id_user):
    expense_line_chart_image.seek(0)
    expense_line_chart_base64 = base64.b64encode(expense_line_chart_image.read()).decode('utf-8')
 
+   income_categories = income_data.values('categories__category_name').annotate(total=Sum('mount'))
+   category_names = [cat['categories__category_name'] for cat in income_categories]
+   category_totals = [cat['total'] for cat in income_categories]
+   
+   fig, ax = plt.subplots()
+   ax.pie(category_totals, labels=category_names, autopct='%1.1f%%', colors=['#66b3ff', '#ff6666'])
+   ax.set_title('Distribución de Ingresos por Categoría')
+   
+   income_pie_chart_image = BytesIO()
+   fig.savefig(income_pie_chart_image, format='png')
+   income_pie_chart_image.seek(0)
+   income_pie_chart_base64 = base64.b64encode(income_pie_chart_image.read()).decode('utf-8')
+
+
 
    context = {
        'transactions': transactions,
        'income_line_chart_base64': income_line_chart_base64,
        'expense_line_chart_base64': expense_line_chart_base64,
+       'income_pie_chart_base64': income_pie_chart_base64,
  
    }
 
