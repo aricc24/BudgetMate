@@ -205,10 +205,23 @@ def generate_pdf(request, id_user):
    income_amounts = [t.mount for t in income_data]
    expense_dates = [t.date for t in expense_data]
    expense_amounts = [t.mount for t in expense_data]
+
+   fig, ax = plt.subplots()
+   ax.plot(income_dates, income_amounts, label='Ingresos', color='green')
+   ax.set_xlabel('Fecha')
+   ax.set_ylabel('Monto')
+   ax.set_title('Ingresos a lo largo del tiempo')
+   ax.legend()
+   
+   income_line_chart_image = BytesIO()
+   fig.savefig(income_line_chart_image, format='png')
+   income_line_chart_image.seek(0)
+   income_line_chart_base64 = base64.b64encode(income_line_chart_image.read()).decode('utf-8')
    
 
    context = {
        'transactions': transactions,
+       'income_line_chart_base64': income_line_chart_base64,
  
    }
 
