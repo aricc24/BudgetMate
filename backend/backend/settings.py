@@ -122,6 +122,14 @@ USE_TZ = True
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ariadnamich10@gmail.com'  
+EMAIL_HOST_PASSWORD = 'eqaf allp zevq yhgv '  
+DEFAULT_FROM_EMAIL = 'BudgetMate <ariadnamich10@gmail.com>'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
