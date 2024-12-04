@@ -16,6 +16,7 @@ from .models import User, Transaction
 import matplotlib.pyplot as plt
 import base64
 from PIL import Image
+from django.db.models import Sum 
 
 
 class ReactView(generics.ListCreateAPIView):
@@ -196,23 +197,6 @@ def filter_transactions(request, id_user):
 def generate_pdf(request, id_user):
    user = User.objects.get(id_user=id_user)
    transactions = Transaction.objects.filter(id_user=user)
-
-
-   fig, ax = plt.subplots()
-   ax.plot([1, 2, 3], [1, 4, 9]) 
-   line_chart_image = BytesIO()
-   fig.savefig(line_chart_image, format='png')
-   line_chart_image.seek(0)
-   chart_base64 = base64.b64encode(line_chart_image.read()).decode('utf-8')
-
-
-   fig, ax = plt.subplots()
-   ax.pie([10, 20, 30], labels=["A", "B", "C"], autopct='%1.1f%%') 
-   pie_chart_image = BytesIO()
-   fig.savefig(pie_chart_image, format='png')
-   pie_chart_image.seek(0)
-   pie_chart_base64 = base64.b64encode(pie_chart_image.read()).decode('utf-8')
-
 
    context = {
        'transactions': transactions,
