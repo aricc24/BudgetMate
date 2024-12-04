@@ -198,10 +198,18 @@ def generate_pdf(request, id_user):
    user = User.objects.get(id_user=id_user)
    transactions = Transaction.objects.filter(id_user=user)
 
+   income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
+   expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
+
+   income_dates = [t.date for t in income_data]
+   income_amounts = [t.mount for t in income_data]
+   expense_dates = [t.date for t in expense_data]
+   expense_amounts = [t.mount for t in expense_data]
+   
+
    context = {
        'transactions': transactions,
-       'chart_base64': chart_base64,
-       'pie_chart_base64': pie_chart_base64,
+ 
    }
 
 
