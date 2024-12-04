@@ -20,7 +20,7 @@ from matplotlib.dates import DateFormatter, AutoDateLocator
 from weasyprint import HTML
 from matplotlib.colors import to_hex
 import random
-
+from django.core.mail import EmailMessage
 
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -292,3 +292,31 @@ def generate_pdf(request, id_user):
    response.write(pdf)
    return response
 
+def send_email(request, id_user):
+    user = User.objects.get(id_user=id_user)
+    transactions = Transaction.objects.filter(id_user=user)
+
+    context = {
+        'transactions': transactions,
+    }
+    html_content = render(request, 'pdf_template.html', context).content.decode('utf-8')
+    pdf_file = BytesIO()
+    HTML(string=html_content).write_pdf(target=pdf_file)
+    pdf_file.seek(0)
+
+    subject = "Your Financial Report"
+    message = "Hi, attached is your financial report. Thank you for using our service!"
+    email = EmailMessage(
+        subject,
+        message,
+        to=[user.email],
+        from_email='ariadnamich10@gmail.com'
+    )
+
+    email.attach(f'report_{id_user}.pdf', pdf_file.read(), 'application/pdf')
+
+    try:
+        email.send()
+        return HttpResponse("Email sent successfully!")
+    except Exception as e:
+        return HttpResponse(f"Failed to send email: {e}")
