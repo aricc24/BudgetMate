@@ -192,6 +192,7 @@ def filter_transactions(request, id_user):
     serializer = TransactionSerializer(transactions, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 def generate_pdf(request, id_user):
    user = User.objects.get(id_user=id_user)
    transactions = Transaction.objects.filter(id_user=user)
@@ -229,3 +230,4 @@ def generate_pdf(request, id_user):
 
    response.write(pdf)
    return response
+
