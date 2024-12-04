@@ -292,6 +292,8 @@ def generate_pdf(request, id_user):
    response.write(pdf)
    return response
 
+
+@api_view(['POST'])
 def send_email(request, id_user):
     user = User.objects.get(id_user=id_user)
     transactions = Transaction.objects.filter(id_user=user)

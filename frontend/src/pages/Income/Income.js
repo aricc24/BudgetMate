@@ -318,6 +318,7 @@ const Income = () => {
         }
     };
 
+
     const handleSendEmail = async () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
@@ -326,23 +327,22 @@ const Income = () => {
             const response = await fetch(`http://127.0.0.1:8000/api/send_email/${userId}/`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
                 },
+                body: JSON.stringify({}) 
             });
     
             if (response.ok) {
-                alert('Email sent successfully!');
+                console.log('Email sent successfully');
             } else {
                 console.error('Failed to send email');
-                const errorData = await response.json();
-                alert(`Error: ${errorData.detail || 'Failed to send email'}`);
             }
         } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred while sending the email.');
+            console.error('Error sending email:', error);
         }
-    };    
+    };
+
     
     return (
         <Layout>
@@ -357,10 +357,12 @@ const Income = () => {
                         <option value="yearly">Yearly</option>
                     </select>
                 </div> */}
-                
-                <button onClick={handleDownloadPDF} className="btn btn-primary">Downlad PDF</button>
-                <button onClick={handleSendEmail} className="btn btn-primary">Downlad PDF</button>
 
+                <div className="button-container">
+                <button onClick={handleDownloadPDF} className="btn btn-primary">Download PDF</button>
+                <button onClick={handleSendEmail} className="btn btn-primary">Send by Email</button>
+                </div>
+               
                 <div className="add-income-form">
                     <input
                         type="number"

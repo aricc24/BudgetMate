@@ -33,5 +33,5 @@ urlpatterns = [
     path('api/update_category/<int:id_user>/<int:id_category>/', update_user_category, name="category-update"),
     path('api/filter_transactions/<int:id_user>/', filter_transactions, name="filter-transaction"), 
     path('api/generate_pdf/<int:id_user>/', generate_pdf, name='generate_pdf'), 
-    path('send_email/<int:id_user>/', send_email, name='send_email'),
+    path('api/send_email/<int:id_user>/', send_email, name='send_email'),
 ]
