@@ -753,4 +753,9 @@ const PieChart = ({ data, categories}) => {
     return <canvas ref={chartRef} style={{ maxWidth: '100%', maxHeight: '85%' }}></canvas>;
 };
 
+const getChartImage = () => {
+    return chartRef.current.toDataURL("image/png");
+};
+
+
 export default Income;
