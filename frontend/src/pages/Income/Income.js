@@ -657,7 +657,7 @@ const LineChart = ({ data }) => {
         };
     }, [data]);
 
-    return <canvas ref={chartRef} style={{ display: "flex", maxWidth: "100%", maxHeight: "85%" }}></canvas>
+    return <canvas  id="lineChart" ref={chartRef} style={{ display: "flex", maxWidth: "100%", maxHeight: "85%" }}></canvas>
 };
 
 const PieChart = ({ data, categories}) => {
@@ -724,8 +724,10 @@ const PieChart = ({ data, categories}) => {
         };
     }, [data]);
 
-    return <canvas ref={chartRef} style={{ maxWidth: '100%', maxHeight: '85%' }}></canvas>;
+    return <canvas id="pieChart" ref={chartRef} style={{ maxWidth: '100%', maxHeight: '85%' }}></canvas>;
 };
+
+
 
 const getChartImages = () => {
     const lineChartImage = document.getElementById("lineChart").toDataURL("image/png");
