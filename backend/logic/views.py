@@ -217,11 +217,24 @@ def generate_pdf(request, id_user):
    fig.savefig(income_line_chart_image, format='png')
    income_line_chart_image.seek(0)
    income_line_chart_base64 = base64.b64encode(income_line_chart_image.read()).decode('utf-8')
+
+   fig, ax = plt.subplots()
+   ax.plot(expense_dates, expense_amounts, label='Egresos', color='red')
+   ax.set_xlabel('Fecha')
+   ax.set_ylabel('Monto')
+   ax.set_title('Egresos a lo largo del tiempo')
+   ax.legend()
    
+   expense_line_chart_image = BytesIO()
+   fig.savefig(expense_line_chart_image, format='png')
+   expense_line_chart_image.seek(0)
+   expense_line_chart_base64 = base64.b64encode(expense_line_chart_image.read()).decode('utf-8')
+
 
    context = {
        'transactions': transactions,
        'income_line_chart_base64': income_line_chart_base64,
+       'expense_line_chart_base64': expense_line_chart_base64,
  
    }
 
