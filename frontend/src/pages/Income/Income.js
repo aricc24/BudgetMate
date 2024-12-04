@@ -293,7 +293,33 @@ const Income = () => {
             console.error('Error updating category:', error);
         }
     }; 
+
+    const handleDownloadPDF = async () => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/generate_pdf/${userId}/`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `report_${userId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } else {
+                console.error('Failed to generate PDF');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+     };
+     
     
+
     return (
         <Layout>
             <div className="income-page">
@@ -657,7 +683,7 @@ const LineChart = ({ data }) => {
         };
     }, [data]);
 
-    return <canvas  id="lineChart" ref={chartRef} style={{ display: "flex", maxWidth: "100%", maxHeight: "85%" }}></canvas>
+    return <canvas ref={chartRef} style={{ display: "flex", maxWidth: "100%", maxHeight: "85%" }}></canvas>
 };
 
 const PieChart = ({ data, categories}) => {
@@ -724,50 +750,7 @@ const PieChart = ({ data, categories}) => {
         };
     }, [data]);
 
-    return <canvas id="pieChart" ref={chartRef} style={{ maxWidth: '100%', maxHeight: '85%' }}></canvas>;
-};
-
-
-
-const getChartImages = () => {
-    const lineChartImage = document.getElementById("lineChart").toDataURL("image/png");
-    const pieChartImage = document.getElementById("pieChart").toDataURL("image/png");
-    return { lineChartImage, pieChartImage };
-};
-
-const handleDownloadPDF = async () => {
-    const authToken = localStorage.getItem("authToken");
-    const userId = localStorage.getItem("userId");
-    const { lineChartImage, pieChartImage } = getChartImages();
-
-    try {
-        const response = await fetch(`http://127.0.0.1:8000/api/generate_pdf/${userId}/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${authToken}`,
-            },
-            body: JSON.stringify({
-                line_chart: lineChartImage,
-                pie_chart: pieChartImage,
-            }),
-        });
-
-        if (response.ok) {
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `report_${userId}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-        } else {
-            console.error("Failed to generate PDF");
-        }
-    } catch (error) {
-        console.error("Error:", error);
-    }
+    return <canvas ref={chartRef} style={{ maxWidth: '100%', maxHeight: '85%' }}></canvas>;
 };
 
 export default Income;
