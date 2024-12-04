@@ -21,7 +21,7 @@
            width: 100%;
            border-collapse: collapse;
            margin: 20px 0;
-           font-size: 16px;
+           font-size: 12px;
            text-align: left;
        }
 
@@ -31,7 +31,7 @@
        }
 
        table th, table td {
-           padding: 12px 15px;
+           padding: 8px 10px;
            border: 1px solid #ddd;
        }
 
@@ -58,6 +58,7 @@
        <thead>
            <tr>
                <th>Category</th>
+               <th>Type</th> 
                <th>Amount</th>
                <th>Description</th>
                <th>Date</th>
@@ -72,6 +73,7 @@
                        {{ category.category_name }}{% if not forloop.last %}, {% endif %}
                    {% endfor %}
                </td>
+               <td>{{ transaction.get_type_display }}</td>
                <td>{{ transaction.mount }}</td>
                <td>{{ transaction.description }}</td>
                <td>{{ transaction.date }}</td>

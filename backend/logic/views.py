@@ -199,8 +199,8 @@ def filter_transactions(request, id_user):
 
 def generate_pdf(request, id_user):
    user = User.objects.get(id_user=id_user)
-   transactions = Transaction.objects.filter(id_user=user)
-
+   transactions = Transaction.objects.filter(id_user=user).select_related('id_user').prefetch_related('categories')
+   
    income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
    expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
 
