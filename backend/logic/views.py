@@ -6,7 +6,6 @@ from rest_framework import status, generics
 from django.utils.dateparse import parse_date
 from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer
 from django.db import transaction
-
 from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
@@ -19,6 +18,8 @@ from PIL import Image
 from django.db.models import Sum 
 from matplotlib.dates import DateFormatter, AutoDateLocator
 from weasyprint import HTML
+from matplotlib.colors import to_hex
+import random
 
 
 class ReactView(generics.ListCreateAPIView):
@@ -214,8 +215,8 @@ def generate_pdf(request, id_user):
    ax.plot(income_dates, income_amounts, label='Ingresos', color='green', linewidth=2)
    ax.scatter(income_dates, income_amounts, color='black', zorder=5, label='Entries')
    ax.set_xlabel('Date')
-   ax.set_ylabel('Amount($)')
-   ax.set_title('Income over time')
+   ax.set_ylabel('Amount ($)')
+   ax.set_title('Income over Time')
    ax.xaxis.set_major_locator(AutoDateLocator())
    ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
    ax.tick_params(axis='x', rotation=45)
@@ -232,12 +233,12 @@ def generate_pdf(request, id_user):
    ax.plot(expense_dates, expense_amounts, label='Egresos', color='red', linewidth=2)
    ax.scatter(expense_dates, expense_amounts, color='black', zorder=5, label='Entries')
    ax.set_xlabel('Date')
-   ax.set_ylabel('Amount($)')
-   ax.set_title('Expenses over time')
+   ax.set_ylabel('Amount ($)')
+   ax.set_title('Expenses over Time')
    ax.xaxis.set_major_locator(AutoDateLocator())
    ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
    ax.tick_params(axis='x', rotation=45)
-   ax.legend() 
+   ax.legend()
    ax.grid(visible=True, linestyle='--', alpha=0.6)
    expense_line_chart_image = BytesIO()
    fig.tight_layout()
@@ -249,22 +250,23 @@ def generate_pdf(request, id_user):
    income_categories = income_data.values('categories__category_name').annotate(total=Sum('mount'))
    category_names = [cat['categories__category_name'] for cat in income_categories]
    category_totals = [cat['total'] for cat in income_categories]
+   income_colors = [to_hex((random.random(), random.random(), random.random())) for _ in category_names]
    fig, ax = plt.subplots(figsize=(8, 8))
-   ax.pie(category_totals, labels=category_names, autopct='%1.1f%%', colors=['#66b3ff', '#ff6666'])
-   ax.set_title('Income distribution by category')
+   ax.pie(category_totals, labels=category_names, autopct='%1.1f%%', colors=income_colors)
+   ax.set_title('Income Distribution by Category')
    income_pie_chart_image = BytesIO()
    fig.savefig(income_pie_chart_image, format='png')
    income_pie_chart_image.seek(0)
    income_pie_chart_base64 = base64.b64encode(income_pie_chart_image.read()).decode('utf-8')
-   
 
    #Category Graph Expenses
    expense_categories = expense_data.values('categories__category_name').annotate(total=Sum('mount'))
    category_names_expense = [cat['categories__category_name'] for cat in expense_categories]
    category_totals_expense = [cat['total'] for cat in expense_categories]
+   expense_colors = [to_hex((random.random(), random.random(), random.random())) for _ in category_names_expense]
    fig, ax = plt.subplots(figsize=(8, 8))
-   ax.pie(category_totals_expense, labels=category_names_expense, autopct='%1.1f%%', colors=['#ffcc99', '#ff6666'])
-   ax.set_title('Expenses distribution by category')
+   ax.pie(category_totals_expense, labels=category_names_expense, autopct='%1.1f%%', colors=expense_colors)
+   ax.set_title('Expenses Distribution by Category')
    expense_pie_chart_image = BytesIO()
    fig.savefig(expense_pie_chart_image, format='png')
    expense_pie_chart_image.seek(0)
