@@ -15,6 +15,7 @@ from io import BytesIO
 from .models import User, Transaction
 import matplotlib.pyplot as plt
 import base64
+from PIL import Image
 
 
 class ReactView(generics.ListCreateAPIView):
@@ -191,7 +192,7 @@ def filter_transactions(request, id_user):
     serializer = TransactionSerializer(transactions, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+"""
 def generate_pdf(request, id_user):
    user = User.objects.get(id_user=id_user)
    transactions = Transaction.objects.filter(id_user=user)
@@ -229,3 +230,33 @@ def generate_pdf(request, id_user):
 
    response.write(pdf)
    return response
+"""
+from weasyprint import HTML
+
+def generate_pdf(request, id_user):
+    if request.method == 'POST':
+        data = request.json()
+        line_chart_base64 = data.get('line_chart')
+        pie_chart_base64 = data.get('pie_chart')
+
+        # Decodificar imágenes de base64
+        line_chart_image = Image.open(BytesIO(base64.b64decode(line_chart_base64.split(',')[1])))
+        pie_chart_image = Image.open(BytesIO(base64.b64decode(pie_chart_base64.split(',')[1])))
+
+        # Usar imágenes en el contexto
+        context = {
+            "line_chart": line_chart_image,
+            "pie_chart": pie_chart_image,
+        }
+
+        # Renderizar PDF (similar al código original)
+        response = HttpResponse(content_type="application/pdf")
+        response["Content-Disposition"] = f"attachment; filename='report_{id_user}.pdf'"
+
+        html = render(request, "pdf_template.html", context)
+        pdf = HTML(string=html.content.decode("utf-8")).write_pdf()
+
+        response.write(pdf)
+        return response
+    else:
+        return HttpResponse(status=405)  # Método no permitido
