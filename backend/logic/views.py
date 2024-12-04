@@ -208,9 +208,9 @@ def generate_pdf(request, id_user):
 
    fig, ax = plt.subplots()
    ax.plot(income_dates, income_amounts, label='Ingresos', color='green')
-   ax.set_xlabel('Fecha')
-   ax.set_ylabel('Monto')
-   ax.set_title('Ingresos a lo largo del tiempo')
+   ax.set_xlabel('Date')
+   ax.set_ylabel('Amount')
+   ax.set_title('Income over time')
    ax.legend()
    
    income_line_chart_image = BytesIO()
@@ -220,9 +220,9 @@ def generate_pdf(request, id_user):
 
    fig, ax = plt.subplots()
    ax.plot(expense_dates, expense_amounts, label='Egresos', color='red')
-   ax.set_xlabel('Fecha')
-   ax.set_ylabel('Monto')
-   ax.set_title('Egresos a lo largo del tiempo')
+   ax.set_xlabel('Date')
+   ax.set_ylabel('Amount')
+   ax.set_title('Expenses over time')
    ax.legend()
    
    expense_line_chart_image = BytesIO()
@@ -236,7 +236,7 @@ def generate_pdf(request, id_user):
    
    fig, ax = plt.subplots()
    ax.pie(category_totals, labels=category_names, autopct='%1.1f%%', colors=['#66b3ff', '#ff6666'])
-   ax.set_title('Distribución de Ingresos por Categoría')
+   ax.set_title('Income distribution by category')
    
    income_pie_chart_image = BytesIO()
    fig.savefig(income_pie_chart_image, format='png')
@@ -249,7 +249,7 @@ def generate_pdf(request, id_user):
    
    fig, ax = plt.subplots()
    ax.pie(category_totals_expense, labels=category_names_expense, autopct='%1.1f%%', colors=['#ffcc99', '#ff6666'])
-   ax.set_title('Distribución de Egresos por Categoría')
+   ax.set_title('Expenses distribution by category')
    
    expense_pie_chart_image = BytesIO()
    fig.savefig(expense_pie_chart_image, format='png')
