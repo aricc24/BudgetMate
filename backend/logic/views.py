@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 import base64
 from PIL import Image
 from django.db.models import Sum 
+from matplotlib.dates import DateFormatter, AutoDateLocator
+from weasyprint import HTML
 
 
 class ReactView(generics.ListCreateAPIView):
@@ -206,51 +208,63 @@ def generate_pdf(request, id_user):
    expense_dates = [t.date for t in expense_data]
    expense_amounts = [t.mount for t in expense_data]
 
-   fig, ax = plt.subplots()
-   ax.plot(income_dates, income_amounts, label='Ingresos', color='green')
+
+   #Line Graph Incomes
+   fig, ax = plt.subplots(figsize=(10, 6))
+   ax.plot(income_dates, income_amounts, label='Ingresos', color='green', linewidth=2)
+   ax.scatter(income_dates, income_amounts, color='black', zorder=5, label='Entries')
    ax.set_xlabel('Date')
-   ax.set_ylabel('Amount')
+   ax.set_ylabel('Amount($)')
    ax.set_title('Income over time')
+   ax.xaxis.set_major_locator(AutoDateLocator())
+   ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
+   ax.tick_params(axis='x', rotation=45)
    ax.legend()
-   
+   ax.grid(visible=True, linestyle='--', alpha=0.6)
    income_line_chart_image = BytesIO()
+   fig.tight_layout()
    fig.savefig(income_line_chart_image, format='png')
    income_line_chart_image.seek(0)
    income_line_chart_base64 = base64.b64encode(income_line_chart_image.read()).decode('utf-8')
 
-   fig, ax = plt.subplots()
-   ax.plot(expense_dates, expense_amounts, label='Egresos', color='red')
+   #Line Graph Expenses
+   fig, ax = plt.subplots(figsize=(10, 6))
+   ax.plot(expense_dates, expense_amounts, label='Egresos', color='red', linewidth=2)
+   ax.scatter(expense_dates, expense_amounts, color='black', zorder=5, label='Entries')
    ax.set_xlabel('Date')
-   ax.set_ylabel('Amount')
+   ax.set_ylabel('Amount($)')
    ax.set_title('Expenses over time')
-   ax.legend()
-   
+   ax.xaxis.set_major_locator(AutoDateLocator())
+   ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
+   ax.tick_params(axis='x', rotation=45)
+   ax.legend() 
+   ax.grid(visible=True, linestyle='--', alpha=0.6)
    expense_line_chart_image = BytesIO()
+   fig.tight_layout()
    fig.savefig(expense_line_chart_image, format='png')
    expense_line_chart_image.seek(0)
    expense_line_chart_base64 = base64.b64encode(expense_line_chart_image.read()).decode('utf-8')
 
+   #Category Graph Incomes
    income_categories = income_data.values('categories__category_name').annotate(total=Sum('mount'))
    category_names = [cat['categories__category_name'] for cat in income_categories]
    category_totals = [cat['total'] for cat in income_categories]
-   
-   fig, ax = plt.subplots()
+   fig, ax = plt.subplots(figsize=(8, 8))
    ax.pie(category_totals, labels=category_names, autopct='%1.1f%%', colors=['#66b3ff', '#ff6666'])
    ax.set_title('Income distribution by category')
-   
    income_pie_chart_image = BytesIO()
    fig.savefig(income_pie_chart_image, format='png')
    income_pie_chart_image.seek(0)
    income_pie_chart_base64 = base64.b64encode(income_pie_chart_image.read()).decode('utf-8')
    
+
+   #Category Graph Expenses
    expense_categories = expense_data.values('categories__category_name').annotate(total=Sum('mount'))
    category_names_expense = [cat['categories__category_name'] for cat in expense_categories]
    category_totals_expense = [cat['total'] for cat in expense_categories]
-   
-   fig, ax = plt.subplots()
+   fig, ax = plt.subplots(figsize=(8, 8))
    ax.pie(category_totals_expense, labels=category_names_expense, autopct='%1.1f%%', colors=['#ffcc99', '#ff6666'])
    ax.set_title('Expenses distribution by category')
-   
    expense_pie_chart_image = BytesIO()
    fig.savefig(expense_pie_chart_image, format='png')
    expense_pie_chart_image.seek(0)
