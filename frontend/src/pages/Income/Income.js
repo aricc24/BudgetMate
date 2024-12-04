@@ -317,9 +317,33 @@ const Income = () => {
             console.error('Error:', error);
         }
     };
-    
-    
 
+    const handleSendEmail = async () => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+    
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/send_email/${userId}/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (response.ok) {
+                alert('Email sent successfully!');
+            } else {
+                console.error('Failed to send email');
+                const errorData = await response.json();
+                alert(`Error: ${errorData.detail || 'Failed to send email'}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while sending the email.');
+        }
+    };    
+    
     return (
         <Layout>
             <div className="income-page">
@@ -335,7 +359,7 @@ const Income = () => {
                 </div> */}
                 
                 <button onClick={handleDownloadPDF} className="btn btn-primary">Downlad PDF</button>
-
+                <button onClick={handleSendEmail} className="btn btn-primary">Downlad PDF</button>
 
                 <div className="add-income-form">
                     <input
