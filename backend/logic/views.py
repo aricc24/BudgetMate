@@ -331,4 +331,3 @@ def send_email(request, id_user):
         return HttpResponse("Email sent successfully!")
     except Exception as e:
         return HttpResponse(f"Failed to send email: {e}")
-

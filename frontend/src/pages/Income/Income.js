@@ -30,6 +30,7 @@ const Income = () => {
     const [editCategory, setEditCategory] = useState('');
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -344,6 +345,19 @@ const Income = () => {
         }
     };
 
+
+    const filteredTransactions = transactions.filter(transaction => {
+        const descriptionMatch = transaction.description
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase());
+        const categoryMatch = transaction.categories.some(categoryId => {
+            const category = categories.find(c => c.id_category === categoryId);
+            return category?.category_name.toLowerCase().includes(searchTerm.toLowerCase());
+        });
+
+        return descriptionMatch || categoryMatch;
+    });
+
     
     return (
         <Layout>
@@ -358,24 +372,15 @@ const Income = () => {
                         <option value="yearly">Yearly</option>
                     </select>
                 </div> */}
-
                 <div className="button-container">
                 <button onClick={handleDownloadPDF} className="btn btn-primary">Download PDF</button>
                 <button onClick={handleSendEmail} className="btn btn-primary">Send by Email</button>
                 </div>
 
-                <div className="filter-container">
-                    <label>Show by:</label>
-                    <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-                        <option value="daily">Daily</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
-                </div>
-
+                
                
                 <div className="add-income-form">
+
                     <input
                         type="number"
                         value={amount}
@@ -408,55 +413,55 @@ const Income = () => {
 
                 <div className="content-container">
                     <div className="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Amount</th>
-                                    <th>Description</th>
-                                    <th>Date</th>
+                        
+                    <div className="search-container">
+                    <input
+                        type="text"
+                        placeholder="Search by description or category"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="mb-4 p-2 border border-gray-300 rounded"
+                    />
+                </div>
+
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredTransactions.length > 0 ? (
+                            filteredTransactions.map(transaction => (
+                                <tr key={transaction.id_transaction}>
+                                    <td>
+                                        {transaction.categories.map((categoryId, index) => {
+                                            const category = categories.find(c => c.id_category === categoryId);
+                                            return (
+                                                <span key={categoryId}>
+                                                    {category ? category.category_name : 'Unknown category'}
+                                                    {index < transaction.categories.length - 1 && ', '}
+                                                </span>
+                                            );
+                                        })}
+                                    </td>
+                                    <td>- ${transaction.mount}</td>
+                                    <td>{transaction.description || 'No description'}</td>
+                                    <td>{transaction.date}</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {transactions.map((transaction) => {
-                                    return (
-                                        <tr key={transaction.id_transaction}>
-                                            <td>
-                                                {transaction.categories && transaction.categories.length > 0 ? (
-                                                    transaction.categories.map((categoryId, index) => {
-                                                        const category = categories.find((c) => c.id_category === categoryId);
-                                                        return (
-                                                            <span key={categoryId}>
-                                                                {category ? category.category_name : 'Unknown category'}
-                                                                {index < transaction.categories.length - 1 && ', '}
-                                                            </span>
-                                                        );
-                                                    })
-                                                ) : (
-                                                    <span>No category</span>
-                                                )}
-                                            </td>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4">No results found</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
 
-                                            <td>- ${transaction.mount}</td>
-                                            <td>{transaction.description || 'No description'}</td>
-                                            <td>{transaction.date}</td>
-                                            <td>
-                                                <button
-                                                    className="three-dots"
-                                                    onClick={() => {
-                                                        setSelectedTransactionId(transaction.id_transaction);
-                                                        setisOptionsOpen(true);
-                                                    }}
-                                                >
-                                                    <i className="fas fa-ellipsis-v"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-
-                        </table>
+                
                     </div>
 
                     <div className="chart-container">
