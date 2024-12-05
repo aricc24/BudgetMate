@@ -34,4 +34,5 @@ urlpatterns = [
     path('api/filter_transactions/<int:id_user>/', filter_transactions, name="filter-transaction"), 
     path('api/generate_pdf/<int:id_user>/', generate_pdf, name='generate_pdf'), 
     path('api/send_email/<int:id_user>/', send_email, name='send_email'),
+    path('api/update_email_periodicity/<int:user_id>/', update_email_periodicity, name='update_email_periodicity'),
 ]

@@ -331,3 +331,21 @@ def send_email(request, id_user):
         return HttpResponse("Email sent successfully!")
     except Exception as e:
         return HttpResponse(f"Failed to send email: {e}")
+    
+@api_view(['POST'])
+def update_email_periodicity(request, user_id):
+    try:
+        user = User.objects.get(id_user=user_id)
+        new_periodicity = request.data.get('periodicity')
+
+        if new_periodicity not in ['daily', 'weekly', 'monthly']:
+            return Response({'error': 'Invalid periodicity value'}, status=400)
+
+        user.periodicity = new_periodicity
+        user.save()
+
+        return Response({'message': 'Periodicity updated successfully'}, status=200)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
