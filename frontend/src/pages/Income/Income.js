@@ -322,6 +322,7 @@ const Income = () => {
     const handleSendEmail = async () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
+        if (!authToken || !userId) return;
     
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/send_email/${userId}/`, {
@@ -362,6 +363,17 @@ const Income = () => {
                 <button onClick={handleDownloadPDF} className="btn btn-primary">Download PDF</button>
                 <button onClick={handleSendEmail} className="btn btn-primary">Send by Email</button>
                 </div>
+
+                <div className="filter-container">
+                    <label>Show by:</label>
+                    <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+
                
                 <div className="add-income-form">
                     <input
