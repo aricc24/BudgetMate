@@ -176,3 +176,6 @@ class APITest(TestCase):
         self.assertEqual(response.data["lender"], "Carlos")
         self.assertEqual(response.data["status"], 0)
         self.assertEqual(response.data["interestAmount"], 0.0)
+        self.assertEqual(response.data["id_debts"], 1)
+        print(response.data)
+        print(data)
