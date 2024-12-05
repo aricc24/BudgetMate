@@ -34,6 +34,18 @@ class User(models.Model):
         default=SINGLE,
         null=True
     )
+
+    PERIODICITY_CHOICES = [
+        ('daily', 'Daily'),
+        ('weekly', 'Weekly'),
+        ('monthly', 'Monthly'),
+    ]
+    periodicity = models.CharField(
+        max_length=10,
+        choices=PERIODICITY_CHOICES,
+        default='monthly'
+    )
+
     categories = models.ManyToManyField('Category', related_name='users')
     class Meta:
         db_table = 'users'
