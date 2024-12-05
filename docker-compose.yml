@@ -11,6 +11,10 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
 
   backend: 
     build: ./backend
@@ -22,6 +26,7 @@ services:
       - "8000:8000"
     depends_on: 
       - db
+      - redis
     links:
       - db
 

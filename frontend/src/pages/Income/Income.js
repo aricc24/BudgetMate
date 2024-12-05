@@ -31,6 +31,7 @@ const Income = () => {
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedPeriodicity, setSelectedPeriodicity] = useState("monthly"); 
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -358,6 +359,34 @@ const Income = () => {
         return descriptionMatch || categoryMatch;
     });
 
+
+    const handlePeriodicityChange = async (e) => {
+        const newPeriodicity = e.target.value;
+        setSelectedPeriodicity(newPeriodicity);
+
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken || !userId) return;
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/update_email_periodicity/${userId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({ periodicity: newPeriodicity })
+            });
+
+            if (response.ok) {
+                console.log('Periodicity updated successfully');
+            } else {
+                console.error('Failed to update periodicity');
+            }
+        } catch (error) {
+            console.error('Error updating periodicity:', error);
+        }
+    };
     
     return (
         <Layout>
@@ -377,7 +406,20 @@ const Income = () => {
                 <button onClick={handleSendEmail} className="btn btn-primary">Send by Email</button>
                 </div>
 
-                
+                <div className="periodicity-container">
+                    <label htmlFor="periodicity-select">Email periodicity:</label>
+                    <select
+                        id="periodicity-select"
+                        value={selectedPeriodicity}
+                        onChange={handlePeriodicityChange}
+                        className="form-select"
+                    >
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
                
                 <div className="add-income-form">
 
