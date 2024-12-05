@@ -1,9 +1,11 @@
 from celery import shared_task
 from django.utils.timezone import now, timedelta
+from django.template.loader import render_to_string 
 from django.core.mail import EmailMessage
 from weasyprint import HTML
 from io import BytesIO
-from .models import User, Transaction, Category
+from .models import User, Transaction 
+from django.db.models import Sum 
 
 @shared_task
 def send_periodic_emails():
@@ -18,8 +20,8 @@ def send_periodic_emails():
             transactions = Transaction.objects.filter(id_user=user)
             context = {
                 'transactions': transactions,
-                'balance': transactions.filter(type=0).aggregate(total=models.Sum('mount'))['total'] -
-                           transactions.filter(type=1).aggregate(total=models.Sum('mount'))['total'],
+                'balance': transactions.filter(type=0).aggregate(total=Sum('mount'))['total'] -
+                           transactions.filter(type=1).aggregate(total=Sum('mount'))['total'],
             }
 
             html_content = render_to_string('pdf_template.html', context)
@@ -27,11 +29,10 @@ def send_periodic_emails():
             HTML(string=html_content).write_pdf(target=pdf_file)
             pdf_file.seek(0)
 
-            # Send Email
             email = EmailMessage(
                 subject=f"Financial Report - {today.strftime('%B %Y')}",
                 body="Here is your periodic financial report.",
-                from_email="noreply@example.com",
+                from_email="ariadnamich10@gmail.com",
                 to=[user.email]
             )
             email.attach(f"report_{user.id_user}.pdf", pdf_file.read(), "application/pdf")
