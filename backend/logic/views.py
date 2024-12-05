@@ -197,6 +197,7 @@ def filter_transactions(request, id_user):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@api_view(['GET'])
 def generate_pdf(request, id_user):
    user = User.objects.get(id_user=id_user)
    transactions = Transaction.objects.filter(id_user=user).select_related('id_user').prefetch_related('categories')
@@ -302,6 +303,14 @@ def send_email(request, id_user):
         'transactions': transactions,
     }
     html_content = render(request, 'pdf_template.html', context).content.decode('utf-8')
+
+    with open(f'temp_html_{id_user}.html', 'w') as f:
+        f.write(html_content)
+    
+    if 'data:image/png;base64,' not in html_content:
+        return HttpResponse("Error: Las imágenes base64 no están en el HTML generado.")
+
+
     pdf_file = BytesIO()
     HTML(string=html_content).write_pdf(target=pdf_file)
     pdf_file.seek(0)

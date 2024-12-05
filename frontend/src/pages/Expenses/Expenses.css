@@ -397,3 +397,18 @@ dialog input {
     opacity: 0.7;
   }
   
+
+  .button-container {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    display: flex;
+    flex-direction: column; 
+    gap: 10px; 
+    z-index: 1000; 
+}
+
+.button-container .btn {
+    width: 150px;
+    text-align: center;
+}
