@@ -65,3 +65,27 @@ class Category(models.Model):
     is_universal = models.BooleanField(default=False)
     class Meta:
         db_table = 'categories'
+
+
+class ScheduledTransaction(models.Model):
+    id_transaction = models.AutoField(primary_key=True)
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    amount = models.FloatField()
+    description = models.CharField(max_length=128, null=True, blank=True)
+    type = models.IntegerField(
+        choices=Transaction.TransEnum.choices,
+        default=Transaction.TransEnum.INCOME
+    )
+    categories = models.ManyToManyField('Category', related_name='scheduled_transactions')
+    schedule_date = models.DateField()  
+    repeat = models.CharField(
+        max_length=10,
+        choices=[('none', 'None'), ('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')],
+        default='none'
+    )
+
+    class Meta:
+        db_table = 'scheduled_transactions'
+
+    def __str__(self):
+        return f"{self.description} ({self.type}) on {self.schedule_date}"
