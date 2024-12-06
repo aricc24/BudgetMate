@@ -1,30 +1,50 @@
 .sidebar-hamburger {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 200px;
-    background-color: #222;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    padding-top: 60px;
-  }
-  
-  .sidebar-item {
-    padding: 15px 20px;
-    color: white;
-    text-decoration: none;
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-  }
-  
-  .sidebar-item i {
-    margin-right: 10px;
-  }
-  
-  .sidebar-item:hover {
-    background-color: #444;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 200px;
+  background-color: #222;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding-top: 60px;
+  z-index: 1002;
+}
+
+.sidebar-item {
+  padding: 15px 20px;
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-item i {
+  margin-right: 10px;
+}
+
+.sidebar-item:hover {
+  background-color: #444;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white; 
+  font-size: 2rem;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  z-index: 1005;
+}
+
+.close-btn:hover {
+  color: rgba(255, 255, 255, 0.521);
+}
+
+.menu-icon {
+  font-size: 2rem;
+}

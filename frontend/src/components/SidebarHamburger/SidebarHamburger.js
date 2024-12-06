@@ -2,9 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './SidebarHamburger.css';
 
-function SidebarHamburger() {
+function SidebarHamburger({ toggleSidebarHamburger }) {
   return (
     <div className="sidebar-hamburger">
+      <button className="menu-icon close-btn" onClick={toggleSidebarHamburger}>
+        <i className="fas fa-bars"></i>
+      </button>
+
       <Link to="/home" className="sidebar-item">
         <i className="fas fa-home"></i> Home
       </Link>
@@ -22,4 +26,3 @@ function SidebarHamburger() {
 }
 
 export default SidebarHamburger;
-

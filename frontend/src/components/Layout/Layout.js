@@ -32,9 +32,11 @@ const Layout = ({ children }) => {
         <ProfileIcon logout={logout} onClick={toggleSidebar} />
       </nav>
 
-      {isSidebarHamburgerOpen && <SidebarHamburger />}
+      {isSidebarOpen && <div className={`overlay ${isSidebarOpen ? 'active' : ''}`} onClick={toggleSidebar}></div>}
+
+      {isSidebarHamburgerOpen && <SidebarHamburger toggleSidebarHamburger={toggleSidebarHamburger} />}
       {isSidebarOpen && <Sidebar toggleSidebar={toggleSidebar} logout={logout} />}
-      
+
       <div className="layout-content" style={{ paddingTop: '120px' }}>
         {children}
       </div>
