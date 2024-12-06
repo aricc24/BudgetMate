@@ -71,12 +71,12 @@ class Debts(models.Model):
     id_user = models.ForeignKey('User', on_delete=models.CASCADE)
     mount = models.FloatField()
     description = models.CharField(max_length=128, null=True, blank=True)
-    lender = models.CharField(max_length=35, unique=True)
+    lender = models.CharField(max_length=35, null=True, blank=True)
     hasInterest = models.BooleanField(default=False)
     interestAmount = models.FloatField(default=0)
-    init_date = models.DateField()
-    due_date = models.DateField()
-    paid_date = models.DateField(null=True, blank=True)    
+    init_date = models.DateTimeField(default=timezone.now)
+    due_date = models.DateTimeField(default=timezone.now)
+    paid_date = models.DateTimeField(default=timezone.now)
     class StatusEnum(models.IntegerChoices):
         PENDING =  0, 'Pending'
         PAID =  1, 'Paid'

@@ -7,7 +7,6 @@ import Layout from '../../components/Layout/Layout.js';
 import './Debts.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-
 const Debts = () => {
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
@@ -29,40 +28,8 @@ const Debts = () => {
                 return;
             }
 
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}/`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const expenseTransactions = data.filter(t => t.type === 1);
-                    
-                } else {
-                    console.error('Failed to fetch transactions');
-                }
-            } catch (error) {
-                console.error('Error fetching transactions:', error);
-            }
+            
         };
-        const fetchCategories = async () => {
-            const userId = localStorage.getItem('userId');
-            fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Error fetching user categories");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                
-            })
-            .catch((error) => {
-                console.error("Error fetching user categories:", error)
-            });
-        };
-        fetchTransactions();
-        fetchCategories();
     }, [navigate]);
 
     const handleDownloadPDF = async () => {
@@ -90,9 +57,60 @@ const Debts = () => {
      };
      
 
-    const handleAddDebt = async =>  {
+    const handleAddDebt = async () =>  {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken || !userId) return;
 
-    }
+        const newDebt = {
+            id_user: userId,
+            mount: parseFloat(amount),
+            description: description,
+            lender: lender,
+            hasInterest: hasInterest,
+            interestAmount: parseFloat(interestAmount),
+            init_date: init_Date.toISOString(),
+            due_date: due_Date.toISOString(),
+            paid_date: paid_Date.toISOString(),
+            status: (() => {
+                switch (selectedOption) {
+                    case 'Pending':
+                        return 0;
+                    case 'Paid':
+                        return 1;
+                    case 'Overdue':
+                        return 2;
+                }
+            })(),
+        };        
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/debts/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify(newDebt)
+            });
+
+            if (response.ok) {
+                const savedDebt = await response.json();
+                setAmount('');
+                setDescription('');
+                setLender('');
+                setHasInterest(false);
+                setInterestAmount('');
+                setInitDate(new Date());
+                setDueDate(new Date());
+                setPaidDate(new Date());
+            } else {
+                console.error('Failed to add debt');
+            }
+        } catch (error) {
+            console.error('Error adding debt:', error);
+        }
+    };
     
 
     return (
