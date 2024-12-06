@@ -24,6 +24,8 @@ services:
       - db
     links:
       - db
+      - redis
+      - celery
 
   
   frontend: 
@@ -39,3 +41,24 @@ services:
 
 volumes:
   mysql_data:
+
+  celery:
+    build: .
+    command: celery -A BudgetMate worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+
+  celery-beat:
+    build: .
+    command: celery -A BudgetMate beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:6.0
+    ports:
+      - "6379:6379"

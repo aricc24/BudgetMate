@@ -21,6 +21,9 @@ from weasyprint import HTML
 from matplotlib.colors import to_hex
 import random
 from django.core.mail import EmailMessage
+from rest_framework import generics
+from .models import ScheduledTransaction
+from .serializer import ScheduledTransactionSerializer
 
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -331,3 +334,13 @@ def send_email(request, id_user):
         return HttpResponse("Email sent successfully!")
     except Exception as e:
         return HttpResponse(f"Failed to send email: {e}")
+    
+
+class ScheduledTransactionListCreateView(generics.ListCreateAPIView):
+    queryset = ScheduledTransaction.objects.all()
+    serializer_class = ScheduledTransactionSerializer
+
+class ScheduledTransactionUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ScheduledTransaction.objects.all()
+    serializer_class = ScheduledTransactionSerializer
+    lookup_field = 'id_scheduled_transaction'
