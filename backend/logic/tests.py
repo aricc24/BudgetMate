@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 from .models import *
-from logic.serializer import TransactionSerializer
+from logic.serializer import TransactionSerializer, DebtsSerializer
 from datetime import date
 
 class APITest(TestCase):
@@ -24,6 +24,7 @@ class APITest(TestCase):
         self.category = Category.objects.create(category_name="Example Category", is_universal=False)
         self.user.categories.add(self.category)
         self.debt_url = reverse('debts-list')
+        self.get_debts_url = reverse ('debts-info')
 
 
     def test_login(self):
@@ -179,3 +180,34 @@ class APITest(TestCase):
         self.assertEqual(response.data["id_debts"], 1)
         print(response.data)
         print(data)
+
+    def test_get_debts_by_user(self):
+        Debt.objects.create(
+            id_user=self.user,
+            mount=5.0,
+            lender="Karen",
+            hasInterest=False,
+            interestAmount=100.0,
+            init_date=str(date.today()),
+            due_date=str(date(2025, 12, 31)),
+            description="Nails",
+            status=Debt.StatusEnum.PAID
+        )
+        Debt.objects.create(
+            id_user=self.user,
+            mount=250.0,
+            lender="Ernesto",
+            hasInterest=True,
+            interestAmount=10.0,
+            init_date=str(date.today()),
+            due_date=str(date(2025, 11, 30)),
+            description="Underwear",
+            status=Debt.StatusEnum.PENDING
+        )
+        response = self.client.get(self.get_debts_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        debts = Debt.objects.filter(id_user=self.user)
+        serializer = DebtsSerializer(debts, many=True)
+        self.assertEqual(response.data, serializer.data)
+        print(serializer.data)
+        self.assertEqual(len(response.data), 2)
