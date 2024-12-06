@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-from .models import User, Transaction, Category, Debts
+from .models import User, Transaction, Category, Debt
 from rest_framework import status, generics
 from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer, DebtsSerializer
 from django.utils.dateparse import parse_date
@@ -169,13 +169,13 @@ def update_user_category(request, id_user, id_category):
     return Response({"message": "Category updated successfully", "category": category.category_name}, status=status.HTTP_200_OK)
     
 class DebtsCreateView(generics.CreateAPIView):
-    queryset = Debts.objects.all()
+    queryset = Debt.objects.all()
     serializer_class = DebtsSerializer
 
 @api_view(['GET'])
 def get_debts_by_user(request, id_user):
-    debts = Debts.objects.filter(id_user=id_user)
-    serializer = TransactionSerializer(debts, many=True)
+    debts = Debt.objects.filter(id_user=id_user)
+    serializer = DebtsSerializer(debts, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])

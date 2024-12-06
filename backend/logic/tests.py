@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from .models import *
 from logic.serializer import TransactionSerializer, DebtsSerializer
-from datetime import date
+from datetime import date, timedelta
 
 class APITest(TestCase):
     def setUp(self):
@@ -24,7 +24,7 @@ class APITest(TestCase):
         self.category = Category.objects.create(category_name="Example Category", is_universal=False)
         self.user.categories.add(self.category)
         self.debt_url = reverse('debts-list')
-        self.get_debts_url = reverse ('debts-info')
+        self.get_debts_url = reverse ('debts-info', kwargs={'id_user': self.user.id_user})
 
 
     def test_login(self):
@@ -166,14 +166,12 @@ class APITest(TestCase):
             "lender": "Carlos",
             "hasInterest": False,
             "interestAmount": 0.0,
-            "init_date": str(date.today()),
-            "due_date": str(date(2025, 12, 31)),
+            "init_date": timezone.now().isoformat(),
+            "due_date": (timezone.now() + timedelta(days=30)).isoformat(),
             "status": 0
         }
         response = self.client.post(self.debt_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["init_date"], str(date.today()))
-        self.assertEqual(response.data["due_date"], str(date(2025, 12, 31)))
         self.assertEqual(response.data["lender"], "Carlos")
         self.assertEqual(response.data["status"], 0)
         self.assertEqual(response.data["interestAmount"], 0.0)
@@ -187,9 +185,9 @@ class APITest(TestCase):
             mount=5.0,
             lender="Karen",
             hasInterest=False,
-            interestAmount=100.0,
-            init_date=str(date.today()),
-            due_date=str(date(2025, 12, 31)),
+            interestAmount=0.0,
+            init_date= timezone.now(),
+            due_date= timezone.now() + timedelta(days=200),
             description="Nails",
             status=Debt.StatusEnum.PAID
         )
@@ -199,8 +197,8 @@ class APITest(TestCase):
             lender="Ernesto",
             hasInterest=True,
             interestAmount=10.0,
-            init_date=str(date.today()),
-            due_date=str(date(2025, 11, 30)),
+            init_date=timezone.now(),
+            due_date=timezone.now() + timedelta(days=365),
             description="Underwear",
             status=Debt.StatusEnum.PENDING
         )

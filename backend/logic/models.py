@@ -66,7 +66,7 @@ class Category(models.Model):
     class Meta:
         db_table = 'categories'
 
-class Debts(models.Model):
+class Debt(models.Model):
     id_debts = models.AutoField(primary_key=True)
     id_user = models.ForeignKey('User', on_delete=models.CASCADE)
     mount = models.FloatField()
