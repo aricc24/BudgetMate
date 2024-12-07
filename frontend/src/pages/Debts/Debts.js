@@ -105,7 +105,28 @@ const Debts = () => {
             console.error('Error adding debt:', error);
         }
     };
+
+    const handelDeleteDebt = async (id_debt) => {
+        const authToken = localStorage.getItem('authToken');
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/delete_debt/${id_debt}/`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${authToken}` },
+            });
     
+            if (response.ok) {
+                setDebts((prevDebts) =>
+                    prevDebts.filter((debt) => debt.id_debt !== id_debt)
+                );
+                alert('Debt deleted successfully.');
+            } else {
+                alert('Fail on delete debt.');
+            }
+        } catch (error) {
+            console.error('Error deleting debt:', error);
+            alert('An error occurred while trying to delete the debt.');
+        }
+    };
 
     return (
         <Layout>
@@ -255,6 +276,25 @@ const Debts = () => {
                         </table>
                     </div>
                 </div>
+                
+                {isOptionsOpen && (
+                    <dialog className='' open>
+                        <button
+                            className='delete-button'
+                            onClick={() => {
+                                handelDeleteDebt(selectedDebtId)
+                                setisOptionsOpen(false);
+                            }}
+                        >
+                            Delete
+                        </button>
+                        <button
+                            onClick={() => setisOptionsOpen(false)}
+                        > 
+                            Cancel
+                        </button>
+                    </dialog>
+                )}
             </div>
         </Layout>
     );    
