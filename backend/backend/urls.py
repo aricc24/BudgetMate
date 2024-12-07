@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from logic.views import *
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', ReactView.as_view(), name="user-list"),
@@ -37,4 +38,8 @@ urlpatterns = [
     path('api/get_debts/<int:id_user>/', get_debts_by_user, name="debts-info"),
     path('api/update_debt/<int:id_user>/<int:id_debt>/', update_user_debt, name="debt-update"),
     path('api/delete_debt/<int:id_debt>/', delete_debt, name='delete_debt'),
+    path('api/generate_pdf/<int:id_user>/', generate_pdf, name='generate_pdf'), 
+    path('api/send_email/<int:id_user>/', send_email, name='send_email'),
+    path('scheduled-transactions/', ScheduledTransactionListCreateView.as_view(), name='list-create-scheduled-transactions'),
+    path('scheduled-transactions/<int:id_scheduled_transaction>/', ScheduledTransactionUpdateDeleteView.as_view(), name='update-delete-scheduled-transaction'),
 ]

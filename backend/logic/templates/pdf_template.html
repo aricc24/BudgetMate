@@ -21,7 +21,7 @@
            width: 100%;
            border-collapse: collapse;
            margin: 20px 0;
-           font-size: 16px;
+           font-size: 12px;
            text-align: left;
        }
 
@@ -31,7 +31,7 @@
        }
 
        table th, table td {
-           padding: 12px 15px;
+           padding: 8px 10px;
            border: 1px solid #ddd;
        }
 
@@ -58,12 +58,14 @@
        <thead>
            <tr>
                <th>Category</th>
+               <th>Type</th> 
                <th>Amount</th>
                <th>Description</th>
                <th>Date</th>
            </tr>
        </thead>
        <tbody>
+        
            {% for transaction in transactions %}
            <tr>
                <td>
@@ -71,6 +73,7 @@
                        {{ category.category_name }}{% if not forloop.last %}, {% endif %}
                    {% endfor %}
                </td>
+               <td>{{ transaction.get_type_display }}</td>
                <td>{{ transaction.mount }}</td>
                <td>{{ transaction.description }}</td>
                <td>{{ transaction.date }}</td>
@@ -79,8 +82,18 @@
        </tbody>
    </table>
 
-   <h2>Charts</h2>
-   <img src="data:image/png;base64,{{ chart_base64 }}" alt="Line Chart">
-   <img src="data:image/png;base64,{{ pie_chart_base64 }}" alt="Pie Chart">
+   <h2>Income line graph</h2>
+   <img src="data:image/png;base64,{{ income_line_chart_base64 }}" alt="Incomes Graph">
+
+   <h2>Expenses line graph</h2>
+   <img src="data:image/png;base64,{{ expense_line_chart_base64 }}" alt="Expenses Graph">
+
+   <h2>Income distribution by category</h2>
+   <img src="data:image/png;base64,{{ income_pie_chart_base64 }}" alt="Income Distribution">
+
+   <h2>Expenses distribution by category</h2>
+   <img src="data:image/png;base64,{{ expense_pie_chart_base64 }}" alt="Expenses distribution">
+
+
 </body>
 </html>

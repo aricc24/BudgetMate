@@ -7,7 +7,7 @@ services:
       MYSQL_ROOT_PASSWORD: BudgetMateDB
       MYSQL_DATABASE: BudgetMate_info
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
@@ -24,6 +24,8 @@ services:
       - db
     links:
       - db
+      - redis
+      - celery
 
   
   frontend: 
@@ -37,5 +39,28 @@ services:
     stdin_open: true 
     tty: true 
 
+  celery:
+    build: ./celery
+    command: celery -A BudgetMate worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+
+  celery-beat:
+    build: ./celery
+    command: celery -A BudgetMate beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:6.0
+    ports:
+      - "6379:6379"
+
+
 volumes:
   mysql_data:
+

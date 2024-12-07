@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from .models import ScheduledTransaction
 
 class ReactSerializer(serializers.ModelSerializer):
     categories = serializers.PrimaryKeyRelatedField(many=True, queryset=Category.objects.all(), required=False)
@@ -47,4 +48,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class DebtsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Debt
+class ScheduledTransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ScheduledTransaction
         fields = '__all__'

@@ -44,6 +44,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -51,7 +53,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -122,6 +123,13 @@ USE_TZ = True
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ariadnamich10@gmail.com'  
+EMAIL_HOST_PASSWORD = 'eqaf allp zevq yhgv '  
+DEFAULT_FROM_EMAIL = 'BudgetMate <ariadnamich10@gmail.com>'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -138,3 +146,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ]
 }
+
+CORS_LOGGING = True
+
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
