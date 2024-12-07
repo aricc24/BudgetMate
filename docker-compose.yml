@@ -15,7 +15,7 @@ services:
   backend: 
     build: ./backend
     container_name: django_backend
-    command: sh -c "./wait-for-it.sh db:3306 -- echo 'DB is ready' && python manage.py makemigrations && python manage.py migrate && python manage.py test"
+    command: sh -c "./wait-for-it.sh db:3306 -- echo 'DB is ready' && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./backend:/app
     ports: 

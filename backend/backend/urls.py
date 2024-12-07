@@ -36,4 +36,5 @@ urlpatterns = [
     path('api/debts/', DebtsCreateView.as_view(), name="debts-list"),
     path('api/get_debts/<int:id_user>/', get_debts_by_user, name="debts-info"),
     path('api/update_debt/<int:id_user>/<int:id_debt>/', update_user_debt, name="debt-update"),
+    path('api/delete_debt/<int:id_debt>/', delete_debt, name='delete_debt'),
 ]

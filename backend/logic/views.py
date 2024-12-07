@@ -197,6 +197,15 @@ def update_user_debt(request, id_user, id_debt):
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['DELETE'])
+def delete_debt(request, id_debt):
+    try:
+        debt = Debt.objects.get(id_debt=id_debt)
+        debt.delete()
+        return Response({'message': 'Debt deleted successfully!'}, status=status.HTTP_200_OK)
+    except Debt.DoesNotExist:
+        return Response({'error': 'Debt not found!'}, status=status.HTTP_404_NOT_FOUND)
+
 @api_view(['GET'])
 def filter_transactions(request, id_user):
     start_date = request.GET.get('start_date')
