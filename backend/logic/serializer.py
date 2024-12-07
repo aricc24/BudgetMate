@@ -48,6 +48,8 @@ class CategorySerializer(serializers.ModelSerializer):
 class DebtsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Debt
+        fields = '__all__'
+        
 class ScheduledTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScheduledTransaction
