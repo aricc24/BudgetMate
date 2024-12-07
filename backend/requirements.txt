@@ -4,5 +4,3 @@ django
 xhtml2pdf
 matplotlib
 weasyprint
-celery==5.3.4
-redis==5.0.0

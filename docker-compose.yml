@@ -40,7 +40,7 @@ services:
     tty: true 
 
   celery:
-    build: .
+    build: ./celery
     command: celery -A BudgetMate worker --loglevel=info
     volumes:
       - .:/app
