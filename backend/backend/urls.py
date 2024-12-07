@@ -35,6 +35,6 @@ urlpatterns = [
     path('api/filter_transactions/<int:id_user>/', filter_transactions, name="filter-transaction"), 
     path('api/generate_pdf/<int:id_user>/', generate_pdf, name='generate_pdf'), 
     path('api/send_email/<int:id_user>/', send_email, name='send_email'),
-    path('scheduled-transactions/', ScheduledTransactionListCreateView.as_view(), name='list-create-scheduled-transactions'),
-    path('scheduled-transactions/<int:id_scheduled_transaction>/', ScheduledTransactionUpdateDeleteView.as_view(), name='update-delete-scheduled-transaction'),
+    path('api/scheduled-transactions/', ScheduledTransactionListCreateView.as_view(), name='list-create-scheduled-transactions'),
+    path('api/scheduled-transactions/<int:id_scheduled_transaction>/', ScheduledTransactionUpdateDeleteView.as_view(), name='update-delete-scheduled-transaction'),
 ]
