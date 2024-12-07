@@ -8,6 +8,7 @@ import './Debts.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Debts = () => {
+    const [debts, setDebts] = useState([]);
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
     const [lender, setLender] = useState('');
@@ -17,10 +18,12 @@ const Debts = () => {
     const [due_Date, setDueDate] = useState(new Date());
     const [paid_Date, setPaidDate] = useState(new Date());
     const [selectedOption, setSelectedOption] = useState('');
+    const [selectedDebtId, setSelectedDebtId] = useState(null);
+    const [isOptionsOpen, setisOptionsOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchTransactions = async () => {
+        const fetchDebts = async () => {
             const authToken = localStorage.getItem('authToken');
             const userId = localStorage.getItem('userId');
             if (!authToken) {
@@ -28,34 +31,23 @@ const Debts = () => {
                 return;
             }
 
-            
-        };
-    }, [navigate]);
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/get_debts/${userId}/`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
 
-    const handleDownloadPDF = async () => {
-        const authToken = localStorage.getItem('authToken');
-        const userId = localStorage.getItem('userId');
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/generate_pdf/${userId}/`, {
-                headers: { 'Authorization': `Bearer ${authToken}` }
-            });
-            if (response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `report_${userId}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-            } else {
-                console.error('Failed to generate PDF');
+                if (response.ok) {
+                    const data = await response.json();
+                    setDebts(data);
+                } else {
+                    console.error('Failed to fetch debts');
+                }
+            } catch (error) {
+                console.error('Error fetching debts:', error);
             }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-     };
-     
+        };
+        fetchDebts();
+    }, [navigate]);     
 
     const handleAddDebt = async () =>  {
         const authToken = localStorage.getItem('authToken');
@@ -68,8 +60,7 @@ const Debts = () => {
             description: description,
             lender: lender,
             hasInterest: hasInterest,
-            interestAmount: parseFloat(interestAmount),
-            init_date: init_Date.toISOString(),
+            interestAmount: hasInterest ? parseFloat(interestAmount || 0) : 0.0,
             due_date: due_Date.toISOString(),
             paid_date: paid_Date.toISOString(),
             status: (() => {
@@ -80,6 +71,8 @@ const Debts = () => {
                         return 1;
                     case 'Overdue':
                         return 2;
+                    default:
+                        return 0;
                 }
             })(),
         };        
@@ -96,6 +89,7 @@ const Debts = () => {
 
             if (response.ok) {
                 const savedDebt = await response.json();
+                setDebts(prevDebts => [...prevDebts, savedDebt]);
                 setAmount('');
                 setDescription('');
                 setLender('');
@@ -115,10 +109,8 @@ const Debts = () => {
 
     return (
         <Layout>
-            <div className="expenses-page">
-                <button onClick={handleDownloadPDF} className="btn btn-primary">Downlad PDF</button>
-
-                <div className="add-expense-form">
+            <div className="debt-page">
+                <div className="add-debt-form">
                     <input
                         type="number"
                         value={amount}
@@ -135,9 +127,9 @@ const Debts = () => {
                         type="text"
                         value={lender}
                         onChange={(e) => setLender(e.target.value)}
-                        placeholder="lender"
+                        placeholder="Lender"
                     />
-
+    
                     <div className="interest-question">
                         <label>Has interest?</label>
                         <div>
@@ -149,7 +141,7 @@ const Debts = () => {
                                     checked={hasInterest === true}
                                     onChange={() => setHasInterest(true)}
                                 />
-                                Sí
+                                Yes
                             </label>
                             <label>
                                 <input
@@ -163,42 +155,42 @@ const Debts = () => {
                             </label>
                         </div>
                     </div>
-
+    
                     <input
                         type="text"
                         value={interestAmount}
                         onChange={(e) => setInterestAmount(e.target.value)}
-                        placeholder="interestAmount"
+                        placeholder="Interest Amount"
                         disabled={!hasInterest}
                     />
-
+    
                     <label htmlFor="initDatePicker">Init date:</label>
                     <DatePicker
                         id="initDatePicker"
                         selected={init_Date}
-                        onChange={date => setInitDate(date)}
+                        onChange={(date) => setInitDate(date)}
                         dateFormat="yyyy-MM-dd"
                         className="datepicker"
                     />
-
+    
                     <label htmlFor="dueDatePicker">Due date:</label>
                     <DatePicker
                         id="dueDatePicker"
                         selected={due_Date}
-                        onChange={date => setDueDate(date)}
+                        onChange={(date) => setDueDate(date)}
                         dateFormat="yyyy-MM-dd"
                         className="datepicker"
                     />
-
+    
                     <label htmlFor="paidDatePicker">Paid date:</label>
                     <DatePicker
                         id="paidDatePicker"
                         selected={paid_Date}
-                        onChange={date => setPaidDate(date)}
+                        onChange={(date) => setPaidDate(date)}
                         dateFormat="yyyy-MM-dd"
                         className="datepicker"
                     />
-
+    
                     <div>
                         <label htmlFor="optionsDropdown">Status:</label>
                         <select
@@ -211,11 +203,60 @@ const Debts = () => {
                             <option value="Overdue">Overdue</option>
                         </select>
                     </div>
-
+    
                     <button onClick={handleAddDebt}>Add Debt</button>
+                </div>
+    
+                <div className="content-container">
+                    <div className="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Amount</th>
+                                    <th>Description</th>
+                                    <th>Lender</th>
+                                    <th>Has Interest</th>
+                                    <th>Interest Amount</th>
+                                    <th>Status</th>
+                                    <th>Init Date</th>
+                                    <th>Due Date</th>
+                                    <th>Paid Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {debts.map((debt) => {
+                                    console.log(debt);
+                                    return (
+                                        <tr key={debt.id_debt}>
+                                            <td>- ${debt.mount}</td>
+                                            <td>{debt.description || "No description"}</td>
+                                            <td>{debt.lender || "Unknown"}</td>
+                                            <td>{debt.hasInterest}</td>
+                                            <td>{debt.interestAmount}</td>
+                                            <td>{debt.status}</td>
+                                            <td>{debt.init_date}</td>
+                                            <td>{debt.due_date}</td>
+                                            <td>{debt.paid_date}</td>
+                                            <td>
+                                                <button
+                                                    className="three-dots"
+                                                    onClick={() => {
+                                                        setSelectedDebtId(debt.id_debt);
+                                                        setisOptionsOpen(true);
+                                                    }}
+                                                >
+                                                    <i className="fas fa-ellipsis-v"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </Layout>
-    );
+    );    
 };
 export default Debts;

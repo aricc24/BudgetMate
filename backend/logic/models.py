@@ -67,13 +67,13 @@ class Category(models.Model):
         db_table = 'categories'
 
 class Debt(models.Model):
-    id_debts = models.AutoField(primary_key=True)
+    id_debt = models.AutoField(primary_key=True)
     id_user = models.ForeignKey('User', on_delete=models.CASCADE)
     mount = models.FloatField()
     description = models.CharField(max_length=128, null=True, blank=True)
     lender = models.CharField(max_length=35, null=True, blank=True)
     hasInterest = models.BooleanField(default=False)
-    interestAmount = models.FloatField(default=0)
+    interestAmount = models.FloatField(default=0.0)
     init_date = models.DateTimeField(default=timezone.now)
     due_date = models.DateTimeField(default=timezone.now)
     paid_date = models.DateTimeField(default=timezone.now)

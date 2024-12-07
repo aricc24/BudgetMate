@@ -7,6 +7,7 @@ from .serializer import ReactSerializer, TransactionSerializer, CategorySerializ
 from django.utils.dateparse import parse_date
 from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer
 from django.db import transaction
+from rest_framework.exceptions import ValidationError
 
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -171,6 +172,13 @@ def update_user_category(request, id_user, id_category):
 class DebtsCreateView(generics.CreateAPIView):
     queryset = Debt.objects.all()
     serializer_class = DebtsSerializer
+    def create(self, request, *args, **kwargs):
+        print("Received Data:", request.data)  # Agrega este print
+        try:
+            return super().create(request, *args, **kwargs)
+        except ValidationError as e:
+            print(f"Validation Error: {e.detail}")
+            raise
 
 @api_view(['GET'])
 def get_debts_by_user(request, id_user):

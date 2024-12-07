@@ -1,4 +1,4 @@
-.income-page {
+.debt-page {
     position: relative;
     padding: 20px;
     color: #333;
@@ -8,7 +8,7 @@
     align-items: center;
 }
 
-.income-page h2 {
+.debt-page h2 {
     font-size: 2.5rem;
     font-weight: bold;
     color: #4a90e2;
@@ -46,7 +46,7 @@
     background-color: #357ABD;
 }
 
-.add-income-form {
+.add-debt-form {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
@@ -55,15 +55,15 @@
     margin-bottom: 30px;
 }
 
-.add-income-form input,
-.add-income-form select {
+.add-debt-form input,
+.add-debt-form select {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 8px;
     min-width: 150px;
 }
 
-.add-income-form button {
+.add-debt-form button {
     padding: 10px 20px;
     background-color: #4a90e2;
     color: #fff;
@@ -74,7 +74,7 @@
     transition: background-color 0.3s ease;
 }
 
-.add-income-form button:hover {
+.add-debt-form button:hover {
     background-color: #357ABD;
 }
 
