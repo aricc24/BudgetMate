@@ -21,6 +21,9 @@ function SidebarHamburger({ toggleSidebarHamburger }) {
       <Link to="/history" className="sidebar-item">
         <i className="fas fa-history"></i> History
       </Link>
+      <Link to="/schedulemovement" className="sidebar-item">
+        <i className="fas fa-history"></i> Schedule Movement
+      </Link>
     </div>
   );
 }

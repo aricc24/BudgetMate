@@ -39,9 +39,6 @@ services:
     stdin_open: true 
     tty: true 
 
-volumes:
-  mysql_data:
-
   celery:
     build: .
     command: celery -A BudgetMate worker --loglevel=info
@@ -51,7 +48,7 @@ volumes:
       - redis
 
   celery-beat:
-    build: .
+    build: ./celery
     command: celery -A BudgetMate beat --loglevel=info
     volumes:
       - .:/app
@@ -62,3 +59,8 @@ volumes:
     image: redis:6.0
     ports:
       - "6379:6379"
+
+
+volumes:
+  mysql_data:
+

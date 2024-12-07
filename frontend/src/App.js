@@ -9,6 +9,10 @@ import Expenses from './pages/Expenses/Expenses';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import ForgotPassword from './pages/SignIn/ForgotPassword';
 import History from './pages/History/History';
+import History from './pages/ScheduleMovement/ScheduleTransactionForm';
+import History from './pages/ScheduleMovement/ScheduleTransactionList';
+
+
 //import Navbar from './components/Navbar/Navbar';
 //import Sidebar from './components/Sidebar/Sidebar';
 import './App.css';
@@ -27,6 +31,9 @@ function App() {
                     <Route path="/history" element={<History />} />
                     <Route path="/income" element={<Income />} />
                     <Route path="/expenses" element={<Expenses />} />
+                    <Route path="/schedulemovement" element={< scheduleMovement />} />
+                    <Route path="/add" element={<ScheduledTransactionsForm onSave={() => window.location.reload()} />} />
+                    <Route path="/edit/:id" element={<ScheduledTransactionsForm onSave={() => window.location.reload()} />} />
                 </Route>
             </Routes>
         </Router>
