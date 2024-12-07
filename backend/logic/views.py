@@ -173,7 +173,7 @@ class DebtsCreateView(generics.CreateAPIView):
     queryset = Debt.objects.all()
     serializer_class = DebtsSerializer
     def create(self, request, *args, **kwargs):
-        print("Received Data:", request.data)  # Agrega este print
+        print("Received Data:", request.data)
         try:
             return super().create(request, *args, **kwargs)
         except ValidationError as e:
