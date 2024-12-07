@@ -216,7 +216,7 @@ class APITest(TestCase):
             mount=1000.0,
             lender="Pepe",
             hasInterest=False,
-            interestAmount=0,
+            interestAmount=0.0,
             init_date=timezone.now(),
             due_date=timezone.now() + timedelta(days=32),
             description="Underwear",
@@ -224,7 +224,7 @@ class APITest(TestCase):
         )
         update_url = reverse('debt-update', kwargs={
             'id_user': self.user.id_user,
-            'id_transaction': debt.id_debt
+            'id_debt': debt.id_debt
         })
         data = {
             "mount": 20563.98,
@@ -236,7 +236,7 @@ class APITest(TestCase):
         response = self.client.patch(update_url, data, format='json')
         print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["mount"], 1502.14)
+        self.assertEqual(response.data["mount"], 20563.98)
         self.assertEqual(response.data["hasInterest"], True)
         self.assertEqual(response.data["interestAmount"], 200.09)
         self.assertEqual(response.data["description"], "Updated debt description")

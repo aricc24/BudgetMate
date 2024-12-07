@@ -5,7 +5,6 @@ from .models import User, Transaction, Category, Debt
 from rest_framework import status, generics
 from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer, DebtsSerializer
 from django.utils.dateparse import parse_date
-from .serializer import ReactSerializer, TransactionSerializer, CategorySerializer
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
 
@@ -185,6 +184,18 @@ def get_debts_by_user(request, id_user):
     debts = Debt.objects.filter(id_user=id_user)
     serializer = DebtsSerializer(debts, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['PATCH'])
+def update_user_debt(request, id_user, id_debt):
+    try:
+        debt = Debt.objects.get(id_debt=id_debt, id_user=id_user)
+    except Debt.DoesNotExist:
+        return Response({"error": "Debt not found."}, status=status.HTTP_404_NOT_FOUND)
+    serializer = DebtsSerializer(debt, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def filter_transactions(request, id_user):
