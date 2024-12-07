@@ -20,6 +20,12 @@ const Debts = () => {
     const [selectedOption, setSelectedOption] = useState('');
     const [selectedDebtId, setSelectedDebtId] = useState(null);
     const [isOptionsOpen, setisOptionsOpen] = useState(false);
+    const [isEditOpen, setisEditOpen] = useState(false);
+    const [editAmount, setEditAmount] = useState('');
+    const [editDescription, setEditDescription] = useState('');
+    const [editLender, setEditLender] = useState('');
+    const [editHInterest, setEditHInterest] = useState(false);
+    const [editInAmount, setEditInAmount] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -61,6 +67,7 @@ const Debts = () => {
             lender: lender,
             hasInterest: hasInterest,
             interestAmount: hasInterest ? parseFloat(interestAmount || 0) : 0.0,
+            init_date: init_Date.toISOString(),
             due_date: due_Date.toISOString(),
             paid_date: paid_Date.toISOString(),
             status: (() => {
@@ -127,6 +134,72 @@ const Debts = () => {
             alert('An error occurred while trying to delete the debt.');
         }
     };
+
+    const handleEditDebt = async (id_debt) => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken || !userId) return;
+
+        const currentDebt = debts.find(t => t.id_debt === id_debt);
+
+        const updateDebt = {
+            id_user: userId,
+            mount: editAmount ? parseFloat(editAmount) : currentDebt.mount,
+            description: editDescription || currentDebt.description,
+            lender: editLender || currentDebt.lender,
+            hasInterest: editHInterest,
+            interestAmount: editHInterest ? parseFloat(editInAmount || 0) : 0.0,
+            init_date: init_Date.toISOString(),
+            due_date: due_Date.toISOString(),
+            paid_date: paid_Date.toISOString(),
+            status: (() => {
+                switch (selectedOption) {
+                    case 'Pending':
+                        return 0;
+                    case 'Paid':
+                        return 1;
+                    case 'Overdue':
+                        return 2;
+                    default:
+                        return 0;
+                }
+            })(),
+        };
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/update_debt/${userId}/${id_debt}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify(updateDebt)
+            });
+            if (response.ok) {
+                const savedDebt = await response.json();
+                setDebts(prevDebts =>
+                    prevDebts.map(debt =>
+                        debt.id_debt === id_debt
+                            ? savedDebt
+                            : debt
+                    )
+                );
+                setEditAmount('');
+                setEditDescription('');
+                setEditLender('');
+                setEditHInterest(false);
+                setEditInAmount('');
+                setInitDate(new Date());
+                setDueDate(new Date());
+                setPaidDate(new Date());
+            } else {
+                console.error('Failed to update debt');
+            }
+        } catch (error) {
+            console.error('Error updating debt:', error);
+        }
+    };
+
 
     return (
         <Layout>
@@ -289,12 +362,103 @@ const Debts = () => {
                             Delete
                         </button>
                         <button
+                            className='edited-button'
+                            onClick={() => {
+                                const debtToEdit = debts.find(t => t.id_debt === selectedDebtId);
+                                setisOptionsOpen(false);
+                                setisEditOpen(true);
+                            }}
+                        >
+                            Edit
+                        </button>
+                        <button
                             onClick={() => setisOptionsOpen(false)}
                         > 
                             Cancel
                         </button>
                     </dialog>
                 )}
+
+                {isEditOpen && (
+                    <dialog className='' open>
+                        <input
+                        type="number"
+                        value={editAmount}
+                        onChange={(e) => setEditAmount(e.target.value)}
+                        placeholder="New amount"
+                        />
+
+                        <input
+                            type="text"
+                            value={editDescription}
+                            onChange={(e) => setEditDescription(e.target.value)}
+                            placeholder="New description"
+                        />
+
+                        <input
+                            type="text"
+                            value={editLender}
+                            onChange={(e) => setEditLender(e.target.value)}
+                            placeholder="New Lender"
+                        />
+
+                        <label htmlFor="initDatePicker">Init date:</label>
+                        <DatePicker
+                            id="initDatePicker"
+                            selected={init_Date}
+                            onChange={(date) => setInitDate(date)}
+                            dateFormat="yyyy-MM-dd"
+                            className="datepicker"
+                        />
+
+                        <label htmlFor="dueDatePicker">Due date:</label>
+                        <DatePicker
+                            id="dueDatePicker"
+                            selected={due_Date}
+                            onChange={(date) => setDueDate(date)}
+                            dateFormat="yyyy-MM-dd"
+                            className="datepicker"
+                        />
+        
+                        <label htmlFor="paidDatePicker">Paid date:</label>
+                        <DatePicker
+                            id="paidDatePicker"
+                            selected={paid_Date}
+                            onChange={(date) => setPaidDate(date)}
+                            dateFormat="yyyy-MM-dd"
+                            className="datepicker"
+                        />
+        
+                        <div>
+                            <label htmlFor="optionsDropdown">Status:</label>
+                            <select
+                                id="optionsDropdown"
+                                value={selectedOption}
+                                onChange={(e) => setSelectedOption(e.target.value)}
+                            >
+                                <option value="Paid">Pending</option>
+                                <option value="Paid">Paid</option>
+                                <option value="Overdue">Overdue</option>
+                            </select>
+                        </div>
+
+                        <button
+                            className='edited-button'
+                            onClick={() => {
+                                handleEditDebt(selectedDebtId)
+                                setisEditOpen(false);
+                            }}
+                        >
+                            Accept
+                        </button>
+                        <button
+                            onClick={() => setisEditOpen(false)}
+                        > 
+                            Cancel
+                        </button>
+                    </dialog>
+                )}
+
             </div>
         </Layout>
     );    
