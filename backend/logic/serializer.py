@@ -44,16 +44,27 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
-
+        
 
 class ScheduledTransactionSerializer(serializers.ModelSerializer):
-    categories = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=Category.objects.all(),
-        required=False 
-    )
+    categories = CategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = ScheduledTransaction
         fields = '__all__'
 
+class ScheduledTransactionSerializer(serializers.ModelSerializer):
+    categories = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Category.objects.all()
+    )
+
+    def create(self, validated_data):
+        categories = validated_data.pop('categories', [])
+        scheduled_transaction = ScheduledTransaction.objects.create(**validated_data)
+        scheduled_transaction.categories.set(categories)  # Asociar categorías
+        return scheduled_transaction
+
+    class Meta:
+        model = ScheduledTransaction
+        fields = '__all__'

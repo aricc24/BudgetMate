@@ -3,8 +3,7 @@ import Layout from '../../components/Layout/Layout';
 
 const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
   const [formData, setFormData] = useState({
-    
-    mount: '',
+    amount: '', 
     description: '',
     type: 'INCOME',
     date: '',
@@ -35,15 +34,15 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
           headers: { 'Authorization': `Bearer ${authToken}` },
         });
         const data = await response.json();
-        setCategories(data);  
+        setCategories(data);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
     };
-  
+
     fetchCategories();
+    fetchScheduledTransactions(); 
   }, [userId, authToken]);
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,21 +54,23 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const formattedData = {
       user: userId,
-      amount: parseFloat(formData.mount),
+      amount: parseFloat(formData.amount), 
       description: formData.description,
       type: formData.type === 'INCOME' ? 0 : 1,
-       schedule_date: formData.date.split('T')[0],
+      schedule_date: formData.date.split('T')[0],
       repeat: formData.periodicity,
       categories: formData.categories.map(id => parseInt(id)),
     };
-  
+
+    console.log('Sending data:', formattedData);
+
     const requestMethod = transactionId ? 'PUT' : 'POST';
-    const url = transactionId 
-      ? `http://127.0.0.1:8000/api/scheduled-transactions/${transactionId}/`
-      : 'http://127.0.0.1:8000/api/scheduled-transactions/';
+    const url = transactionId
+    ? `http://127.0.0.1:8000/api/scheduled-transactions/${transactionId}/`
+    : `http://127.0.0.1:8000/api/scheduled-transactions/`; 
   
     try {
       const response = await fetch(url, {
@@ -80,10 +81,10 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
         },
         body: JSON.stringify(formattedData),
       });
-  
+
       if (response.ok) {
         setFormData({
-          mount: '',
+          amount: '',
           description: '',
           type: 'INCOME',
           date: '',
@@ -176,8 +177,8 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
             <label style={styles.label}>Amount:</label>
             <input
               type="number"
-              name="mount"
-              value={formData.mount}
+              name="amount"
+              value={formData.amount}
               onChange={handleChange}
               style={styles.amountInput} 
               required
@@ -248,14 +249,14 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
                 ...prevState,
                 categories: options,
               }));
-            }}
-            >
-              {categories.map(category => (
-                <option key={category.id_category} value={category.id_category}>
-                  {category.category_name}
-                  </option>
-                ))}
-                </select>
+              }}
+              >
+                {categories.map(category => (
+                  <option key={category.id_category} value={category.id_category}>
+                    {category.category_name}
+                    </option>
+                  ))}
+                  </select>
                 </div>
                 </div>
         <button 
@@ -283,7 +284,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
         <tbody>
           {scheduledTransactions.map(transaction => (
             <tr key={transaction.id_transaction}>
-              <td>{transaction.mount}</td>
+              <td>{transaction.amount}</td>
               <td>{transaction.description}</td>
               <td>{transaction.type === 0 ? 'Income' : 'Expense'}</td>
               <td>{transaction.schedule_date}</td>
