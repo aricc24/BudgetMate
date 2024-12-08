@@ -9,9 +9,9 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
     type: 'INCOME',
     date: '',
     periodicity: 'monthly',
-    //categories: []
+    categories: []
   });
-  //const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [scheduledTransactions, setScheduledTransactions] = useState([]);
   const userId = localStorage.getItem('userId');
   const authToken = localStorage.getItem('authToken');
@@ -27,6 +27,23 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       console.error('Error fetching scheduled transactions:', error);
     }
   };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`, {
+          headers: { 'Authorization': `Bearer ${authToken}` },
+        });
+        const data = await response.json();
+        setCategories(data);  
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+  
+    fetchCategories();
+  }, [userId, authToken]);
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,9 +61,9 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       amount: parseFloat(formData.mount),
       description: formData.description,
       type: formData.type === 'INCOME' ? 0 : 1,
-      schedule_date: formData.date.split('T')[0],
+       schedule_date: formData.date.split('T')[0],
       repeat: formData.periodicity,
-      //categories: formData.categories.map(id => parseInt(id)),
+      categories: formData.categories.map(id => parseInt(id)),
     };
   
     const requestMethod = transactionId ? 'PUT' : 'POST';
@@ -218,8 +235,29 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
               <option value="yearly">Yearly</option>
             </select>
           </div>
-        </div>
 
+          <div style={styles.inputGroup}>
+            <label>Categories:</label>
+            <select
+            name="categories"
+            multiple
+            value={formData.categories}
+            onChange={(e) => {
+              const options = Array.from(e.target.selectedOptions).map(option => option.value);
+              setFormData(prevState => ({
+                ...prevState,
+                categories: options,
+              }));
+            }}
+            >
+              {categories.map(category => (
+                <option key={category.id_category} value={category.id_category}>
+                  {category.category_name}
+                  </option>
+                ))}
+                </select>
+                </div>
+                </div>
         <button 
           type="submit" 
           style={styles.button}
@@ -250,6 +288,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
               <td>{transaction.type === 0 ? 'Income' : 'Expense'}</td>
               <td>{transaction.schedule_date}</td>
               <td>{transaction.repeat}</td>
+              <td>{transaction.categories.map(cat => cat.category_name).join(', ')}</td>
             </tr>
           ))}
         </tbody>

@@ -125,7 +125,8 @@ def get_categories_by_user(request, id_user):
         user = User.objects.get(id_user=id_user)
     except User.DoesNotExist:
         return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-    categories = user.categories.all()
+    categories = user.categories.all() | Category.objects.filter(is_universal=True)
+    categories = categories.distinct()  
     serializer = CategorySerializer(categories, many=True)
 
     return Response(serializer.data, status=status.HTTP_200_OK)

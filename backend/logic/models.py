@@ -82,6 +82,7 @@ class ScheduledTransaction(models.Model):
         choices=[('none', 'None'), ('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')],
         default='none'
     )
+    categories = models.ManyToManyField('Category', related_name='scheduled_transactions')  # Agregando categorías
 
     class Meta:
         db_table = 'scheduled_transactions'
