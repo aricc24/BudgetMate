@@ -76,8 +76,7 @@ class ScheduledTransaction(models.Model):
         choices=Transaction.TransEnum.choices,
         default=Transaction.TransEnum.INCOME
     )
-    categories = models.ManyToManyField('Category', related_name='scheduled_transactions')
-    schedule_date = models.DateField()  
+    schedule_date = models.DateField()
     repeat = models.CharField(
         max_length=10,
         choices=[('none', 'None'), ('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')],
@@ -86,6 +85,3 @@ class ScheduledTransaction(models.Model):
 
     class Meta:
         db_table = 'scheduled_transactions'
-
-    def __str__(self):
-        return f"{self.description} ({self.type}) on {self.schedule_date}"

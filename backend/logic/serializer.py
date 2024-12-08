@@ -45,7 +45,15 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
+
 class ScheduledTransactionSerializer(serializers.ModelSerializer):
+    categories = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Category.objects.all(),
+        required=False
+    )
+    schedule_date = serializers.DateField()
+
     class Meta:
         model = ScheduledTransaction
         fields = '__all__'

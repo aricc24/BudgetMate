@@ -3,47 +3,30 @@ import Layout from '../../components/Layout/Layout';
 
 const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
   const [formData, setFormData] = useState({
+    
     mount: '',
     description: '',
     type: 'INCOME',
     date: '',
     periodicity: 'monthly',
-    categories: []
+    //categories: []
   });
-  const [categories, setCategories] = useState([]);
+  //const [categories, setCategories] = useState([]);
+  const [scheduledTransactions, setScheduledTransactions] = useState([]);
   const userId = localStorage.getItem('userId');
   const authToken = localStorage.getItem('authToken');
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`, {
-          headers: { 'Authorization': `Bearer ${authToken}` },
-        });
-        const data = await response.json();
-        setCategories(data);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-
-    fetchCategories();
-
-    if (transactionId) {
-      const fetchTransaction = async () => {
-        try {
-          const response = await fetch(`http://127.0.0.1:8000/api/scheduled-transactions/${transactionId}/`, {
-            headers: { 'Authorization': `Bearer ${authToken}` },
-          });
-          const data = await response.json();
-          setFormData(data);
-        } catch (error) {
-          console.error('Error fetching scheduled transaction:', error);
-        }
-      };
-      fetchTransaction();
+  const fetchScheduledTransactions = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/scheduled-transactions/user/${userId}/`, {
+        headers: { 'Authorization': `Bearer ${authToken}` },
+      });
+      const data = await response.json();
+      setScheduledTransactions(data);
+    } catch (error) {
+      console.error('Error fetching scheduled transactions:', error);
     }
-  }, [transactionId, userId, authToken]);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,10 +38,22 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    const formattedData = {
+      user: userId,
+      amount: parseFloat(formData.mount),
+      description: formData.description,
+      type: formData.type === 'INCOME' ? 0 : 1,
+      schedule_date: formData.date.split('T')[0],
+      repeat: formData.periodicity,
+      //categories: formData.categories.map(id => parseInt(id)),
+    };
+  
     const requestMethod = transactionId ? 'PUT' : 'POST';
-    const url = transactionId ? `http://127.0.0.1:8000/api/scheduled-transactions/${transactionId}/` : 'http://127.0.0.1:8000/api/scheduled-transactions/';
-
+    const url = transactionId 
+      ? `http://127.0.0.1:8000/api/scheduled-transactions/${transactionId}/`
+      : 'http://127.0.0.1:8000/api/scheduled-transactions/';
+  
     try {
       const response = await fetch(url, {
         method: requestMethod,
@@ -66,19 +61,28 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${authToken}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formattedData),
       });
-
+  
       if (response.ok) {
-        onSave();
+        setFormData({
+          mount: '',
+          description: '',
+          type: 'INCOME',
+          date: '',
+          periodicity: 'monthly',
+          categories: []
+        });
+        fetchScheduledTransactions();
       } else {
-        console.error('Error saving scheduled transaction');
+        const errorData = await response.json();
+        console.error('Error saving scheduled transaction', errorData);
       }
     } catch (error) {
       console.error('Error saving scheduled transaction:', error);
     }
   };
-
+  
   const styles = {
     formContainer: {
       backgroundColor: 'rgba(255, 255, 255, 0)',
@@ -147,7 +151,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
 
   return (
     <Layout>
-      <form onSubmit={handleSubmit} style={styles.formContainer}>
+       <form onSubmit={handleSubmit} style={styles.formContainer}>
         <h2 style={styles.header}>Schedule Transaction</h2>
 
         <div style={styles.formGrid}>
@@ -214,23 +218,6 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
               <option value="yearly">Yearly</option>
             </select>
           </div>
-
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Categories:</label>
-            <select
-              name="categories"
-              multiple
-              value={formData.categories}
-              onChange={handleChange}
-              style={styles.input}
-            >
-              {categories.map(category => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
 
         <button 
@@ -242,6 +229,31 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
           Save
         </button>
       </form>
+
+      <h2>Scheduled Transactions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Amount</th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Periodicity</th>
+            <th>Categories</th>
+          </tr>
+        </thead>
+        <tbody>
+          {scheduledTransactions.map(transaction => (
+            <tr key={transaction.id_transaction}>
+              <td>{transaction.mount}</td>
+              <td>{transaction.description}</td>
+              <td>{transaction.type === 0 ? 'Income' : 'Expense'}</td>
+              <td>{transaction.schedule_date}</td>
+              <td>{transaction.repeat}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </Layout>
   );
 };
