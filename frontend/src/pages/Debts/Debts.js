@@ -364,7 +364,6 @@ const Debts = () => {
                         <button
                             className='edited-button'
                             onClick={() => {
-                                const debtToEdit = debts.find(t => t.id_debt === selectedDebtId);
                                 setisOptionsOpen(false);
                                 setisEditOpen(true);
                             }}

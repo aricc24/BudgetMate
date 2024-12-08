@@ -39,7 +39,6 @@ const History = () => {
             }
         };
         const fetchCategories = async () => {
-            const authToken = localStorage.getItem('authToken');
             const userId = localStorage.getItem('userId');
             fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`)
             .then((response) => {

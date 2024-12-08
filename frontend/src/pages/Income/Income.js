@@ -13,7 +13,7 @@ const Income = () => {
     const [transactions, setTransactions] = useState([]);
     const [categories, setCategories] = useState([]);
     const [chartData, setChartData] = useState(null);
-    const [filter, setFilter] = useState('monthly');
+    //const [filter, setFilter] = useState('monthly');
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -76,7 +76,7 @@ const Income = () => {
         };
         fetchTransactions();
         fetchCategories();
-    }, [filter, navigate]);
+    }, [navigate]);
 
     const updateChartData = (transactions) => {
         const filteredData = transactions.map(transaction => ({
@@ -798,7 +798,7 @@ const PieChart = ({ data, categories}) => {
                 chartInstance.current.destroy();
             }
         };
-    }, [data]);
+    }, [data, categories]);
 
     return <canvas ref={chartRef} style={{ maxWidth: '100%', maxHeight: '85%' }}></canvas>;
 };
