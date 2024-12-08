@@ -113,6 +113,19 @@ const Debts = () => {
         }
     };
 
+    const adjustTime = (utcDate) => {
+        const date = new Date (utcDate);
+        return date.toLocaleString('default', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short',
+        });
+    };
+
     const handelDeleteDebt = async (id_debt) => {
         const authToken = localStorage.getItem('authToken');
         try {
@@ -263,7 +276,10 @@ const Debts = () => {
                         id="initDatePicker"
                         selected={init_Date}
                         onChange={(date) => setInitDate(date)}
-                        dateFormat="yyyy-MM-dd"
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="yyyy-MM-dd HH:mm"
                         className="datepicker"
                     />
     
@@ -272,7 +288,10 @@ const Debts = () => {
                         id="dueDatePicker"
                         selected={due_Date}
                         onChange={(date) => setDueDate(date)}
-                        dateFormat="yyyy-MM-dd"
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="yyyy-MM-dd HH:mm"
                         className="datepicker"
                     />
     
@@ -281,7 +300,10 @@ const Debts = () => {
                         id="paidDatePicker"
                         selected={paid_Date}
                         onChange={(date) => setPaidDate(date)}
-                        dateFormat="yyyy-MM-dd"
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="yyyy-MM-dd HH:mm"
                         className="datepicker"
                     />
     
@@ -328,9 +350,9 @@ const Debts = () => {
                                             <td>{debt.hasInterest}</td>
                                             <td>{debt.interestAmount}</td>
                                             <td>{debt.status}</td>
-                                            <td>{debt.init_date}</td>
-                                            <td>{debt.due_date}</td>
-                                            <td>{debt.paid_date}</td>
+                                            <td>{adjustTime(debt.init_date)}</td>
+                                            <td>{adjustTime(debt.due_date)}</td>
+                                            <td>{adjustTime(debt.paid_date)}</td>
                                             <td>
                                                 <button
                                                     className="three-dots"
@@ -406,7 +428,10 @@ const Debts = () => {
                             id="initDatePicker"
                             selected={init_Date}
                             onChange={(date) => setInitDate(date)}
-                            dateFormat="yyyy-MM-dd"
+                            showTimeSelect
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            dateFormat="yyyy-MM-dd HH:mm"
                             className="datepicker"
                         />
 
@@ -415,7 +440,10 @@ const Debts = () => {
                             id="dueDatePicker"
                             selected={due_Date}
                             onChange={(date) => setDueDate(date)}
-                            dateFormat="yyyy-MM-dd"
+                            showTimeSelect
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            dateFormat="yyyy-MM-dd HH:mm"
                             className="datepicker"
                         />
         
@@ -424,7 +452,10 @@ const Debts = () => {
                             id="paidDatePicker"
                             selected={paid_Date}
                             onChange={(date) => setPaidDate(date)}
-                            dateFormat="yyyy-MM-dd"
+                            showTimeSelect
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            dateFormat="yyyy-MM-dd HH:mm"
                             className="datepicker"
                         />
         

@@ -126,6 +126,19 @@ const Expenses = () => {
         }
     };
 
+    const adjustTime = (utcDate) => {
+        const date = new Date(utcDate);
+        return date.toLocaleString('default', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short',
+        });
+    };
+
     const handelDeleteExpense = async (transactionId) => {
         const authToken = localStorage.getItem('authToken');
         try {
@@ -349,17 +362,6 @@ const Expenses = () => {
         <Layout>
             <div className="expenses-page">
                 <div className="top-left">Expenses</div>
-                {/* <div className="filter-container">
-                    <label>Show by:</label>
-                    <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-                        <option value="daily">Daily</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
-                </div> */}
-
-
                 <div className="button-container">
                 <button onClick={handleDownloadPDF} className="btn btn-primary">Download PDF</button>
                 <button onClick={handleSendEmail} className="btn btn-primary">Send by Email</button>
@@ -383,7 +385,10 @@ const Expenses = () => {
                     <DatePicker
                         selected={selectedDate}
                         onChange={date => setSelectedDate(date)}
-                        dateFormat="yyyy-MM-dd"
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="yyyy-MM-dd HH:mm"
                         className="datepicker"
                     />
 
@@ -436,7 +441,7 @@ const Expenses = () => {
                                     </td>
                                     <td>- ${transaction.mount}</td>
                                     <td>{transaction.description || 'No description'}</td>
-                                    <td>{transaction.date}</td>
+                                    <td>{adjustTime(transaction.date)}</td>
                                     <td>
                                         <button
                                             className="three-dots"
@@ -518,8 +523,11 @@ const Expenses = () => {
 
                         <DatePicker
                             selected={selectedDate}
-                            onChange={(date) => setSelectedDate(date)}
-                            dateFormat="yyyy-MM-dd"
+                            onChange={date => setSelectedDate(date)}
+                            showTimeSelect
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            dateFormat="yyyy-MM-dd HH:mm"
                             className="datepicker"
                         />
 
