@@ -233,6 +233,56 @@ const Expenses = () => {
         setSelectedCategories(selectedOptions);
     };
 
+    const handleEditCategory = async (categoryId) => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken || !userId) return;
+    
+        const currentCategory = categories.find(cat => cat.id_category === categoryId);
+        const updateCategory = {
+            category_name: editCategory || currentCategory.category_name,
+        };
+    
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/update_category/${userId}/${categoryId}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                },
+                body: JSON.stringify(updateCategory),
+            });
+    
+            if (response.ok) {
+                const result = await response.json();
+                const updatedCategoryName = result.category_name;
+
+                setCategories(prevCategories =>
+                    prevCategories.map(cat =>
+                        cat.id_category === categoryId
+                            ? { ...cat, category_name: updatedCategoryName }
+                            : cat
+                    )
+                );
+
+                setTransactions(prevTransactions =>
+                    prevTransactions.map(transaction => ({
+                        ...transaction,
+                        categories: transaction.categories.map(cat =>
+                            cat === categoryId ? updatedCategoryName : cat
+                        ),
+                    }))
+                );
+                console.log(result.message);
+            } else {
+                const errorData = await response.json();
+                console.error(errorData.error);
+            }
+        } catch (error) {
+            console.error('Error updating category:', error);
+        }
+    };
+
     const handleDownloadPDF = async () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
@@ -552,14 +602,18 @@ const Expenses = () => {
                     <dialog className='' open>
                         <h3>Edit Category</h3>
                         <select
-                            value={selectedCategories}
+                            value={selectedCategoryId}
                             onChange={(e) => {
-                                setSelectedCategories(e.target.value);
-                                setSelectedCategoryId(selectedCategories.id_category);
+                                const selectedId = e.target.value;
+                                setSelectedCategoryId(selectedId);
+                                const selectedCategory = categories.find(cat => cat.id_category === parseInt(selectedId));
+                                setEditCategory(selectedCategory.category_name);
                             }}
                         >
                             {categories.map((category) => (
-                                <option key={category.id_category} value={category.id_category}>{category.category_name}</option>
+                                <option key={category.id_category} value={category.id_category}>
+                                    {category.category_name}
+                                </option>
                             ))}
                         </select>
                         <input
@@ -571,7 +625,7 @@ const Expenses = () => {
                         <button
                             className='edited-button'
                             onClick={() => {
-                                
+                                handleEditCategory(parseInt(selectedCategoryId));
                                 setIsEditCategoryOpen(false);
                             }}
                         >
