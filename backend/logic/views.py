@@ -169,32 +169,63 @@ def create_or_associate_category(request):
 def update_user_category(request, id_user, id_category):
     user = User.objects.get(id_user=id_user)
     category = Category.objects.get(id_category=id_category)
-    
+    new_category_name = request.data.get('category_name')
+
+    # Global category: Error
     if category.is_universal:
-        r = Response({"error": "Cannot modify global categories."}, status=status.HTTP_400_BAD_REQUEST)
         print("global error")
-        return r
+        return Response({"error": "Cannot modify global categories."}, status=status.HTTP_400_BAD_REQUEST)
 
-    if not user.categories.filter(id_category=category.id_category).exists():
-        r = Response({"error": "Category is not associated with this user."}, status=status.HTTP_400_BAD_REQUEST)
-        print("not asso")
-        return r
+    # Category assocciated with only one user (user who is editing)
+    if not category.users.exclude(id_user=user.id_user).exists():
+        existing_category = Category.objects.filter(category_name=new_category_name).first()
+        if existing_category:
+            # make association, delete previous & update transactions
+            user.categories.remove(category)
+            user.categories.add(existing_category)
+            transactions = Transaction.objects.filter(categories=category, id_user=id_user)
+            for transaction in transactions:
+                transaction.categories.remove(category)
+                transaction.categories.add(existing_category)
+                transaction.save()
 
-    if category.users.exclude(id_user=user.id_user).exists():
-        new_category_name = request.data.get('category_name')
-        user.categories.remove(category)
-        try:
-            result = create_or_associate_category_logic(new_category_name, user)
+            category.delete()
+            print("category with only 1 association complete && exists")
+            return Response({
+                "message": "Category merged with an existing category.",
+                "category_name": existing_category.category_name,
+            }, status=status.HTTP_200_OK)
+        else:
+            # Rename category
+            category.category_name = new_category_name
+            category.save()
+            print("category with only 1 association complete")
+            return Response({
+                "message": "Category renamed successfully.",
+                "category_name": category.category_name,
+            }, status=status.HTTP_200_OK)
 
-        except ValueError as e:
-            r = Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-            print("multiple asso")
-            return r
+    # category associated with multiple users
     else:
-        category.category_name = request.data['category_name']
-        category.save()
+        new_category, created = Category.objects.get_or_create(
+            category_name=new_category_name,
+            defaults={'is_universal': False}
+        )
+        user.categories.remove(category)
+        user.categories.add(new_category)
 
-    return Response({"message": "Category updated successfully", "category": category.category_name}, status=status.HTTP_200_OK)
+        # update transactions
+        transactions = Transaction.objects.filter(categories=category, id_user=id_user)
+        for transaction in transactions:
+            transaction.categories.remove(category)
+            transaction.categories.add(new_category)
+            transaction.save()
+        print("new category ready")
+        return Response({
+            "message": "Category duplicated and updated successfully.",
+            "category_name": new_category.category_name,
+        }, status=status.HTTP_200_OK)
+
     
 class DebtsCreateView(generics.CreateAPIView):
     queryset = Debt.objects.all()
