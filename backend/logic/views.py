@@ -224,9 +224,13 @@ def filter_transactions(request, id_user):
     categories = request.GET.getlist('categories')
     min_amount = request.GET.get('min_amount')
     max_amount = request.GET.get('max_amount')
+    transaction_type = request.GET.get('type')
 
-    transactions = Transaction.objects.filter(id_user=id_user, type=Transaction.TransEnum.EXPENSE)
-
+    transactions = Transaction.objects.filter(id_user=id_user)
+    if transaction_type == 'expenses':
+        transactions = transactions.filter(type=Transaction.TransEnum.EXPENSE)
+    elif transaction_type == 'incomes':
+        transactions = transactions.filter(type=Transaction.TransEnum.INCOME)
     if start_date:
         transactions = transactions.filter(date__gte=parse_date(start_date))
     if end_date:
@@ -239,28 +243,6 @@ def filter_transactions(request, id_user):
     if categories:
         transactions = transactions.filter(categories__in=categories).distinct()
 
-    serializer = TransactionSerializer(transactions, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-@api_view(['GET'])
-def filter_incomes(request, id_user):
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
-    categories = request.GET.getlist('categories')
-    min_amount = request.GET.get('min_amount')
-    max_amount = request.GET.get('max_amount')
-    transactions = Transaction.objects.filter(id_user=id_user, type=Transaction.TransEnum.INCOME)
-    if start_date:
-        transactions = transactions.filter(date__gte=parse_date(start_date))
-    if end_date:
-        end_date = datetime.combine(parse_date(end_date), datetime.max.time())
-        transactions = transactions.filter(date__lte=end_date)
-    if min_amount:
-        transactions = transactions.filter(mount__gte=float(min_amount))
-    if max_amount:
-        transactions = transactions.filter(mount__lte=float(max_amount))
-    if categories:
-        transactions = transactions.filter(categories__in=categories).distinct()
     serializer = TransactionSerializer(transactions, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 

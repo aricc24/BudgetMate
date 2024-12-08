@@ -51,7 +51,6 @@ const History = () => {
             }
         };
         const fetchCategories = async () => {
-            const authToken = localStorage.getItem('authToken');
             const userId = localStorage.getItem('userId');
             fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`)
             .then((response) => {
@@ -88,6 +87,7 @@ const History = () => {
             }
         }
         const params = new URLSearchParams();
+        params.append('type', 'expenses');
         if (startDate) params.append('start_date', startDate);
         if (endDate) params.append('end_date', endDate);
         if (minAmount) params.append('min_amount', minAmount);
@@ -133,6 +133,7 @@ const History = () => {
             }
         }
         const params = new URLSearchParams();
+        params.append('type', 'incomes');
         if (startDateIncomes) params.append('start_date', startDateIncomes);
         if (endDateIncomes) params.append('end_date', endDateIncomes);
         if (minAmountIncomes) params.append('min_amount', minAmountIncomes);
@@ -144,7 +145,7 @@ const History = () => {
         const userId = localStorage.getItem('userId');
         try {
             const response = await fetch(
-                `http://127.0.0.1:8000/api/filter_incomes/${userId}/?${params.toString()}`,
+                `http://127.0.0.1:8000/api/filter_transactions/${userId}/?${params.toString()}`,
                 {
                     headers: { 'Authorization': `Bearer ${authToken}` }
                 }

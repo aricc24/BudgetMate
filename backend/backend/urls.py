@@ -33,7 +33,6 @@ urlpatterns = [
     path('api/create_category/', create_or_associate_category, name="create-category"),
     path('api/update_category/<int:id_user>/<int:id_category>/', update_user_category, name="category-update"),
     path('api/filter_transactions/<int:id_user>/', filter_transactions, name="filter-transaction"),
-    path('api/filter_incomes/<int:id_user>/', filter_incomes, name="filter-income"),
     path('api/generate_pdf/<int:id_user>/', generate_pdf, name='generate_pdf'),
     path('api/debts/', DebtsCreateView.as_view(), name="debts-list"),
     path('api/get_debts/<int:id_user>/', get_debts_by_user, name="debts-info"),
