@@ -32,8 +32,8 @@ function App() {
                     <Route path="/income" element={<Income />} />
                     <Route path="/expenses" element={<Expenses />} />
                     <Route path="/schedulemovement" element={<ScheduledTransactionsList />} />
-                    <Route path="/add" element={<ScheduledTransactionsForm onSave={() => window.location.reload()} />} />
-                    <Route path="/edit/:id" element={<ScheduledTransactionsForm onSave={() => window.location.reload()} />} />
+                    <Route path="/schedulemovement/add" element={<ScheduledTransactionsForm onSave={() => window.location.reload()} />} />
+                    <Route path="/schedulemovement/edit/:id" element={<ScheduledTransactionsForm onSave={() => window.location.reload()} />} />
                 </Route>
             </Routes>
         </Router>
