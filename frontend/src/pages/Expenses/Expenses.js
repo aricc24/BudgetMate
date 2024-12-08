@@ -387,6 +387,17 @@ const Expenses = () => {
                                     <td>- ${transaction.mount}</td>
                                     <td>{transaction.description || 'No description'}</td>
                                     <td>{transaction.date}</td>
+                                    <td>
+                                        <button
+                                            className="three-dots"
+                                            onClick={() => {
+                                                setSelectedTransactionId(transaction.id_transaction);
+                                                setisOptionsOpen(true);
+                                            }}
+                                        >
+                                            <i className="fas fa-ellipsis-v"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             ))
                         ) : (
