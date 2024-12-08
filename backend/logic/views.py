@@ -26,6 +26,8 @@ from django.core.mail import EmailMessage
 from rest_framework import generics
 from .models import ScheduledTransaction
 from .serializer import ScheduledTransactionSerializer
+from datetime import datetime
+
 
 class ReactView(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -228,7 +230,8 @@ def filter_transactions(request, id_user):
     if start_date:
         transactions = transactions.filter(date__gte=parse_date(start_date))
     if end_date:
-        transactions = transactions.filter(date__lte=parse_date(end_date))
+        end_date = datetime.combine(parse_date(end_date), datetime.max.time())
+        transactions = transactions.filter(date__lte=end_date)
     if min_amount:
         transactions = transactions.filter(mount__gte=float(min_amount))
     if max_amount:
@@ -250,7 +253,8 @@ def filter_incomes(request, id_user):
     if start_date:
         transactions = transactions.filter(date__gte=parse_date(start_date))
     if end_date:
-        transactions = transactions.filter(date__lte=parse_date(end_date))
+        end_date = datetime.combine(parse_date(end_date), datetime.max.time())
+        transactions = transactions.filter(date__lte=end_date)
     if min_amount:
         transactions = transactions.filter(mount__gte=float(min_amount))
     if max_amount:
