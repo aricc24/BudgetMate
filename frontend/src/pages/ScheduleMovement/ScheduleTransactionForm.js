@@ -90,6 +90,8 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       margin: '150px auto 10px auto',
       display: 'flex',
       flexDirection: 'column',
+      border: 'none',
+      boxShadow: 'none',
     },
     header: {
       textAlign: 'center',
@@ -109,6 +111,14 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       fontSize: '14px',
       fontWeight: 'bold',
       color: '#333',
+    },
+    amountInput: {
+      width: '95%', 
+      padding: '10px',
+      marginTop: '8px',
+      borderRadius: '4px',
+      border: '1px solid #ddd',
+      fontSize: '16px',
     },
     input: {
       width: '100%',
@@ -148,7 +158,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
               name="mount"
               value={formData.mount}
               onChange={handleChange}
-              style={styles.input}
+              style={styles.amountInput} 
               required
             />
           </div>
@@ -160,7 +170,8 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              style={styles.input}
+              style={styles.amountInput} 
+
             />
           </div>
 
@@ -184,7 +195,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
               name="date"
               value={formData.date}
               onChange={handleChange}
-              style={styles.input}
+              style={styles.amountInput} 
               required
             />
           </div>
