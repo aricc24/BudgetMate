@@ -131,25 +131,32 @@ def get_categories_by_user(request, id_user):
 
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-@api_view(['POST'])
-def create_or_associate_category(request):
-    category_name = request.data.get('category_name')
-    id_user = request.data.get('id_user')
-    if not category_name or not id_user:
-        return Response({"error": "Both category name and user ID are required."}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        user = User.objects.get(id_user=id_user)
-    except User.DoesNotExist:
-        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-
+def create_or_associate_category_logic(category_name, user):
     category, created = Category.objects.get_or_create(
         category_name=category_name,
         defaults={'is_universal': False}
     )
-
     if not user.categories.filter(id_category=category.id_category).exists():
         user.categories.add(category)
+
+    return {
+        "category": category,
+        "created": created
+    }
+
+@api_view(['POST'])
+def create_or_associate_category(request):
+    category_name = request.data.get('category_name')
+    id_user = request.data.get('id_user')
+    user = User.objects.get(id_user=id_user)
+
+    try:
+        result = create_or_associate_category_logic(category_name, user)
+    except ValueError as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    category = result["category"]
+    created = result["created"]
 
     return Response({
         "message": "Category created and associated" if created else "Category already exists and associated",
@@ -160,21 +167,33 @@ def create_or_associate_category(request):
 
 @api_view(['PATCH'])
 def update_user_category(request, id_user, id_category):
-    try:
-        user = User.objects.get(id_user=id_user)
-    except User.DoesNotExist:
-        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-    try:
-        category = Category.objects.get(id_category=id_category)
-    except Category.DoesNotExist:
-        return Response({"error": "Category not found."}, status=status.HTTP_404_NOT_FOUND)
+    user = User.objects.get(id_user=id_user)
+    category = Category.objects.get(id_category=id_category)
+    
     if category.is_universal:
-        return Response({"error": "Cannot modify global categories."}, status=status.HTTP_400_BAD_REQUEST)
+        r = Response({"error": "Cannot modify global categories."}, status=status.HTTP_400_BAD_REQUEST)
+        print("global error")
+        return r
+
     if not user.categories.filter(id_category=category.id_category).exists():
-        return Response({"error": "Category is not associated with this user."}, status=status.HTTP_400_BAD_REQUEST)
-    if 'category_name' in request.data:
+        r = Response({"error": "Category is not associated with this user."}, status=status.HTTP_400_BAD_REQUEST)
+        print("not asso")
+        return r
+
+    if category.users.exclude(id_user=user.id_user).exists():
+        new_category_name = request.data.get('category_name')
+        user.categories.remove(category)
+        try:
+            result = create_or_associate_category_logic(new_category_name, user)
+
+        except ValueError as e:
+            r = Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            print("multiple asso")
+            return r
+    else:
         category.category_name = request.data['category_name']
         category.save()
+
     return Response({"message": "Category updated successfully", "category": category.category_name}, status=status.HTTP_200_OK)
     
 class DebtsCreateView(generics.CreateAPIView):
