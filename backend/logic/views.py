@@ -17,7 +17,7 @@ from .models import User, Transaction
 import matplotlib.pyplot as plt
 import base64
 from PIL import Image
-from django.db.models import Sum 
+from django.db.models import Sum
 from matplotlib.dates import DateFormatter, AutoDateLocator
 from weasyprint import HTML
 from matplotlib.colors import to_hex
@@ -176,7 +176,7 @@ def update_user_category(request, id_user, id_category):
         category.category_name = request.data['category_name']
         category.save()
     return Response({"message": "Category updated successfully", "category": category.category_name}, status=status.HTTP_200_OK)
-    
+
 class DebtsCreateView(generics.CreateAPIView):
     queryset = Debt.objects.all()
     serializer_class = DebtsSerializer
@@ -239,12 +239,32 @@ def filter_transactions(request, id_user):
     serializer = TransactionSerializer(transactions, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def filter_incomes(request, id_user):
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    categories = request.GET.getlist('categories')
+    min_amount = request.GET.get('min_amount')
+    max_amount = request.GET.get('max_amount')
+    transactions = Transaction.objects.filter(id_user=id_user, type=Transaction.TransEnum.INCOME)
+    if start_date:
+        transactions = transactions.filter(date__gte=parse_date(start_date))
+    if end_date:
+        transactions = transactions.filter(date__lte=parse_date(end_date))
+    if min_amount:
+        transactions = transactions.filter(mount__gte=float(min_amount))
+    if max_amount:
+        transactions = transactions.filter(mount__lte=float(max_amount))
+    if categories:
+        transactions = transactions.filter(categories__in=categories).distinct()
+    serializer = TransactionSerializer(transactions, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def generate_pdf(request, id_user):
    user = User.objects.get(id_user=id_user)
    transactions = Transaction.objects.filter(id_user=user).select_related('id_user').prefetch_related('categories')
-   
+
    income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
    expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
 
@@ -322,7 +342,7 @@ def generate_pdf(request, id_user):
        'expense_line_chart_base64': expense_line_chart_base64,
        'income_pie_chart_base64': income_pie_chart_base64,
        'expense_pie_chart_base64': expense_pie_chart_base64,
- 
+
    }
 
 
@@ -350,7 +370,7 @@ def send_email(request, id_user):
 
     with open(f'temp_html_{id_user}.html', 'w') as f:
         f.write(html_content)
-    
+
     if 'data:image/png;base64,' not in html_content:
         return HttpResponse("Error: Las imágenes base64 no están en el HTML generado.")
 
@@ -375,7 +395,7 @@ def send_email(request, id_user):
         return HttpResponse("Email sent successfully!")
     except Exception as e:
         return HttpResponse(f"Failed to send email: {e}")
-    
+
 
 class ScheduledTransactionListCreateView(generics.ListCreateAPIView):
     queryset = ScheduledTransaction.objects.all()
