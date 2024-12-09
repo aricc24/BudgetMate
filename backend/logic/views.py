@@ -28,6 +28,7 @@ from django.core.mail import EmailMessage
 from rest_framework import generics
 from .models import ScheduledTransaction
 from .serializer import ScheduledTransactionSerializer
+from django.http import JsonResponse
 from datetime import datetime
 
 
@@ -130,7 +131,8 @@ def get_categories_by_user(request, id_user):
         user = User.objects.get(id_user=id_user)
     except User.DoesNotExist:
         return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-    categories = user.categories.all()
+    categories = user.categories.all() | Category.objects.filter(is_universal=True)
+    categories = categories.distinct()  
     serializer = CategorySerializer(categories, many=True)
 
     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -475,7 +477,27 @@ class ScheduledTransactionListCreateView(generics.ListCreateAPIView):
     queryset = ScheduledTransaction.objects.all()
     serializer_class = ScheduledTransactionSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            print("Validation errors:", serializer.errors)  
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return super().create(request, *args, **kwargs)
+
+
 class ScheduledTransactionUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ScheduledTransaction.objects.all()
     serializer_class = ScheduledTransactionSerializer
     lookup_field = 'id_scheduled_transaction'
+
+@api_view(['GET'])
+def get_scheduled_transactions_by_user(request, id_user):
+    try:
+        user = User.objects.get(id_user=id_user)
+    except User.DoesNotExist:
+        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    scheduled_transactions = ScheduledTransaction.objects.filter(user=user)
+    serializer = ScheduledTransactionSerializer(scheduled_transactions, many=True)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)

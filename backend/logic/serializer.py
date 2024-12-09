@@ -44,6 +44,7 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
+        
 
 class DebtsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,6 +52,27 @@ class DebtsSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class ScheduledTransactionSerializer(serializers.ModelSerializer):
+    categories_details = CategorySerializer(many=True, read_only=True, source='categories')
+    categories = serializers.PrimaryKeyRelatedField(many=True, queryset=Category.objects.all())
+
+    def create(self, validated_data):
+        print("Original data:", self.initial_data)
+        print("Validated data:", validated_data) 
+        categories = validated_data.pop('categories', [])
+        scheduled_transaction = ScheduledTransaction.objects.create(**validated_data)
+        scheduled_transaction.categories.set(categories)  
+        return scheduled_transaction
+
+    def update(self, instance, validated_data):
+        categories = validated_data.pop('categories', None)
+        if categories is not None:
+            instance.categories.set(categories)  
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+
     class Meta:
         model = ScheduledTransaction
         fields = '__all__'
+        extra_fields = ['categories_details']  

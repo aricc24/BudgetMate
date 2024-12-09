@@ -40,6 +40,9 @@ urlpatterns = [
     path('api/delete_debt/<int:id_debt>/', delete_debt, name='delete_debt'),
     path('api/generate_pdf/<int:id_user>/', generate_pdf, name='generate_pdf'),
     path('api/send_email/<int:id_user>/', send_email, name='send_email'),
-    path('scheduled-transactions/', ScheduledTransactionListCreateView.as_view(), name='list-create-scheduled-transactions'),
-    path('scheduled-transactions/<int:id_scheduled_transaction>/', ScheduledTransactionUpdateDeleteView.as_view(), name='update-delete-scheduled-transaction'),
+    path('api/scheduled-transactions/', ScheduledTransactionListCreateView.as_view(), name='list-create-scheduled-transactions'),
+    path('api/scheduled-transactions/<int:id_scheduled_transaction>/', ScheduledTransactionUpdateDeleteView.as_view(), name='update-delete-scheduled-transaction'),
+    path('api/scheduled-transactions/user/<int:id_user>/', get_scheduled_transactions_by_user, name='get-scheduled-transactions-by-user'),
+
+
 ]
