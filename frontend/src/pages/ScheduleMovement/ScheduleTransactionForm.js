@@ -14,6 +14,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
   const [scheduledTransactions, setScheduledTransactions] = useState([]);
   const userId = localStorage.getItem('userId');
   const authToken = localStorage.getItem('authToken');
+  const [editingTransactionId, setEditingTransactionId] = useState(null); 
 
   const fetchScheduledTransactions = useCallback(async () => {
     try {
@@ -67,11 +68,11 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
 
     console.log('Sending data:', formattedData);
 
-    const requestMethod = transactionId ? 'PUT' : 'POST';
-    const url = transactionId
-    ? `http://127.0.0.1:8000/api/scheduled-transactions/${transactionId}/`
-    : `http://127.0.0.1:8000/api/scheduled-transactions/`; 
-  
+    const requestMethod = editingTransactionId ? 'PATCH' : 'POST';
+    const url = editingTransactionId
+      ? `http://127.0.0.1:8000/api/update_scheduled_transaction/${editingTransactionId}/`
+      : `http://127.0.0.1:8000/api/scheduled-transactions/`;
+
     try {
       const response = await fetch(url, {
         method: requestMethod,
@@ -100,6 +101,66 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       console.error('Error saving scheduled transaction:', error);
     }
   };
+
+  const handleDeleteScheduledTransaction = async (transactionId) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/delete_scheduled_transaction/${transactionId}/`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${authToken}` },
+      });
+  
+      if (response.ok) {
+        setScheduledTransactions((prevTransactions) =>
+          prevTransactions.filter((transaction) => transaction.id_transaction !== transactionId)
+        );
+        alert('Scheduled transaction deleted successfully.');
+      } else {
+        alert('Failed to delete scheduled transaction.');
+      }
+    } catch (error) {
+      console.error('Error deleting scheduled transaction:', error);
+    }
+  };
+  
+  const handleEditScheduledTransaction = async (transactionId) => {
+    const currentTransaction = scheduledTransactions.find(t => t.id_transaction === transactionId);
+  
+    const updatedTransaction = {
+      user: userId,
+      amount: parseFloat(formData.amount || currentTransaction.amount),
+      description: formData.description || currentTransaction.description,
+      type: formData.type === 'INCOME' ? 0 : 1,
+      schedule_date: formData.date ? formData.date.split('T')[0] : currentTransaction.schedule_date,
+      repeat: formData.periodicity || currentTransaction.repeat,
+      categories: formData.categories.length > 0 ? formData.categories.map(id => parseInt(id)) : currentTransaction.categories,
+    };
+  
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/update_scheduled_transaction/${transactionId}/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(updatedTransaction),
+      });
+  
+      if (response.ok) {
+        const updatedData = await response.json();
+        setScheduledTransactions((prevTransactions) =>
+          prevTransactions.map(transaction =>
+            transaction.id_transaction === transactionId ? updatedData : transaction
+          )
+        );
+        alert('Scheduled transaction updated successfully.');
+      } else {
+        alert('Failed to update scheduled transaction.');
+      }
+    } catch (error) {
+      console.error('Error updating scheduled transaction:', error);
+    }
+  };
+  
   
   const styles = {
     formContainer: {
@@ -167,7 +228,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
     tableContainer: {
       maxHeight: '350px', 
       overflowY: 'auto', 
-      margin: '20px auto',
+      margin: '15px auto',
       border: '1px solid #ddd',
       borderRadius: '8px',
       boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
@@ -178,6 +239,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       width: '100%',
       borderCollapse: 'collapse',
     },
+    
     th: {
       backgroundColor: '#f4f4f4',
       fontWeight: 'bold',
@@ -196,6 +258,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
     trAlt: {
       backgroundColor: '#f9f9f9', 
     },
+    
   };
 
   return (
@@ -311,6 +374,8 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
             <th style={styles.th}>Date</th>
             <th style={styles.th}>Periodicity</th>
             <th style={styles.th}>Categories</th>
+            <th style={{ ...styles.th, textAlign: 'center', width: '50px' }}>+</th>
+
           </tr>
         </thead>
         <tbody>
@@ -327,8 +392,52 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
               <td style={styles.td}>
                 {transaction.categories_details.map(cat => cat.category_name).join(', ')}
               </td>
+      <td style={styles.td}>
+        <button
+          style={{
+            padding: '5px 10px',
+            fontSize: '12px',
+            borderRadius: '4px',
+            border: '1px solid #4c74af',
+            backgroundColor: '#4c74af',
+            color: '#fff',
+            cursor: 'pointer',
+            marginRight: '5px',
+            width: '100px',
+          }}
+          onClick={() => {
+            setFormData({
+              amount: transaction.amount,
+              description: transaction.description,
+              type: transaction.type === 0 ? 'INCOME' : 'EXPENSE',
+              date: transaction.schedule_date,
+              periodicity: transaction.repeat,
+              categories: transaction.categories.map(cat => cat.id_category),
+            });
+            setEditingTransactionId(transaction.id_transaction); 
+          }}
+        >
+          Edit 
+        </button>
+        <button
+          style={{     
+            padding: '5px 10px',
+            fontSize: '12px',
+            borderRadius: '4px',
+            border: '1px solid #e74c3c',
+            backgroundColor: '#e74c3c',
+            color: '#fff',
+            cursor: 'pointer',
+            width: '100px',
+          }}
+          onClick={() => handleDeleteScheduledTransaction(transaction.id_transaction)}
+        >
+          Delete
+        </button>
+      </td>
             </tr>
           ))}
+
         </tbody>
       </table>
     </div>
