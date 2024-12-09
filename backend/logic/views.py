@@ -265,8 +265,8 @@ def update_user_debt(request, id_user, id_debt):
         debt = Debt.objects.get(id_debt=id_debt, id_user=id_user)
     except Debt.DoesNotExist:
         return Response({"error": "Debt not found."}, status=status.HTTP_404_NOT_FOUND)
-
-    amount = float(request.data.get('amount', debt.mount))
+    print("Received Data:", request.data)
+    amount = float(request.data.get('amount', debt.amount))
     interest_rate = float(request.data.get('interestAmount', debt.interestAmount))
     has_interest = request.data.get('hasInterest', debt.hasInterest)
     init_date = isoparse(request.data.get('init_date', datetime.now(timezone.utc).isoformat()))

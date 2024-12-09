@@ -44,7 +44,7 @@ const Debts = () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log("Debts fetched:", data); // Verifica aquí
+                    console.log("Debts fetched:", data);
                     setDebts(data);
                 } else {
                     console.error('Failed to fetch debts');
@@ -430,6 +430,42 @@ const Debts = () => {
                             value={editLender}
                             onChange={(e) => setEditLender(e.target.value)}
                             placeholder="New Lender"
+                        />
+
+                        <div className="interestn-question">
+                        <label>Has interest?</label>
+                        <div>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="interestN"
+                                    value="true"
+                                    checked={editHInterest === true}
+                                    onChange={() => setEditHInterest(true)}
+                                />
+                                Yes
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="interestN"
+                                    value="false"
+                                    checked={editHInterest === false}
+                                    onChange={() => setEditHInterest(false)}
+                                />
+                                No
+                            </label>
+                        </div>
+
+                        </div>
+                        <input
+                            type="number"
+                            min="0"
+                            onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
+                            value={editInAmount}
+                            onChange={(e) => setEditInAmount(e.target.value)}
+                            placeholder="Interest Amount"
+                            disabled={!editHInterest}
                         />
 
                         <label htmlFor="initDatePicker">Init date:</label>
