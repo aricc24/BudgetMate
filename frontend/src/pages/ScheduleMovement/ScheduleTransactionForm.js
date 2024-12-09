@@ -109,7 +109,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
       width: '100%',
       maxWidth: '800px',
-      margin: '150px auto 10px auto',
+      margin: '500px auto 60px auto',
       display: 'flex',
       flexDirection: 'column',
       border: 'none',
@@ -166,19 +166,21 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       backgroundColor: '#3c5e8e',
     },
     tableContainer: {
-      maxHeight: '400px', // Altura máxima para la tabla
-      overflowY: 'auto', // Barra de desplazamiento vertical
-      margin: '20px 0',
-      border: '1px solid #ddd', // Bordes de la tabla
+      maxHeight: '350px', 
+      overflowY: 'auto', 
+      margin: '20px auto',
+      border: '1px solid #ddd',
       borderRadius: '8px',
       boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      with: '100%', 
+      marginLeft: '7%'
     },
     table: {
       width: '100%',
-      borderCollapse: 'collapse', // Para bordes limpios
+      borderCollapse: 'collapse',
     },
     th: {
-      backgroundColor: '#f4f4f4', // Color de fondo de encabezados
+      backgroundColor: '#f4f4f4',
       fontWeight: 'bold',
       padding: '12px 15px',
       textAlign: 'left',
@@ -190,10 +192,10 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       textAlign: 'left',
     },
     tr: {
-      backgroundColor: '#fff', // Color de fondo por defecto
+      backgroundColor: '#fff', 
     },
     trAlt: {
-      backgroundColor: '#f9f9f9', // Color alternativo para filas
+      backgroundColor: '#f9f9f9', 
     },
   };
 
@@ -300,31 +302,38 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       </form>
 
       <h2>Scheduled Transactions</h2>
-      <table>
+      <div style={styles.tableContainer}>
+      <table style={styles.table}>
         <thead>
           <tr>
-            <th>Amount</th>
-            <th>Description</th>
-            <th>Type</th>
-            <th>Date</th>
-            <th>Periodicity</th>
-            <th>Categories</th>
+            <th style={styles.th}>Amount</th>
+            <th style={styles.th}>Description</th>
+            <th style={styles.th}>Type</th>
+            <th style={styles.th}>Date</th>
+            <th style={styles.th}>Periodicity</th>
+            <th style={styles.th}>Categories</th>
           </tr>
         </thead>
         <tbody>
-          {scheduledTransactions.map(transaction => (
-            <tr key={transaction.id_transaction}>
-              <td>{transaction.amount}</td>
-              <td>{transaction.description}</td>
-              <td>{transaction.type === 0 ? 'Income' : 'Expense'}</td>
-              <td>{transaction.schedule_date}</td>
-              <td>{transaction.repeat}</td>
-              <td>{transaction.categories_details.map(cat => cat.category_name).join(', ')}</td>
+          {scheduledTransactions.map((transaction, index) => (
+            <tr
+              key={transaction.id_transaction}
+              style={index % 2 === 0 ? styles.tr : styles.trAlt} 
+            >
+              <td style={styles.td}>{transaction.amount}</td>
+              <td style={styles.td}>{transaction.description}</td>
+              <td style={styles.td}>{transaction.type === 0 ? 'Income' : 'Expense'}</td>
+              <td style={styles.td}>{transaction.schedule_date}</td>
+              <td style={styles.td}>{transaction.repeat}</td>
+              <td style={styles.td}>
+                {transaction.categories_details.map(cat => cat.category_name).join(', ')}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </Layout>
+    </div>
+  </Layout>
   );
 };
 
