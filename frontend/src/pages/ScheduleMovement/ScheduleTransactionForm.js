@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Layout from '../../components/Layout/Layout';
 
 const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
@@ -15,7 +15,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
   const userId = localStorage.getItem('userId');
   const authToken = localStorage.getItem('authToken');
 
-  const fetchScheduledTransactions = async () => {
+  const fetchScheduledTransactions = useCallback(async () => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/scheduled-transactions/user/${userId}/`, {
         headers: { 'Authorization': `Bearer ${authToken}` },
@@ -25,7 +25,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
     } catch (error) {
       console.error('Error fetching scheduled transactions:', error);
     }
-  };
+  }, [userId, authToken]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -42,7 +42,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
 
     fetchCategories();
     fetchScheduledTransactions(); 
-  }, [userId, authToken]);
+  }, [userId, authToken, fetchScheduledTransactions]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -113,7 +113,6 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       display: 'flex',
       flexDirection: 'column',
       border: 'none',
-      boxShadow: 'none',
     },
     header: {
       textAlign: 'center',
