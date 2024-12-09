@@ -9,11 +9,11 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Debts = () => {
     const [debts, setDebts] = useState([]);
-    const [amount, setAmount] = useState('');
+    const [amount, setAmount] = useState(0);
     const [description, setDescription] = useState('');
     const [lender, setLender] = useState('');
     const [hasInterest, setHasInterest] = useState(false);
-    const [interestAmount, setInterestAmount] = useState('');
+    const [interestAmount, setInterestAmount] = useState(0);
     const [init_Date, setInitDate] = useState(new Date());
     const [due_Date, setDueDate] = useState(new Date());
     const [paid_Date, setPaidDate] = useState(new Date());
@@ -21,11 +21,11 @@ const Debts = () => {
     const [selectedDebtId, setSelectedDebtId] = useState(null);
     const [isOptionsOpen, setisOptionsOpen] = useState(false);
     const [isEditOpen, setisEditOpen] = useState(false);
-    const [editAmount, setEditAmount] = useState('');
+    const [editAmount, setEditAmount] = useState(0);
     const [editDescription, setEditDescription] = useState('');
     const [editLender, setEditLender] = useState('');
     const [editHInterest, setEditHInterest] = useState(false);
-    const [editInAmount, setEditInAmount] = useState('');
+    const [editInAmount, setEditInAmount] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -44,6 +44,7 @@ const Debts = () => {
 
                 if (response.ok) {
                     const data = await response.json();
+                    console.log("Debts fetched:", data); // Verifica aquí
                     setDebts(data);
                 } else {
                     console.error('Failed to fetch debts');
@@ -62,7 +63,7 @@ const Debts = () => {
 
         const newDebt = {
             id_user: userId,
-            mount: parseFloat(amount),
+            amount: parseFloat(amount),
             description: description,
             lender: lender,
             hasInterest: hasInterest,
@@ -157,7 +158,7 @@ const Debts = () => {
 
         const updateDebt = {
             id_user: userId,
-            mount: editAmount ? parseFloat(editAmount) : currentDebt.mount,
+            amount: editAmount ? parseFloat(editAmount) : currentDebt.mount,
             description: editDescription || currentDebt.description,
             lender: editLender || currentDebt.lender,
             hasInterest: editHInterest,
@@ -223,7 +224,7 @@ const Debts = () => {
                         min="0"
                         onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
+                        onChange={(e) => setAmount(parseFloat(e.target.value))}
                         placeholder="Amount"
                     />
                     <input
@@ -336,7 +337,8 @@ const Debts = () => {
                                     <th>Description</th>
                                     <th>Lender</th>
                                     <th>Has Interest</th>
-                                    <th>Interest Amount</th>
+                                    <th>Interest Amount(per month)</th>
+                                    <th>Total Amount</th>
                                     <th>Status</th>
                                     <th>Init Date</th>
                                     <th>Due Date</th>
@@ -348,11 +350,12 @@ const Debts = () => {
                                     console.log(debt);
                                     return (
                                         <tr key={debt.id_debt}>
-                                            <td>- ${debt.mount}</td>
+                                            <td>- ${debt.amount}</td>
                                             <td>{debt.description || "No description"}</td>
                                             <td>{debt.lender || "Unknown"}</td>
                                             <td>{debt.hasInterest}</td>
                                             <td>{debt.interestAmount}</td>
+                                            <td>{debt.totalAmount}</td>
                                             <td>{debt.status}</td>
                                             <td>{adjustTime(debt.init_date)}</td>
                                             <td>{adjustTime(debt.due_date)}</td>
