@@ -194,12 +194,16 @@ const History = () => {
                     />
                     <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={minAmount}
                         onChange={(e) => setMinAmount(e.target.value)}
                         placeholder="Monto mínimo"
                     />
                     <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={maxAmount}
                         onChange={(e) => setMaxAmount(e.target.value)}
                         placeholder="Monto máximo"
@@ -257,6 +261,7 @@ const History = () => {
                 {isCategoryDialogOpen && (
                     <dialog className="category-dialog" open>
                         <h3>Select Categories</h3>
+                        <h6>Hold ctrl or left click to select multiple categories</h6>
                         <select
                             multiple
                             value={selectedCategories}

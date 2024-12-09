@@ -9,23 +9,22 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Debts = () => {
     const [debts, setDebts] = useState([]);
-    const [amount, setAmount] = useState('');
+    const [amount, setAmount] = useState(0);
     const [description, setDescription] = useState('');
     const [lender, setLender] = useState('');
     const [hasInterest, setHasInterest] = useState(false);
-    const [interestAmount, setInterestAmount] = useState('');
+    const [interestAmount, setInterestAmount] = useState(0);
     const [init_Date, setInitDate] = useState(new Date());
     const [due_Date, setDueDate] = useState(new Date());
-    const [paid_Date, setPaidDate] = useState(new Date());
     const [selectedOption, setSelectedOption] = useState('');
     const [selectedDebtId, setSelectedDebtId] = useState(null);
     const [isOptionsOpen, setisOptionsOpen] = useState(false);
     const [isEditOpen, setisEditOpen] = useState(false);
-    const [editAmount, setEditAmount] = useState('');
+    const [editAmount, setEditAmount] = useState(0);
     const [editDescription, setEditDescription] = useState('');
     const [editLender, setEditLender] = useState('');
     const [editHInterest, setEditHInterest] = useState(false);
-    const [editInAmount, setEditInAmount] = useState('');
+    const [editInAmount, setEditInAmount] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -44,6 +43,7 @@ const Debts = () => {
 
                 if (response.ok) {
                     const data = await response.json();
+                    console.log("Debts fetched:", data);
                     setDebts(data);
                 } else {
                     console.error('Failed to fetch debts');
@@ -62,14 +62,13 @@ const Debts = () => {
 
         const newDebt = {
             id_user: userId,
-            mount: parseFloat(amount),
+            amount: parseFloat(amount),
             description: description,
             lender: lender,
             hasInterest: hasInterest,
             interestAmount: hasInterest ? parseFloat(interestAmount || 0) : 0.0,
             init_date: init_Date.toISOString(),
             due_date: due_Date.toISOString(),
-            paid_date: paid_Date.toISOString(),
             status: (() => {
                 switch (selectedOption) {
                     case 'Pending':
@@ -104,13 +103,25 @@ const Debts = () => {
                 setInterestAmount('');
                 setInitDate(new Date());
                 setDueDate(new Date());
-                setPaidDate(new Date());
             } else {
                 console.error('Failed to add debt');
             }
         } catch (error) {
             console.error('Error adding debt:', error);
         }
+    };
+
+    const adjustTime = (utcDate) => {
+        const date = new Date (utcDate);
+        return date.toLocaleString('default', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short',
+        });
     };
 
     const handelDeleteDebt = async (id_debt) => {
@@ -144,14 +155,13 @@ const Debts = () => {
 
         const updateDebt = {
             id_user: userId,
-            mount: editAmount ? parseFloat(editAmount) : currentDebt.mount,
+            amount: editAmount ? parseFloat(editAmount) : currentDebt.mount,
             description: editDescription || currentDebt.description,
             lender: editLender || currentDebt.lender,
             hasInterest: editHInterest,
             interestAmount: editHInterest ? parseFloat(editInAmount || 0) : 0.0,
             init_date: init_Date.toISOString(),
             due_date: due_Date.toISOString(),
-            paid_date: paid_Date.toISOString(),
             status: (() => {
                 switch (selectedOption) {
                     case 'Pending':
@@ -191,7 +201,6 @@ const Debts = () => {
                 setEditInAmount('');
                 setInitDate(new Date());
                 setDueDate(new Date());
-                setPaidDate(new Date());
             } else {
                 console.error('Failed to update debt');
             }
@@ -207,8 +216,10 @@ const Debts = () => {
                 <div className="add-debt-form">
                     <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
+                        onChange={(e) => setAmount(parseFloat(e.target.value))}
                         placeholder="Amount"
                     />
                     <input
@@ -251,7 +262,9 @@ const Debts = () => {
                     </div>
     
                     <input
-                        type="text"
+                        type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={interestAmount}
                         onChange={(e) => setInterestAmount(e.target.value)}
                         placeholder="Interest Amount"
@@ -263,7 +276,10 @@ const Debts = () => {
                         id="initDatePicker"
                         selected={init_Date}
                         onChange={(date) => setInitDate(date)}
-                        dateFormat="yyyy-MM-dd"
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="yyyy-MM-dd HH:mm"
                         className="datepicker"
                     />
     
@@ -272,16 +288,10 @@ const Debts = () => {
                         id="dueDatePicker"
                         selected={due_Date}
                         onChange={(date) => setDueDate(date)}
-                        dateFormat="yyyy-MM-dd"
-                        className="datepicker"
-                    />
-    
-                    <label htmlFor="paidDatePicker">Paid date:</label>
-                    <DatePicker
-                        id="paidDatePicker"
-                        selected={paid_Date}
-                        onChange={(date) => setPaidDate(date)}
-                        dateFormat="yyyy-MM-dd"
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="yyyy-MM-dd HH:mm"
                         className="datepicker"
                     />
     
@@ -310,11 +320,11 @@ const Debts = () => {
                                     <th>Description</th>
                                     <th>Lender</th>
                                     <th>Has Interest</th>
-                                    <th>Interest Amount</th>
+                                    <th>Interest Amount(per month)</th>
+                                    <th>Total Amount</th>
                                     <th>Status</th>
                                     <th>Init Date</th>
                                     <th>Due Date</th>
-                                    <th>Paid Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -322,15 +332,15 @@ const Debts = () => {
                                     console.log(debt);
                                     return (
                                         <tr key={debt.id_debt}>
-                                            <td>- ${debt.mount}</td>
+                                            <td>- ${debt.amount}</td>
                                             <td>{debt.description || "No description"}</td>
                                             <td>{debt.lender || "Unknown"}</td>
                                             <td>{debt.hasInterest}</td>
                                             <td>{debt.interestAmount}</td>
+                                            <td>{debt.totalAmount}</td>
                                             <td>{debt.status}</td>
-                                            <td>{debt.init_date}</td>
-                                            <td>{debt.due_date}</td>
-                                            <td>{debt.paid_date}</td>
+                                            <td>{adjustTime(debt.init_date)}</td>
+                                            <td>{adjustTime(debt.due_date)}</td>
                                             <td>
                                                 <button
                                                     className="three-dots"
@@ -364,7 +374,6 @@ const Debts = () => {
                         <button
                             className='edited-button'
                             onClick={() => {
-                                const debtToEdit = debts.find(t => t.id_debt === selectedDebtId);
                                 setisOptionsOpen(false);
                                 setisEditOpen(true);
                             }}
@@ -383,6 +392,8 @@ const Debts = () => {
                     <dialog className='' open>
                         <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={editAmount}
                         onChange={(e) => setEditAmount(e.target.value)}
                         placeholder="New amount"
@@ -402,12 +413,51 @@ const Debts = () => {
                             placeholder="New Lender"
                         />
 
+                        <div className="interestn-question">
+                        <label>Has interest?</label>
+                        <div>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="interestN"
+                                    value="true"
+                                    checked={editHInterest === true}
+                                    onChange={() => setEditHInterest(true)}
+                                />
+                                Yes
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="interestN"
+                                    value="false"
+                                    checked={editHInterest === false}
+                                    onChange={() => setEditHInterest(false)}
+                                />
+                                No
+                            </label>
+                        </div>
+
+                        </div>
+                        <input
+                            type="number"
+                            min="0"
+                            onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
+                            value={editInAmount}
+                            onChange={(e) => setEditInAmount(e.target.value)}
+                            placeholder="Interest Amount"
+                            disabled={!editHInterest}
+                        />
+
                         <label htmlFor="initDatePicker">Init date:</label>
                         <DatePicker
                             id="initDatePicker"
                             selected={init_Date}
                             onChange={(date) => setInitDate(date)}
-                            dateFormat="yyyy-MM-dd"
+                            showTimeSelect
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            dateFormat="yyyy-MM-dd HH:mm"
                             className="datepicker"
                         />
 
@@ -416,16 +466,10 @@ const Debts = () => {
                             id="dueDatePicker"
                             selected={due_Date}
                             onChange={(date) => setDueDate(date)}
-                            dateFormat="yyyy-MM-dd"
-                            className="datepicker"
-                        />
-        
-                        <label htmlFor="paidDatePicker">Paid date:</label>
-                        <DatePicker
-                            id="paidDatePicker"
-                            selected={paid_Date}
-                            onChange={(date) => setPaidDate(date)}
-                            dateFormat="yyyy-MM-dd"
+                            showTimeSelect
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            dateFormat="yyyy-MM-dd HH:mm"
                             className="datepicker"
                         />
         

@@ -13,7 +13,7 @@ const Expenses = () => {
     const [transactions, setTransactions] = useState([]);
     const [categories, setCategories] = useState([]);
     const [chartData, setChartData] = useState(null);
-    const [filter, setFilter] = useState('monthly');
+    // const [filter, setFilter] = useState('monthly');
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -76,7 +76,7 @@ const Expenses = () => {
         };
         fetchTransactions();
         fetchCategories();
-    }, [filter, navigate]);
+    }, [navigate]);
 
     const updateChartData = (transactions) => {
         const filteredData = transactions.map(transaction => ({
@@ -124,6 +124,19 @@ const Expenses = () => {
         } catch (error) {
             console.error('Error adding transaction:', error);
         }
+    };
+
+    const adjustTime = (utcDate) => {
+        const date = new Date(utcDate);
+        return date.toLocaleString('default', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short',
+        });
     };
 
     const handelDeleteExpense = async (transactionId) => {
@@ -233,6 +246,56 @@ const Expenses = () => {
         setSelectedCategories(selectedOptions);
     };
 
+    const handleEditCategory = async (categoryId) => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken || !userId) return;
+    
+        const currentCategory = categories.find(cat => cat.id_category === categoryId);
+        const updateCategory = {
+            category_name: editCategory || currentCategory.category_name,
+        };
+    
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/update_category/${userId}/${categoryId}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                },
+                body: JSON.stringify(updateCategory),
+            });
+    
+            if (response.ok) {
+                const result = await response.json();
+                const updatedCategoryName = result.category_name;
+
+                setCategories(prevCategories =>
+                    prevCategories.map(cat =>
+                        cat.id_category === categoryId
+                            ? { ...cat, category_name: updatedCategoryName }
+                            : cat
+                    )
+                );
+
+                setTransactions(prevTransactions =>
+                    prevTransactions.map(transaction => ({
+                        ...transaction,
+                        categories: transaction.categories.map(cat =>
+                            cat === categoryId ? updatedCategoryName : cat
+                        ),
+                    }))
+                );
+                console.log(result.message);
+            } else {
+                const errorData = await response.json();
+                console.error(errorData.error);
+            }
+        } catch (error) {
+            console.error('Error updating category:', error);
+        }
+    };
+
     const handleDownloadPDF = async () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
@@ -299,17 +362,6 @@ const Expenses = () => {
         <Layout>
             <div className="expenses-page">
                 <div className="top-left">Expenses</div>
-                {/* <div className="filter-container">
-                    <label>Show by:</label>
-                    <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-                        <option value="daily">Daily</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
-                </div> */}
-
-
                 <div className="button-container">
                 <button onClick={handleDownloadPDF} className="btn btn-primary">Download PDF</button>
                 <button onClick={handleSendEmail} className="btn btn-primary">Send by Email</button>
@@ -319,6 +371,8 @@ const Expenses = () => {
                 <div className="add-expense-form">
                     <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         placeholder="Amount"
@@ -333,7 +387,10 @@ const Expenses = () => {
                     <DatePicker
                         selected={selectedDate}
                         onChange={date => setSelectedDate(date)}
-                        dateFormat="yyyy-MM-dd"
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="yyyy-MM-dd HH:mm"
                         className="datepicker"
                     />
 
@@ -386,7 +443,18 @@ const Expenses = () => {
                                     </td>
                                     <td>- ${transaction.mount}</td>
                                     <td>{transaction.description || 'No description'}</td>
-                                    <td>{transaction.date}</td>
+                                    <td>{adjustTime(transaction.date)}</td>
+                                    <td>
+                                        <button
+                                            className="three-dots"
+                                            onClick={() => {
+                                                setSelectedTransactionId(transaction.id_transaction);
+                                                setisOptionsOpen(true);
+                                            }}
+                                        >
+                                            <i className="fas fa-ellipsis-v"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             ))
                         ) : (
@@ -444,6 +512,8 @@ const Expenses = () => {
                     <dialog className='' open>
                         <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={editAmount}
                         onChange={(e) => setEditAmount(e.target.value)}
                         placeholder="New amount"
@@ -457,8 +527,11 @@ const Expenses = () => {
 
                         <DatePicker
                             selected={selectedDate}
-                            onChange={(date) => setSelectedDate(date)}
-                            dateFormat="yyyy-MM-dd"
+                            onChange={date => setSelectedDate(date)}
+                            showTimeSelect
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            dateFormat="yyyy-MM-dd HH:mm"
                             className="datepicker"
                         />
 
@@ -488,7 +561,7 @@ const Expenses = () => {
                 {isCategoryDialogOpen && (
                     <dialog className="category-dialog" open>
                         <h3>Select Categories</h3>
-                        <h6>Hold ctrl to select multiple categories</h6>
+                        <h6>Hold ctrl or left click to select multiple categories</h6>
                         <select
                             multiple
                             value={selectedCategories}
@@ -541,14 +614,18 @@ const Expenses = () => {
                     <dialog className='' open>
                         <h3>Edit Category</h3>
                         <select
-                            value={selectedCategories}
+                            value={selectedCategoryId}
                             onChange={(e) => {
-                                setSelectedCategories(e.target.value);
-                                setSelectedCategoryId(selectedCategories.id_category);
+                                const selectedId = e.target.value;
+                                setSelectedCategoryId(selectedId);
+                                const selectedCategory = categories.find(cat => cat.id_category === parseInt(selectedId));
+                                setEditCategory(selectedCategory.category_name);
                             }}
                         >
                             {categories.map((category) => (
-                                <option key={category.id_category} value={category.id_category}>{category.category_name}</option>
+                                <option key={category.id_category} value={category.id_category}>
+                                    {category.category_name}
+                                </option>
                             ))}
                         </select>
                         <input
@@ -560,7 +637,7 @@ const Expenses = () => {
                         <button
                             className='edited-button'
                             onClick={() => {
-                                
+                                handleEditCategory(parseInt(selectedCategoryId));
                                 setIsEditCategoryOpen(false);
                             }}
                         >
@@ -711,7 +788,7 @@ const PieChart = ({ data, categories}) => {
                 chartInstance.current.destroy();
             }
         };
-    }, [data]);
+    }, [data, categories]);
 
     return <canvas ref={chartRef} style={{ maxWidth: '100%', maxHeight: '85%' }}></canvas>;
 };

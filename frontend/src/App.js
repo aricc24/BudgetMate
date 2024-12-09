@@ -12,10 +12,6 @@ import Debts from './pages/Debts/Debts';
 import History from './pages/History/History';
 import ScheduledTransactionsForm from './pages/ScheduleMovement/ScheduleTransactionForm';
 import ScheduledTransactionsList  from './pages/ScheduleMovement/ScheduledTransactionsList';
-
-
-//import Navbar from './components/Navbar/Navbar';
-//import Sidebar from './components/Sidebar/Sidebar';
 import './App.css';
 
 function App() {

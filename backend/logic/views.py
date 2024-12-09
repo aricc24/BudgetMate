@@ -7,6 +7,8 @@ from .serializer import ReactSerializer, TransactionSerializer, CategorySerializ
 from django.utils.dateparse import parse_date
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
+from datetime import datetime, timezone
+from dateutil.parser import isoparse
 
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -133,25 +135,32 @@ def get_categories_by_user(request, id_user):
 
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-@api_view(['POST'])
-def create_or_associate_category(request):
-    category_name = request.data.get('category_name')
-    id_user = request.data.get('id_user')
-    if not category_name or not id_user:
-        return Response({"error": "Both category name and user ID are required."}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        user = User.objects.get(id_user=id_user)
-    except User.DoesNotExist:
-        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-
+def create_or_associate_category_logic(category_name, user):
     category, created = Category.objects.get_or_create(
         category_name=category_name,
         defaults={'is_universal': False}
     )
-
     if not user.categories.filter(id_category=category.id_category).exists():
         user.categories.add(category)
+
+    return {
+        "category": category,
+        "created": created
+    }
+
+@api_view(['POST'])
+def create_or_associate_category(request):
+    category_name = request.data.get('category_name')
+    id_user = request.data.get('id_user')
+    user = User.objects.get(id_user=id_user)
+
+    try:
+        result = create_or_associate_category_logic(category_name, user)
+    except ValueError as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    category = result["category"]
+    created = result["created"]
 
     return Response({
         "message": "Category created and associated" if created else "Category already exists and associated",
@@ -162,39 +171,95 @@ def create_or_associate_category(request):
 
 @api_view(['PATCH'])
 def update_user_category(request, id_user, id_category):
-    try:
-        user = User.objects.get(id_user=id_user)
-    except User.DoesNotExist:
-        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-    try:
-        category = Category.objects.get(id_category=id_category)
-    except Category.DoesNotExist:
-        return Response({"error": "Category not found."}, status=status.HTTP_404_NOT_FOUND)
+    user = User.objects.get(id_user=id_user)
+    category = Category.objects.get(id_category=id_category)
+    new_category_name = request.data.get('category_name')
+
+    # Global category: Error
     if category.is_universal:
+        print("global error")
         return Response({"error": "Cannot modify global categories."}, status=status.HTTP_400_BAD_REQUEST)
-    if not user.categories.filter(id_category=category.id_category).exists():
-        return Response({"error": "Category is not associated with this user."}, status=status.HTTP_400_BAD_REQUEST)
-    if 'category_name' in request.data:
-        category.category_name = request.data['category_name']
-        category.save()
-    return Response({"message": "Category updated successfully", "category": category.category_name}, status=status.HTTP_200_OK)
+
+    # Category assocciated with only one user (user who is editing)
+    if not category.users.exclude(id_user=user.id_user).exists():
+        existing_category = Category.objects.filter(category_name=new_category_name).first()
+        if existing_category:
+            # make association, delete previous & update transactions
+            user.categories.remove(category)
+            user.categories.add(existing_category)
+            transactions = Transaction.objects.filter(categories=category, id_user=id_user)
+            for transaction in transactions:
+                transaction.categories.remove(category)
+                transaction.categories.add(existing_category)
+                transaction.save()
+
+            category.delete()
+            print("category with only 1 association complete && exists")
+            return Response({
+                "message": "Category merged with an existing category.",
+                "category_name": existing_category.category_name,
+            }, status=status.HTTP_200_OK)
+        else:
+            # Rename category
+            category.category_name = new_category_name
+            category.save()
+            print("category with only 1 association complete")
+            return Response({
+                "message": "Category renamed successfully.",
+                "category_name": category.category_name,
+            }, status=status.HTTP_200_OK)
+
+    # category associated with multiple users
+    else:
+        new_category, created = Category.objects.get_or_create(
+            category_name=new_category_name,
+            defaults={'is_universal': False}
+        )
+        user.categories.remove(category)
+        user.categories.add(new_category)
+
+        # update transactions
+        transactions = Transaction.objects.filter(categories=category, id_user=id_user)
+        for transaction in transactions:
+            transaction.categories.remove(category)
+            transaction.categories.add(new_category)
+            transaction.save()
+        print("new category ready")
+        return Response({
+            "message": "Category duplicated and updated successfully.",
+            "category_name": new_category.category_name,
+        }, status=status.HTTP_200_OK)
 
 class DebtsCreateView(generics.CreateAPIView):
     queryset = Debt.objects.all()
     serializer_class = DebtsSerializer
+
     def create(self, request, *args, **kwargs):
         print("Received Data:", request.data)
+
+        amount = float(request.data.get('amount', 0))
+        interestAmount = float(request.data.get('interestAmount', 0))
+        has_interest = request.data.get('hasInterest', False)
+        init_date = isoparse(request.data.get('init_date', datetime.now(timezone.utc).isoformat()))
+        due_date = isoparse(request.data.get('due_date', datetime.now(timezone.utc).isoformat()))
+        months = (due_date.year - init_date.year) * 12 + due_date.month - init_date.month
+
+        if has_interest and interestAmount > 0 and months > 0:
+            interest = amount * (interestAmount / 100) * months
+            total_amount = amount + interest
+        else:
+            interest = 0
+            total_amount = amount
+
+        request.data['interestAmount'] = interest
+        request.data['totalAmount'] = total_amount
+
         try:
             return super().create(request, *args, **kwargs)
         except ValidationError as e:
             print(f"Validation Error: {e.detail}")
             raise
 
-@api_view(['GET'])
-def get_debts_by_user(request, id_user):
-    debts = Debt.objects.filter(id_user=id_user)
-    serializer = DebtsSerializer(debts, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['PATCH'])
 def update_user_debt(request, id_user, id_debt):
@@ -202,11 +267,34 @@ def update_user_debt(request, id_user, id_debt):
         debt = Debt.objects.get(id_debt=id_debt, id_user=id_user)
     except Debt.DoesNotExist:
         return Response({"error": "Debt not found."}, status=status.HTTP_404_NOT_FOUND)
+    print("Received Data:", request.data)
+    amount = float(request.data.get('amount', debt.amount))
+    interest_rate = float(request.data.get('interestAmount', debt.interestAmount))
+    has_interest = request.data.get('hasInterest', debt.hasInterest)
+    init_date = isoparse(request.data.get('init_date', datetime.now(timezone.utc).isoformat()))
+    due_date = isoparse(request.data.get('due_date', datetime.now(timezone.utc).isoformat()))
+    months = (due_date.year - init_date.year) * 12 + due_date.month - init_date.month
+
+    if has_interest and interest_rate > 0 and months > 0:
+        interest = amount * (interest_rate / 100) * months
+        total_amount = amount + interest
+    else:
+        interest = 0
+        total_amount = amount
+
+    request.data['interestAmount'] = interest
+    request.data['totalAmount'] = total_amount
     serializer = DebtsSerializer(debt, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_debts_by_user(request, id_user):
+    debts = Debt.objects.filter(id_user=id_user)
+    serializer = DebtsSerializer(debts, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['DELETE'])
 def delete_debt(request, id_debt):

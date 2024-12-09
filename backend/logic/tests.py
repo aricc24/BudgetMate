@@ -28,17 +28,11 @@ class APITest(TestCase):
 
 
     def test_login(self):
-        data = {
-            "email": "testuser@gmail.com",
-            "password": "123password"
-        }
+        data = {"email": "testuser@gmail.com","password": "123password"}
         response = self.client.post(self.login_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Logged in successfully!", response.data["message"])
-        data = {
-            "email": "user_incorrect@gmail.com",
-            "password": "wrongpassword"
-        }
+        data = {"email": "user_incorrect@gmail.com","password": "wrongpassword"}
         response = self.client.post(self.login_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertIn("Sorry, invalid data", response.data["message"])
@@ -71,8 +65,7 @@ class APITest(TestCase):
         )
         update_url = reverse('transaction-update', kwargs={
             'id_user': self.user.id_user,
-            'id_transaction': transaction.id_transaction
-        })
+            'id_transaction': transaction.id_transaction})
         data = {
             "mount": 1502.14,
             "type": Transaction.TransEnum.INCOME,
@@ -113,25 +106,9 @@ class APITest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.category.refresh_from_db()
         self.assertEqual(self.category.category_name, "Updated Category")
-    
-    def test_duplicate_category(self):
-        user = User.objects.create(
-            email="test@gmail.com",
-            password="lord123",
-        )
-        category = Category.objects.create(category_name="Unique Category", is_universal=False)
-        user.categories.add(category)
-        update_url = reverse('category-update', kwargs={'id_user': user.id_user, 'id_category': category.id_category})
-        data = {"category_name": "Unique Category"}
-        response = self.client.patch(update_url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(user.categories.filter(category_name="Unique Category").count(), 1)
 
     def test_update_globalCategory(self):
-        user = User.objects.create(
-            email="user@user.com",
-            password="password12365",
-        )
+        user = User.objects.create(email="user@user.com",password="password12365",)
         global_category = Category.objects.create(category_name="housing", is_universal=True)
         user.categories.add(global_category)
         update_url = reverse('category-update', kwargs={'id_user': user.id_user, 'id_category': global_category.id_category})
@@ -141,15 +118,9 @@ class APITest(TestCase):
         self.assertEqual(response.data["error"], "Cannot modify global categories.")
 
     def test_Ucategory_of_Auser(self):
-        user1 = User.objects.create(
-            email="user1@example.com",
-            password="password123",
-        )
+        user1 = User.objects.create(email="user1@example.com",password="password123",)
 
-        user2 = User.objects.create(
-            email="user2@example.com",
-            password="password123",
-        )
+        user2 = User.objects.create(email="user2@example.com",password="password123",)
         user_category = Category.objects.create(category_name="Sep", is_universal=False)
         user1.categories.add(user_category)
         update_url = reverse('category-update', kwargs={'id_user': user2.id_user, 'id_category': user_category.id_category})
@@ -222,10 +193,7 @@ class APITest(TestCase):
             description="Underwear",
             status=Debt.StatusEnum.PENDING
         )
-        update_url = reverse('debt-update', kwargs={
-            'id_user': self.user.id_user,
-            'id_debt': debt.id_debt
-        })
+        update_url = reverse('debt-update', kwargs={'id_user': self.user.id_user,'id_debt': debt.id_debt})
         data = {
             "mount": 20563.98,
             "description": "Updated debt description",
@@ -240,3 +208,45 @@ class APITest(TestCase):
         self.assertEqual(response.data["hasInterest"], True)
         self.assertEqual(response.data["interestAmount"], 200.09)
         self.assertEqual(response.data["description"], "Updated debt description")
+
+    def test_create_new_category_if_associated_with_another_user(self):
+        user1 = User.objects.create(email="user1@example.com", password="password123")
+        user2 = User.objects.create(email="user2@example.com", password="password123")
+        shared_category = Category.objects.create(category_name="Together", is_universal=False)
+
+        user1.categories.add(shared_category)
+        user2.categories.add(shared_category)
+
+        update_url = reverse('category-update', kwargs={'id_user': user2.id_user, 'id_category': shared_category.id_category})
+        data = {"category_name": "exclusive"}
+        response = self.client.patch(update_url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Category.objects.filter(category_name="exclusive").count(), 1)
+        self.assertFalse(user1.categories.filter(category_name="exclusive").exists())
+        self.assertTrue(user2.categories.filter(category_name="exclusive").exists())
+        self.assertTrue(user1.categories.filter(category_name="Together").exists())
+
+    def test_edit_category_if_only_user_associated(self):
+        user = User.objects.create(email="user@example.com", password="password123")
+        single_user_category = Category.objects.create(category_name="Personal Category", is_universal=False)
+        user.categories.add(single_user_category)
+
+        update_url = reverse('category-update', kwargs={'id_user': user.id_user, 'id_category': single_user_category.id_category})
+        data = {"category_name": "Updated Personal Category"}
+        response = self.client.patch(update_url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Category.objects.filter(category_name="Updated Personal Category").count(), 1)
+        self.assertTrue(user.categories.filter(category_name="Updated Personal Category").exists())
+
+    def test_cannot_edit_global_category(self):
+        user = User.objects.create(email="user@example.com", password="password123")
+        global_category = Category.objects.create(category_name="Global Category", is_universal=True)
+        user.categories.add(global_category)
+        update_url = reverse('category-update', kwargs={'id_user': user.id_user, 'id_category': global_category.id_category})
+        data = {"category_name": "Updated Global Category"}
+        response = self.client.patch(update_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["error"], "Cannot modify global categories.")
+        self.assertEqual(Category.objects.filter(category_name="Updated Global Category").count(), 0)

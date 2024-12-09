@@ -25,7 +25,7 @@ const Home = () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    const filteredData = applyTimeFilter(data, filter);
+                    // const filteredData = applyTimeFilter(data, filter);
                     const incomeData = data.filter(t => t.type === 0).map(t => ({ date: t.date, amount: t.mount }));
                     const expenseData = data.filter(t => t.type === 1).map(t => ({ date: t.date, amount: t.mount }));
                     setChartData({ income: incomeData, expenses: expenseData });
@@ -214,28 +214,28 @@ const CombinedPieChart = ({ data }) => {
     return <canvas ref={chartRef} style={{ maxWidth: '100%', height: '500px' }}></canvas>;
 };
 
-const applyTimeFilter = (transactions, filter) => {
-    const now = new Date();
-    return transactions.filter((transaction) => {
-        const transactionDate = new Date(transaction.date);
-        switch (filter) {
-            case 'daily':
-                return transactionDate.toDateString() === now.toDateString();
-            case 'weekly':
-                const weekAgo = new Date();
-                weekAgo.setDate(now.getDate() - 7);
-                return transactionDate >= weekAgo && transactionDate <= now;
-            case 'monthly':
-                return (
-                    transactionDate.getMonth() === now.getMonth() &&
-                    transactionDate.getFullYear() === now.getFullYear()
-                );
-            case 'yearly':
-                return transactionDate.getFullYear() === now.getFullYear();
-            default:
-                return true;
-        }
-    });
-};
+// const applyTimeFilter = (transactions, filter) => {
+//     const now = new Date();
+//     return transactions.filter((transaction) => {
+//         const transactionDate = new Date(transaction.date);
+//         switch (filter) {
+//             case 'daily':
+//                 return transactionDate.toDateString() === now.toDateString();
+//             case 'weekly':
+//                 const weekAgo = new Date();
+//                 weekAgo.setDate(now.getDate() - 7);
+//                 return transactionDate >= weekAgo && transactionDate <= now;
+//             case 'monthly':
+//                 return (
+//                     transactionDate.getMonth() === now.getMonth() &&
+//                     transactionDate.getFullYear() === now.getFullYear()
+//                 );
+//             case 'yearly':
+//                 return transactionDate.getFullYear() === now.getFullYear();
+//             default:
+//                 return true;
+//         }
+//     });
+// };
 
 export default Home;
