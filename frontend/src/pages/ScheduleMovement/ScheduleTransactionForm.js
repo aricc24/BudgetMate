@@ -229,7 +229,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
     tableContainer: {
       maxHeight: '350px', 
       overflowY: 'auto', 
-      margin: '20px auto',
+      margin: '15px auto',
       border: '1px solid #ddd',
       borderRadius: '8px',
       boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
@@ -400,7 +400,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
             color: '#fff',
             cursor: 'pointer',
             marginRight: '5px',
-            with: '100%', 
+            width: '100px',
           }}
           onClick={() => {
             setFormData({
@@ -414,7 +414,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
             setEditingTransactionId(transaction.id_transaction); 
           }}
         >
-          Edit   
+          Edit 
         </button>
         <button
           style={{     
@@ -425,6 +425,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
             backgroundColor: '#e74c3c',
             color: '#fff',
             cursor: 'pointer',
+            width: '100px',
           }}
           onClick={() => handleDeleteScheduledTransaction(transaction.id_transaction)}
         >
