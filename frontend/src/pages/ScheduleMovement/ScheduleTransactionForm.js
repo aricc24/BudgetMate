@@ -389,6 +389,29 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
               <td style={styles.td}>
                 {transaction.categories_details.map(cat => cat.category_name).join(', ')}
               </td>
+      <td style={styles.td}>
+        <button
+          style={styles.button}
+          onClick={() => {
+            setFormData({
+              amount: transaction.amount,
+              description: transaction.description,
+              type: transaction.type === 0 ? 'INCOME' : 'EXPENSE',
+              date: transaction.schedule_date,
+              periodicity: transaction.repeat,
+              categories: transaction.categories.map(cat => cat.id_category),
+            });
+          }}
+        >
+          Edit
+        </button>
+        <button
+          style={{ ...styles.button, backgroundColor: '#e74c3c' }}
+          onClick={() => handleDeleteScheduledTransaction(transaction.id_transaction)}
+        >
+          Delete
+        </button>
+      </td>
             </tr>
           ))}
         </tbody>
