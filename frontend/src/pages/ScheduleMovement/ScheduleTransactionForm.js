@@ -240,6 +240,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       width: '100%',
       borderCollapse: 'collapse',
     },
+    
     th: {
       backgroundColor: '#f4f4f4',
       fontWeight: 'bold',
@@ -258,6 +259,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
     trAlt: {
       backgroundColor: '#f9f9f9', 
     },
+    
   };
 
   return (
@@ -373,6 +375,8 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
             <th style={styles.th}>Date</th>
             <th style={styles.th}>Periodicity</th>
             <th style={styles.th}>Categories</th>
+            <th style={{ ...styles.th, textAlign: 'center', width: '50px' }}>+</th>
+
           </tr>
         </thead>
         <tbody>
