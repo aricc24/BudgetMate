@@ -8,12 +8,12 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - mariadb_data:/var/lib/mysql  # Ajustado el nombre del directorio mariadb
+      - mariadb_data:/var/lib/mysql
 
   backend:
     build:
-      context: ../backend  # Contexto correcto para el backend
-      dockerfile: ../docker/Dockerfile.backend  # Ruta al Dockerfile del backend
+      context: ../backend
+      dockerfile: ../docker/Dockerfile.backend
     container_name: django_backend
     command: >
       sh -c "
@@ -24,7 +24,7 @@ services:
         python manage.py runserver 0.0.0.0:8000
       "
     volumes:
-      - ../backend:/app  # Ajustada la ruta relativa al backend
+      - ../backend:/app
     ports:
       - "8000:8000"
     depends_on:
@@ -35,11 +35,11 @@ services:
 
   frontend:
     build:
-      context: ../frontend  # Contexto correcto para el frontend
-      dockerfile: ../docker/Dockerfile.frontend  # Ruta al Dockerfile del frontend
+      context: ../frontend
+      dockerfile: ../docker/Dockerfile.frontend
     container_name: react_frontend
     volumes:
-      - ../frontend:/app  # Ajustada la ruta relativa al frontend
+      - ../frontend:/app
       - /app/node_modules
     ports:
       - "3000:3000"
@@ -48,11 +48,11 @@ services:
 
   celery:
     build:
-      context: ../backend  # Contexto correcto para Celery
-      dockerfile: ../docker/Dockerfile.backend  # Ruta al Dockerfile del backend
+      context: ../backend
+      dockerfile: ../docker/Dockerfile.backend
     command: celery -A backend worker --loglevel=info
     volumes:
-      - ../backend:/app  # Ajustada la ruta relativa al backend
+      - ../backend:/app
     depends_on:
       - redis
       - backend
@@ -62,11 +62,11 @@ services:
 
   celery-beat:
     build:
-      context: ../backend  # Contexto correcto para Celery Beat
-      dockerfile: ../docker/Dockerfile.backend  # Ruta al Dockerfile del backend
+      context: ../backend
+      dockerfile: ../docker/Dockerfile.backend
     command: celery -A backend beat --loglevel=info
     volumes:
-      - ../backend:/app  # Ajustada la ruta relativa al backend
+      - ../backend:/app
     depends_on:
       - redis
       - backend
