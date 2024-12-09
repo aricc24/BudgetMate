@@ -16,7 +16,6 @@ const Debts = () => {
     const [interestAmount, setInterestAmount] = useState(0);
     const [init_Date, setInitDate] = useState(new Date());
     const [due_Date, setDueDate] = useState(new Date());
-    const [paid_Date, setPaidDate] = useState(new Date());
     const [selectedOption, setSelectedOption] = useState('');
     const [selectedDebtId, setSelectedDebtId] = useState(null);
     const [isOptionsOpen, setisOptionsOpen] = useState(false);
@@ -70,7 +69,6 @@ const Debts = () => {
             interestAmount: hasInterest ? parseFloat(interestAmount || 0) : 0.0,
             init_date: init_Date.toISOString(),
             due_date: due_Date.toISOString(),
-            paid_date: paid_Date.toISOString(),
             status: (() => {
                 switch (selectedOption) {
                     case 'Pending':
@@ -105,7 +103,6 @@ const Debts = () => {
                 setInterestAmount('');
                 setInitDate(new Date());
                 setDueDate(new Date());
-                setPaidDate(new Date());
             } else {
                 console.error('Failed to add debt');
             }
@@ -165,7 +162,6 @@ const Debts = () => {
             interestAmount: editHInterest ? parseFloat(editInAmount || 0) : 0.0,
             init_date: init_Date.toISOString(),
             due_date: due_Date.toISOString(),
-            paid_date: paid_Date.toISOString(),
             status: (() => {
                 switch (selectedOption) {
                     case 'Pending':
@@ -205,7 +201,6 @@ const Debts = () => {
                 setEditInAmount('');
                 setInitDate(new Date());
                 setDueDate(new Date());
-                setPaidDate(new Date());
             } else {
                 console.error('Failed to update debt');
             }
@@ -300,18 +295,6 @@ const Debts = () => {
                         className="datepicker"
                     />
     
-                    <label htmlFor="paidDatePicker">Paid date:</label>
-                    <DatePicker
-                        id="paidDatePicker"
-                        selected={paid_Date}
-                        onChange={(date) => setPaidDate(date)}
-                        showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={15}
-                        dateFormat="yyyy-MM-dd HH:mm"
-                        className="datepicker"
-                    />
-    
                     <div>
                         <label htmlFor="optionsDropdown">Status:</label>
                         <select
@@ -342,7 +325,6 @@ const Debts = () => {
                                     <th>Status</th>
                                     <th>Init Date</th>
                                     <th>Due Date</th>
-                                    <th>Paid Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -359,7 +341,6 @@ const Debts = () => {
                                             <td>{debt.status}</td>
                                             <td>{adjustTime(debt.init_date)}</td>
                                             <td>{adjustTime(debt.due_date)}</td>
-                                            <td>{adjustTime(debt.paid_date)}</td>
                                             <td>
                                                 <button
                                                     className="three-dots"
@@ -485,18 +466,6 @@ const Debts = () => {
                             id="dueDatePicker"
                             selected={due_Date}
                             onChange={(date) => setDueDate(date)}
-                            showTimeSelect
-                            timeFormat="HH:mm"
-                            timeIntervals={15}
-                            dateFormat="yyyy-MM-dd HH:mm"
-                            className="datepicker"
-                        />
-        
-                        <label htmlFor="paidDatePicker">Paid date:</label>
-                        <DatePicker
-                            id="paidDatePicker"
-                            selected={paid_Date}
-                            onChange={(date) => setPaidDate(date)}
                             showTimeSelect
                             timeFormat="HH:mm"
                             timeIntervals={15}

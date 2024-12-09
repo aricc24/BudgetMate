@@ -77,7 +77,6 @@ class Debt(models.Model):
     totalAmount = models.FloatField()
     init_date = models.DateTimeField(default=timezone.now)
     due_date = models.DateTimeField(default=timezone.now)
-    paid_date = models.DateTimeField(default=timezone.now)
     class StatusEnum(models.IntegerChoices):
         PENDING =  0, 'Pending'
         PAID =  1, 'Paid'
