@@ -373,6 +373,8 @@ const Income = () => {
 
                     <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         placeholder="Amount"
@@ -513,6 +515,8 @@ const Income = () => {
                     <dialog className='' open>
                         <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={editAmount}
                         onChange={(e) => setEditAmount(e.target.value)}
                         placeholder="New amount"
@@ -560,7 +564,7 @@ const Income = () => {
                 {isCategoryDialogOpen && (
                     <dialog className="category-dialog" open>
                         <h3>Select Categories</h3>
-                        <h6>Hold ctrl to select multiple categories</h6>
+                        <h6>Hold ctrl or left click to select multiple categories</h6>
                         <select
                             multiple
                             value={selectedCategories}

@@ -220,6 +220,8 @@ const Debts = () => {
                 <div className="add-debt-form">
                     <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         placeholder="Amount"
@@ -264,7 +266,9 @@ const Debts = () => {
                     </div>
     
                     <input
-                        type="text"
+                        type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={interestAmount}
                         onChange={(e) => setInterestAmount(e.target.value)}
                         placeholder="Interest Amount"
@@ -404,6 +408,8 @@ const Debts = () => {
                     <dialog className='' open>
                         <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={editAmount}
                         onChange={(e) => setEditAmount(e.target.value)}
                         placeholder="New amount"
