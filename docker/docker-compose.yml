@@ -1,53 +1,58 @@
 services:
   db:
-    image: mariadb:latest 
-    container_name: mysql_db
+    image: mariadb:latest
+    container_name: mariadb_db
     environment:
       MYSQL_ROOT_PASSWORD: BudgetMateDB
       MYSQL_DATABASE: BudgetMate_info
     ports:
       - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql  # Ajustado el nombre del directorio mariadb
 
-  backend: 
-    build: ./backend
+  backend:
+    build:
+      context: ../backend  # Contexto correcto para el backend
+      dockerfile: ../docker/Dockerfile.backend  # Ruta al Dockerfile del backend
     container_name: django_backend
     command: >
       sh -c "
-        ./wait-for-it.sh db:3306 -- 
+        ./wait-for-it.sh db:3306 --timeout=30 --
         echo 'DB is ready' && 
         python manage.py makemigrations --merge --noinput && 
         python manage.py migrate --noinput && 
         python manage.py runserver 0.0.0.0:8000
       "
-
     volumes:
-      - ./backend:/app
-    ports: 
+      - ../backend:/app  # Ajustada la ruta relativa al backend
+    ports:
       - "8000:8000"
-    depends_on: 
+    depends_on:
       - db
     links:
       - db
       - redis
 
-  frontend: 
-    build: ./frontend
+  frontend:
+    build:
+      context: ../frontend  # Contexto correcto para el frontend
+      dockerfile: ../docker/Dockerfile.frontend  # Ruta al Dockerfile del frontend
     container_name: react_frontend
     volumes:
-      - ./frontend:/app
+      - ../frontend:/app  # Ajustada la ruta relativa al frontend
       - /app/node_modules
-    ports: 
+    ports:
       - "3000:3000"
-    stdin_open: true 
-    tty: true 
+    stdin_open: true
+    tty: true
 
   celery:
-    build: ./backend
+    build:
+      context: ../backend  # Contexto correcto para Celery
+      dockerfile: ../docker/Dockerfile.backend  # Ruta al Dockerfile del backend
     command: celery -A backend worker --loglevel=info
     volumes:
-      - ./backend:/app
+      - ../backend:/app  # Ajustada la ruta relativa al backend
     depends_on:
       - redis
       - backend
@@ -56,10 +61,12 @@ services:
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
 
   celery-beat:
-    build: ./backend
+    build:
+      context: ../backend  # Contexto correcto para Celery Beat
+      dockerfile: ../docker/Dockerfile.backend  # Ruta al Dockerfile del backend
     command: celery -A backend beat --loglevel=info
     volumes:
-      - ./backend:/app
+      - ../backend:/app  # Ajustada la ruta relativa al backend
     depends_on:
       - redis
       - backend
@@ -74,4 +81,4 @@ services:
       - "6379:6379"
 
 volumes:
-  mysql_data:
+  mariadb_data:

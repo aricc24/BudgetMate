@@ -6,4 +6,4 @@ matplotlib
 weasyprint
 celery==5.2.7
 django-celery-beat==2.2.1
-redis==4.5.1
+redis==5.0.0
