@@ -165,6 +165,36 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
     buttonHover: {
       backgroundColor: '#3c5e8e',
     },
+    tableContainer: {
+      maxHeight: '400px', // Altura máxima para la tabla
+      overflowY: 'auto', // Barra de desplazamiento vertical
+      margin: '20px 0',
+      border: '1px solid #ddd', // Bordes de la tabla
+      borderRadius: '8px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    },
+    table: {
+      width: '100%',
+      borderCollapse: 'collapse', // Para bordes limpios
+    },
+    th: {
+      backgroundColor: '#f4f4f4', // Color de fondo de encabezados
+      fontWeight: 'bold',
+      padding: '12px 15px',
+      textAlign: 'left',
+      borderBottom: '2px solid #ddd',
+    },
+    td: {
+      padding: '10px 15px',
+      borderBottom: '1px solid #ddd',
+      textAlign: 'left',
+    },
+    tr: {
+      backgroundColor: '#fff', // Color de fondo por defecto
+    },
+    trAlt: {
+      backgroundColor: '#f9f9f9', // Color alternativo para filas
+    },
   };
 
   return (
@@ -289,7 +319,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
               <td>{transaction.type === 0 ? 'Income' : 'Expense'}</td>
               <td>{transaction.schedule_date}</td>
               <td>{transaction.repeat}</td>
-              <td>{transaction.categories.map(cat => cat.category_name).join(', ')}</td>
+              <td>{transaction.categories_details.map(cat => cat.category_name).join(', ')}</td>
             </tr>
           ))}
         </tbody>
