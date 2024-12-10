@@ -16,8 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from logic.views import *
-
+from logic.views.user_views import *
+from logic.views.transaction_views import *
+from logic.views.category_views import *
+from logic.views.debt_views import *
+from logic.views.scheduledTransaction_views import *
+from logic.views.general_views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -45,6 +49,4 @@ urlpatterns = [
     path('api/scheduled-transactions/user/<int:id_user>/', get_scheduled_transactions_by_user, name='get-scheduled-transactions-by-user'),
     path('api/delete_scheduled_transaction/<int:transaction_id>/', delete_scheduled_transaction, name='delete_scheduled_transaction'),
     path('api/update_scheduled_transaction/<int:transaction_id>/', update_scheduled_transaction, name='update_scheduled_transaction'),
-
-
 ]
