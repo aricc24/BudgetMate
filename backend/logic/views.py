@@ -340,9 +340,17 @@ def filter_transactions(request, id_user):
 def generate_pdf(request, id_user):
    user = User.objects.get(id_user=id_user)
    transactions = Transaction.objects.filter(id_user=user).select_related('id_user').prefetch_related('categories')
+   debts = Debt.objects.filter(id_user=user) 
 
    income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
    expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
+
+   total_income = sum(t.mount for t in income_data)
+   total_debt = sum(d.totalAmount for d in debts)
+   balance = total_income - total_debt
+   balance_message = (
+        f"Positive Balance: ${balance:.2f}" if balance >= 0 else f"Negative Balance: ${balance:.2f}"
+    )
 
    income_dates = [t.date for t in income_data]
    income_amounts = [t.mount for t in income_data]
@@ -414,10 +422,12 @@ def generate_pdf(request, id_user):
 
    context = {
        'transactions': transactions,
+       'debts': debts,
        'income_line_chart_base64': income_line_chart_base64,
        'expense_line_chart_base64': expense_line_chart_base64,
        'income_pie_chart_base64': income_pie_chart_base64,
        'expense_pie_chart_base64': expense_pie_chart_base64,
+       'balance_message': balance_message,
 
    }
 
