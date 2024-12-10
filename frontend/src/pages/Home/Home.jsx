@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import HomeComponents from './HomeComponents';
 import Chart from 'chart.js/auto';
-import Layout from '../../components/Layout/Layout.js';
-import './Home.css';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -39,40 +38,15 @@ const Home = () => {
 
         fetchTransactions();
     }, [navigate, filter]);
-
+    
     return (
-        <Layout>
-            <div className="home">
-                <h2>Financial Overview</h2>
-                 <div className="filter-container">
-                    <label>Show data by: </label>
-                    <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-                        <option value="all">All</option>
-                        <option value="daily">Daily</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
-                </div>
-                <div className="charts-container">
-                    <div className="chart-block">
-                        <h4>Combined Line Chart</h4>
-                        {chartData && <CombinedChart data={chartData} />}
-                    </div>
-                    <div className="chart-block">
-                        <h4>Combined Pie Chart</h4>
-                        {chartData && (
-                            <CombinedPieChart
-                                data={{
-                                    income: chartData.income,
-                                    expenses: chartData.expenses,
-                                }}
-                            />
-                        )}
-                    </div>
-                </div>
-            </div>
-        </Layout>
+        <HomeComponents
+            filter={filter}
+            setFilter={setFilter}
+            CombinedChart={CombinedChart}
+            CombinedPieChart={CombinedPieChart}
+            chartData={chartData}
+        />
     );
 };
 
@@ -81,9 +55,7 @@ const CombinedChart = ({ data }) => {
     const chartInstance = React.useRef(null);
 
     useEffect(() => {
-        if (chartInstance.current) {
-            chartInstance.current.destroy();
-        }
+        if (chartInstance.current) {chartInstance.current.destroy();}
 
         const sortedIncome = data.income
             .map(item => ({ date: new Date(item.date), amount: item.amount }))
@@ -127,32 +99,19 @@ const CombinedChart = ({ data }) => {
                 scales: {
                     x: {
                         type: 'time',
-                        time: {
-                            unit: 'day',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Date',
-                        },
+                        time: {unit: 'day'},
+                        title: {display: true, text: 'Date'},
                     },
                     y: {
-                        title: {
-                            display: true,
-                            text: 'Amount',
-                        },
-                        ticks: {
-                            callback: (value) => `$${value}`,
-                        },
+                        title: {display: true, text: 'Amount'},
+                        ticks: {callback: (value) => `$${value}`},
                     },
                 },
             },
         });
 
-        return () => {
-            if (chartInstance.current) {
-                chartInstance.current.destroy();
-            }
-        };
+        return () => {if (chartInstance.current) {chartInstance.current.destroy();}};
+
     }, [data]);
 
     return <canvas ref={chartRef} style={{ maxWidth: '100%', height: '400px' }}></canvas>;
@@ -163,13 +122,10 @@ const CombinedPieChart = ({ data }) => {
     const chartInstance = React.useRef(null);
 
     useEffect(() => {
-        if (chartInstance.current) {
-            chartInstance.current.destroy();
-        }
+        if (chartInstance.current) {chartInstance.current.destroy();}
 
         const incomeTotal = data.income.reduce((acc, t) => acc + parseFloat(t.amount || 0), 0);
         const expensesTotal = data.expenses.reduce((acc, t) => acc + parseFloat(t.amount || 0), 0);
-
         if (incomeTotal === 0 && expensesTotal === 0) {
             console.error("Both incomeTotal and expensesTotal are zero.");
             return;
@@ -204,11 +160,8 @@ const CombinedPieChart = ({ data }) => {
             },
         });
 
-        return () => {
-            if (chartInstance.current) {
-                chartInstance.current.destroy();
-            }
-        };
+        return () => {if (chartInstance.current) {chartInstance.current.destroy();}};
+        
     }, [data]);
 
     return <canvas ref={chartRef} style={{ maxWidth: '100%', height: '500px' }}></canvas>;

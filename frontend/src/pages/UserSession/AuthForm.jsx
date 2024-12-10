@@ -36,7 +36,6 @@ const AuthForm = ({
                                 placeholder="Email"
                             />
                         </div>
-    
                         <div className="form-group">
                             <label>Password</label>
                             <div className="input-container">
