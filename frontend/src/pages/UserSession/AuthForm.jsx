@@ -20,25 +20,23 @@ const AuthForm = ({
     submitButtonText,
 }) => {
     return (
-        <>
+        <>  
             <div className="background-container"></div>
             <div className="app">
                 <div className="card">
                     <h1 className="title">{title}</h1>
                     <form className="form" onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label>Email</label>
-                            <div className="input-container">
-                                <i className="fas fa-envelope icon"></i>
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    placeholder="Email"
-                                />
-                            </div>
+                        <div className="input-container">
+                            <i className="fas fa-envelope icon"></i>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                placeholder="Email"
+                            />
                         </div>
+    
                         <div className="form-group">
                             <label>Password</label>
                             <div className="input-container">
@@ -70,7 +68,7 @@ const AuthForm = ({
                 </div>
             </div>
         </>
-    );
+    );    
 };
 
 export default AuthForm;
