@@ -66,64 +66,45 @@
        </thead>
        <tbody>
         
-           {% for transaction in transactions %}
+           
            <tr>
                <td>
-                   {% for category in transaction.categories.all %}
-                       {{ category.category_name }}{% if not forloop.last %}, {% endif %}
-                   {% endfor %}
+                   
+                       comida
+                   
                </td>
-               <td>{{ transaction.get_type_display }}</td>
-               <td>{{ transaction.mount }}</td>
-               <td>{{ transaction.description }}</td>
-               <td>{{ transaction.date }}</td>
+               <td>Expense</td>
+               <td>3000.0</td>
+               <td>calvo</td>
+               <td>Dec. 10, 2024, 3:18 a.m.</td>
            </tr>
-           {% endfor %}
+           
+           <tr>
+               <td>
+                   
+                       comida
+                   
+               </td>
+               <td>Income</td>
+               <td>23123.0</td>
+               <td>343</td>
+               <td>Dec. 10, 2024, 3:18 a.m.</td>
+           </tr>
+           
        </tbody>
    </table>
 
-   <h2>Debts</h2>
-    <table>
-    <thead>
-        <tr>
-            <th>Lender</th>
-            <th>Amount</th>
-            <th>Interest</th>
-            <th>Total Amount</th>
-            <th>Status</th>
-            <th>Init Date</th>
-            <th>Due Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for debt in debts %}
-        <tr>
-            <td>{{ debt.lender }}</td>
-            <td>{{ debt.amount }}</td>
-            <td>{{ debt.interestAmount }}</td>
-            <td>{{ debt.totalAmount }}</td>
-            <td>{{ debt.get_status_display }}</td>
-            <td>{{ debt.init_date }}</td>
-            <td>{{ debt.due_date }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-    </table>
-
-   <h2>Balance</h2>
-   <p>{{ balance_message }}</p>
-
    <h2>Income line graph</h2>
-   <img src="data:image/png;base64,{{ income_line_chart_base64 }}" alt="Incomes Graph">
+   <img src="data:image/png;base64," alt="Incomes Graph">
 
    <h2>Expenses line graph</h2>
-   <img src="data:image/png;base64,{{ expense_line_chart_base64 }}" alt="Expenses Graph">
+   <img src="data:image/png;base64," alt="Expenses Graph">
 
    <h2>Income distribution by category</h2>
-   <img src="data:image/png;base64,{{ income_pie_chart_base64 }}" alt="Income Distribution">
+   <img src="data:image/png;base64," alt="Income Distribution">
 
    <h2>Expenses distribution by category</h2>
-   <img src="data:image/png;base64,{{ expense_pie_chart_base64 }}" alt="Expenses distribution">
+   <img src="data:image/png;base64," alt="Expenses distribution">
 
 
 </body>
