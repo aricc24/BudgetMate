@@ -345,12 +345,15 @@ def generate_pdf(request, id_user):
    income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
    expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
 
+   
    total_income = sum(t.mount for t in income_data)
-   total_debt = sum(d.totalAmount for d in debts)
-   balance = total_income - total_debt
+   total_expenses = sum(t.mount for t in expense_data)
+   total_debt = sum(d.totalAmount for d in debts)  
+   balance = total_income - (total_expenses + total_debt)  
+   
    balance_message = (
-        f"Positive Balance: ${balance:.2f}" if balance >= 0 else f"Negative Balance: ${balance:.2f}"
-    )
+    f"Positive Balance: ${balance:.2f}" if balance >= 0 else f"Negative Balance: ${balance:.2f}"
+)
 
    income_dates = [t.date for t in income_data]
    income_amounts = [t.mount for t in income_data]
