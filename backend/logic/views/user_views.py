@@ -5,7 +5,7 @@ from logic.models import User, Category
 from logic.serializer import UserSerializer
 from django.db import transaction
 
-class ReactView(generics.ListCreateAPIView):
+class UserView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
