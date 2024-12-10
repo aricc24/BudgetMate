@@ -344,16 +344,22 @@ def generate_pdf(request, id_user):
 
    income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
    expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
-
    
    total_income = sum(t.mount for t in income_data)
    total_expenses = sum(t.mount for t in expense_data)
-   total_debt = sum(d.totalAmount for d in debts)  
-   balance = total_income - (total_expenses + total_debt)  
    
-   balance_message = (
-    f"Positive Balance: ${balance:.2f}" if balance >= 0 else f"Negative Balance: ${balance:.2f}"
-)
+   total_paid_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PAID)
+   total_pending_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PENDING)
+   total_overdue_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.OVERDUE)
+   
+   main_balance = total_income - (total_expenses + total_paid_debt)
+   debt_balance = total_pending_debt + total_overdue_debt
+   suggested_balance = total_income - (total_expenses + total_paid_debt + debt_balance)
+   
+   main_balance_message = ( f"${main_balance:.2f}")
+   debt_balance_message = f"${debt_balance:.2f}"
+   suggested_balance_message = f"${suggested_balance:.2f}"
+
 
    income_dates = [t.date for t in income_data]
    income_amounts = [t.mount for t in income_data]
@@ -430,7 +436,14 @@ def generate_pdf(request, id_user):
        'expense_line_chart_base64': expense_line_chart_base64,
        'income_pie_chart_base64': income_pie_chart_base64,
        'expense_pie_chart_base64': expense_pie_chart_base64,
-       'balance_message': balance_message,
+       'main_balance_message': main_balance_message,
+       'debt_balance_message': debt_balance_message,
+       'suggested_balance_message': suggested_balance_message,
+       'total_income' : total_income, 
+       'total_expenses' : total_expenses, 
+       'total_paid_debt': total_paid_debt, 
+       'total_pending_debt': total_pending_debt, 
+       'total_overdue_debt': total_overdue_debt,
 
    }
 
