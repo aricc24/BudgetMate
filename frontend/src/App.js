@@ -4,7 +4,7 @@ import PrivateRoute from './PrivateRoute';
 import Home from './pages/Home/Home';
 import SignIn from './pages/UserSession/SignIn';
 import LogIn from './pages/UserSession/LogIn';
-import Income from './pages/Income/Income';
+import Income from './pages/Incomes/Income';
 import Expenses from './pages/Expenses/Expenses';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import ForgotPassword from './pages/UserSession/ForgotPassword';
