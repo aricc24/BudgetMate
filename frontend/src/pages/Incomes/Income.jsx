@@ -299,7 +299,6 @@ const Income = () => {
         }
     };
 
-
     const handleSendEmail = async () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
@@ -325,7 +324,6 @@ const Income = () => {
         }
     };
 
-
     const filteredTransactions = transactions.filter(transaction => {
         const descriptionMatch = transaction.description
             .toLowerCase()
@@ -334,7 +332,6 @@ const Income = () => {
             const category = categories.find(c => c.id_category === categoryId);
             return category?.category_name.toLowerCase().includes(searchTerm.toLowerCase());
         });
-
         return descriptionMatch || categoryMatch;
     });
 

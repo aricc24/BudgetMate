@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
-import 'chartjs-adapter-date-fns';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import Layout from '../../components/Layout/Layout.js';
-import './Expenses.css';
-import '@fortawesome/fontawesome-free/css/all.min.css';
-
+import ExpensesComponents from './ExpensesComponents.jsx'
 
 const Expenses = () => {
     const [transactions, setTransactions] = useState([]);
@@ -62,14 +56,10 @@ const Expenses = () => {
             const userId = localStorage.getItem('userId');
             fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`)
             .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Error fetching user categories");
-                }
+                if (!response.ok) { throw new Error("Error fetching user categories"); }
                 return response.json();
             })
-            .then((data) => {
-                setCategories(data);
-            })
+            .then((data) => { setCategories(data); })
             .catch((error) => {
                 console.error("Error fetching user categories:", error)
             });
@@ -167,7 +157,6 @@ const Expenses = () => {
         if (!authToken || !userId) return;
 
         const currentTransaction = transactions.find(t => t.id_transaction === transactionId);
-
         const updateTransaction = {
             id_user: userId,
             mount: editAmount ? parseFloat(editAmount) : currentTransaction.mount,
@@ -190,9 +179,7 @@ const Expenses = () => {
                 const savedTransaction = await response.json();
                 setTransactions(prevTransactions =>
                     prevTransactions.map(transaction =>
-                        transaction.id_transaction === transactionId
-                            ? savedTransaction
-                            : transaction
+                        transaction.id_transaction === transactionId ? savedTransaction : transaction
                     )
                 );                
                 updateChartData([...transactions, savedTransaction]);
@@ -250,7 +237,7 @@ const Expenses = () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
-    
+
         const currentCategory = categories.find(cat => cat.id_category === categoryId);
         const updateCategory = {
             category_name: editCategory || currentCategory.category_name,
@@ -272,9 +259,7 @@ const Expenses = () => {
 
                 setCategories(prevCategories =>
                     prevCategories.map(cat =>
-                        cat.id_category === categoryId
-                            ? { ...cat, category_name: updatedCategoryName }
-                            : cat
+                        cat.id_category === categoryId ? { ...cat, category_name: updatedCategoryName } : cat
                     )
                 );
 
@@ -352,306 +337,59 @@ const Expenses = () => {
             const category = categories.find(c => c.id_category === categoryId);
             return category?.category_name.toLowerCase().includes(searchTerm.toLowerCase());
         });
-
         return descriptionMatch || categoryMatch;
     });
 
-    
-
     return (
-        <Layout>
-            <div className="expenses-page">
-                <div className="top-left">Expenses</div>
-                <div className="button-container">
-                <button onClick={handleDownloadPDF} className="btn btn-primary">Download PDF</button>
-                <button onClick={handleSendEmail} className="btn btn-primary">Send by Email</button>
-                </div>
-
-
-                <div className="add-expense-form">
-                    <input
-                        type="number"
-                        min="0"
-                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        placeholder="Amount"
-                    />
-                    <input
-                        type="text"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Description"
-                    />
-
-                    <DatePicker
-                        selected={selectedDate}
-                        onChange={date => setSelectedDate(date)}
-                        showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={15}
-                        dateFormat="yyyy-MM-dd HH:mm"
-                        className="datepicker"
-                    />
-
-                    <button
-                        className="select-category-button"
-                        onClick={() => setIsCategoryDialogOpen(true)}
-                    >
-                        Select Categories
-                    </button>
-
-                    <button onClick={handleAddExpense}>Add Expense</button>
-                </div>
-
-                <div className="content-container">
-                    <div className="table-container">
-
-                    <div className="search-container">
-                    <input
-                        type="text"
-                        placeholder="Search by description or category"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="mb-4 p-2 border border-gray-300 rounded"
-                    />
-                </div>
-
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Amount</th>
-                            <th>Description</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredTransactions.length > 0 ? (
-                            filteredTransactions.map(transaction => (
-                                <tr key={transaction.id_transaction}>
-                                    <td>
-                                        {transaction.categories.map((categoryId, index) => {
-                                            const category = categories.find(c => c.id_category === categoryId);
-                                            return (
-                                                <span key={categoryId}>
-                                                    {category ? category.category_name : 'Unknown category'}
-                                                    {index < transaction.categories.length - 1 && ', '}
-                                                </span>
-                                            );
-                                        })}
-                                    </td>
-                                    <td>- ${transaction.mount}</td>
-                                    <td>{transaction.description || 'No description'}</td>
-                                    <td>{adjustTime(transaction.date)}</td>
-                                    <td>
-                                        <button
-                                            className="three-dots"
-                                            onClick={() => {
-                                                setSelectedTransactionId(transaction.id_transaction);
-                                                setisOptionsOpen(true);
-                                            }}
-                                        >
-                                            <i className="fas fa-ellipsis-v"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="4">No results found</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-
-                    </div>
-
-                    <div className="chart-container">
-                        <h4>Line Chart</h4>
-                        {chartData && <LineChart data={chartData} />}
-                    </div>
-
-                    <div className="chart-container">
-                        <h4>Pie Chart</h4>
-                         {transactions.length > 0 && <PieChart data={transactions} categories={categories} />}
-                    </div>
-                </div>
-
-                {isOptionsOpen && (
-                    <dialog className='' open>
-                        <button
-                            className='delete-button'
-                            onClick={() => {
-                                handelDeleteExpense(selectedTransactionId)
-                                setisOptionsOpen(false);
-                            }}
-                        >
-                            Delete
-                        </button>
-                        <button
-                            className='edited-button'
-                            onClick={() => {
-                                const transactionToEdit = transactions.find(t => t.id_transaction === selectedTransactionId);
-                                setSelectedDate(new Date(transactionToEdit.date));
-                                setisOptionsOpen(false);
-                                setisEditOpen(true);
-                            }}
-                        >
-                            Edit
-                        </button>
-                        <button
-                            onClick={() => setisOptionsOpen(false)}
-                        > 
-                            Cancel
-                        </button>
-                    </dialog>
-                )}
-
-                {isEditOpen && (
-                    <dialog className='' open>
-                        <input
-                        type="number"
-                        min="0"
-                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
-                        value={editAmount}
-                        onChange={(e) => setEditAmount(e.target.value)}
-                        placeholder="New amount"
-                        />
-                        <input
-                            type="text"
-                            value={editDescription}
-                            onChange={(e) => setEditDescription(e.target.value)}
-                            placeholder="New description"
-                        />
-
-                        <DatePicker
-                            selected={selectedDate}
-                            onChange={date => setSelectedDate(date)}
-                            showTimeSelect
-                            timeFormat="HH:mm"
-                            timeIntervals={15}
-                            dateFormat="yyyy-MM-dd HH:mm"
-                            className="datepicker"
-                        />
-
-                        <button
-                            className="select-category-button"
-                            onClick={() => setIsCategoryDialogOpen(true)}
-                        >
-                            Select Category
-                        </button>
-                        <button
-                            className='edited-button'
-                            onClick={() => {
-                                handleEditExpense(selectedTransactionId)
-                                setisEditOpen(false);
-                            }}
-                        >
-                            Accept
-                        </button>
-                        <button
-                            onClick={() => setisEditOpen(false)}
-                        > 
-                            Cancel
-                        </button>
-                    </dialog>
-                )}
-
-                {isCategoryDialogOpen && (
-                    <dialog className="category-dialog" open>
-                        <h3>Select Categories</h3>
-                        <h6>Hold ctrl or left click to select multiple categories</h6>
-                        <select
-                            multiple
-                            value={selectedCategories}
-                            onChange={handleCategoryChange}
-                        >
-                            {categories.map((category) => (
-                                <option key={category.id_category} value={category.id_category}>{category.category_name}</option>
-                            ))}
-                        </select>
-                        <button
-                            className="add-category-button"
-                            onClick={() => setIsNewCategoryDialogOpen(true)}
-                        >
-                            +
-                        </button>
-                        <div className="dialog-buttons">
-                            <button 
-                                onClick={() => {
-                                    const selectedCategory = categories.find(c => c.id_category === selectedCategoryId);
-                                    setEditCategory(selectedCategory ? selectedCategory.category_name : '');
-                                    setIsCategoryDialogOpen(false)
-                                    setIsEditCategoryOpen(true);
-                                }}
-                            >
-                                Edit category
-                            </button>
-                            <button onClick={() => setIsCategoryDialogOpen(false)}>Done</button>
-                            <button onClick={() => setIsCategoryDialogOpen(false)}>Cancel</button>
-                        </div>
-                    </dialog>
-                )}
-
-                {isNewCategoryDialogOpen && (
-                    <dialog className="new-category-dialog" open>
-                        <h3>Add New Category</h3>
-                        <input
-                            type="text"
-                            value={newCategory}
-                            onChange={(e) => setNewCategory(e.target.value)}
-                            placeholder="Category Name"
-                        />
-                        <div className="dialog-buttons">
-                            <button onClick={handleAddCategory}>Add</button>
-                            <button onClick={() => setIsNewCategoryDialogOpen(false)}>Cancel</button>
-                        </div>
-                    </dialog>
-                )}
-
-                {isEditCategoryOpen && (
-                    <dialog className='' open>
-                        <h3>Edit Category</h3>
-                        <select
-                            value={selectedCategoryId}
-                            onChange={(e) => {
-                                const selectedId = e.target.value;
-                                setSelectedCategoryId(selectedId);
-                                const selectedCategory = categories.find(cat => cat.id_category === parseInt(selectedId));
-                                setEditCategory(selectedCategory.category_name);
-                            }}
-                        >
-                            {categories.map((category) => (
-                                <option key={category.id_category} value={category.id_category}>
-                                    {category.category_name}
-                                </option>
-                            ))}
-                        </select>
-                        <input
-                            type="text"
-                            value={editCategory}
-                            onChange={(e) => setEditCategory(e.target.value)}
-                            placeholder="New name"
-                        />
-                        <button
-                            className='edited-button'
-                            onClick={() => {
-                                handleEditCategory(parseInt(selectedCategoryId));
-                                setIsEditCategoryOpen(false);
-                            }}
-                        >
-                            Accept
-                        </button>
-                        <button
-                            onClick={() => setIsEditCategoryOpen(false)}
-                        > 
-                            Cancel
-                        </button>
-                    </dialog>
-                )}
-            </div>
-        </Layout>
+        <ExpensesComponents
+            transactions={transactions}
+            categories={categories}
+            chartData={chartData}
+            amount={amount}
+            setAmount={setAmount}
+            description={description}
+            setDescription={setDescription}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
+            newCategory={newCategory}
+            setNewCategory={setNewCategory}
+            isCategoryDialogOpen={isCategoryDialogOpen}
+            setIsCategoryDialogOpen={setIsCategoryDialogOpen}
+            isNewCategoryDialogOpen={isNewCategoryDialogOpen}
+            setIsNewCategoryDialogOpen={setIsNewCategoryDialogOpen}
+            isOptionsOpen={isOptionsOpen}
+            setisOptionsOpen={setisOptionsOpen}
+            selectedTransactionId={selectedTransactionId}
+            setSelectedTransactionId={setSelectedTransactionId}
+            editAmount={editAmount}
+            setEditAmount={setEditAmount}
+            editDescription={editDescription}
+            setEditDescription={setEditDescription}
+            isEditOpen={isEditOpen}
+            setisEditOpen={setisEditOpen}
+            isEditCategoryOpen={isEditCategoryOpen}
+            setIsEditCategoryOpen={setIsEditCategoryOpen}
+            editCategory={editCategory}
+            setEditCategory={setEditCategory}
+            selectedCategoryId={selectedCategoryId}
+            setSelectedCategoryId={setSelectedCategoryId}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            handleDownloadPDF={handleDownloadPDF}
+            handleSendEmail={handleSendEmail}
+            handleAddExpense={handleAddExpense}
+            filteredTransactions={filteredTransactions}
+            adjustTime={adjustTime}
+            LineChart={LineChart}
+            PieChart={PieChart}
+            handelDeleteExpense={handelDeleteExpense}
+            handleEditExpense={handleEditExpense}
+            handleCategoryChange={handleCategoryChange}
+            handleAddCategory={handleAddCategory}
+            handleEditCategory={handleEditCategory}
+        />
     );
 };
 
@@ -660,12 +398,9 @@ const LineChart = ({ data }) => {
     const chartInstance = React.useRef(null);
 
     useEffect(() => {
-        if (chartInstance.current) {
-            chartInstance.current.destroy();
-        }
+        if (chartInstance.current) { chartInstance.current.destroy(); }
 
         const sortedData = data.sort((a, b) => a.date- b.date);
-
         chartInstance.current = new Chart(chartRef.current, {
             type: 'line',
             data: {
@@ -691,21 +426,11 @@ const LineChart = ({ data }) => {
                 scales: {
                     x: {
                         type: 'time',
-                        time: {
-                            unit: 'day',
-                            stepSize: 1,
-
-                        },
-                        title: {
-                            display: true,
-                            text: 'Timestamp',
-                        },
+                        time: { unit: 'day', stepSize: 1 },
+                        title: { display: true, text: 'Timestamp' },
                     },
                     y: {
-                        title: {
-                            display: true,
-                            text: 'Amount',
-                        },
+                        title: { display: true, text: 'Amount' },
                         ticks: {
                             callback: (value) => `$${value.toFixed(2)}`,
                         }
@@ -715,26 +440,19 @@ const LineChart = ({ data }) => {
         });
 
         return () => {
-            if (chartInstance.current) {
-                chartInstance.current.destroy();
-            }
+            if (chartInstance.current) { chartInstance.current.destroy(); }
         };
     }, [data]);
 
     return <canvas ref={chartRef} style={{ display: "flex", maxWidth: "100%", maxHeight: "85%" }}></canvas>
-
-
-
 };
+
 const PieChart = ({ data, categories}) => {
     const chartRef = React.useRef(null);
     const chartInstance = React.useRef(null);
 
     useEffect(() => {
-        if (chartInstance.current) {
-            chartInstance.current.destroy();
-        }
-
+        if (chartInstance.current) { chartInstance.current.destroy(); }
 
         const groupedData = data.reduce((acc, transaction) => {
             const categoryId = transaction.categories?.[0];
@@ -742,10 +460,8 @@ const PieChart = ({ data, categories}) => {
             acc[category] = (acc[category] || 0) + transaction.mount;
             return acc;
         }, {});
-
         const labels = Object.keys(groupedData);
         const amounts = Object.values(groupedData);
-
         chartInstance.current = new Chart(chartRef.current, {
             type: 'pie',
             data: {
@@ -784,9 +500,7 @@ const PieChart = ({ data, categories}) => {
         });
 
         return () => {
-            if (chartInstance.current) {
-                chartInstance.current.destroy();
-            }
+            if (chartInstance.current) { chartInstance.current.destroy(); }
         };
     }, [data, categories]);
 
