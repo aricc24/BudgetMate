@@ -9,9 +9,6 @@
   --gris: #ddd;
   --fuente-principal: "Ubuntu", helvetica, sans-serif;
   --fuente-secundaria: "Raleway", arial, sans-serif;
-
-
-
 }
 
 body {
@@ -169,7 +166,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('./assets/background.jpg') no-repeat center center fixed;
+  background: url('../../assets/background.jpg') no-repeat center center fixed;
   background-size: cover;
   filter: blur(3px);
   z-index: -1;

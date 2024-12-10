@@ -1,37 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import './AuthForm.css';
 
-function SignIn() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const userData = { email, password };
-
-        try {
-            const response = await fetch('http://127.0.0.1:8000/api/users/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userData)
-            });
-
-            setMessage(response.ok ? 'User added successfully!' : 'Error adding user.');
-        } catch (error) {
-            console.error('Error:', error);
-            setMessage('Error adding user.');
-        }
-    };
-
+const AuthForm = ({
+    title,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    showPassword,
+    setShowPassword,
+    message,
+    handleSubmit,
+    linkMessage,
+    linkPath,
+    linkText,
+    extraLinks = [],
+    submitButtonText,
+}) => {
     return (
         <>
             <div className="background-container"></div>
             <div className="app">
                 <div className="card">
-                    <h1 className="title">Sign In</h1>
+                    <h1 className="title">{title}</h1>
                     <form className="form" onSubmit={handleSubmit}>
                         <div className="form-group">
                             <label>Email</label>
@@ -63,19 +56,21 @@ function SignIn() {
                                 ></i>
                             </div>
                         </div>
-                        <button type="submit" className="button">Register</button>
+                        <button type="submit" className="button">{submitButtonText}</button>
                     </form>
                     {message && <p className="message">{message}</p>}
-                    <p>
-                        Already have an account? <Link to="/login" className="link-button">Log In</Link>
+                    <p className="message">
+                        {linkMessage} <Link to={linkPath} className="link-button">{linkText}</Link>
                     </p>
-                    <p className ="message">
-                        Forgot your password? <Link to="/forgot-password" className="link-button" >Recover</Link>
-                    </p>
+                    {extraLinks.map((link, index) => (
+                        <p className="message" key={index}>
+                            {link.text} <Link to={link.path} className="link-button">{link.linkText}</Link>
+                        </p>
+                    ))}
                 </div>
             </div>
         </>
     );
-}
+};
 
-export default SignIn;
+export default AuthForm;
