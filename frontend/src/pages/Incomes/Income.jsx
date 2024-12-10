@@ -61,9 +61,7 @@ const Income = () => {
                 }
                 return response.json();
             })
-            .then((data) => {
-                setCategories(data);
-            })
+            .then((data) => {setCategories(data);})
             .catch((error) => {
                 console.error("Error fetching user categories:", error)
             });
@@ -103,7 +101,6 @@ const Income = () => {
                 },
                 body: JSON.stringify(newTransaction)
             });
-
             if (response.ok) {
                 const savedTransaction = await response.json();
                 setTransactions(prevTransactions => [...prevTransactions, savedTransaction]);
@@ -140,7 +137,6 @@ const Income = () => {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${authToken}` },
             });
-    
             if (response.ok) {
                 setTransactions((prevTransactions) =>
                     prevTransactions.filter((transaction) => transaction.id_transaction !== transactionId)
@@ -159,9 +155,7 @@ const Income = () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
-
         const currentTransaction = transactions.find(t => t.id_transaction === transactionId);
-
         const updateTransaction = {
             id_user: userId,
             mount: editAmount ? parseFloat(editAmount) : currentTransaction.mount,
@@ -184,9 +178,7 @@ const Income = () => {
                 const savedTransaction = await response.json();
                 setTransactions(prevTransactions =>
                     prevTransactions.map(transaction =>
-                        transaction.id_transaction === transactionId
-                            ? savedTransaction
-                            : transaction
+                        transaction.id_transaction === transactionId ? savedTransaction : transaction
                     )
                 );                
                 updateChartData([...transactions, savedTransaction]);
@@ -204,7 +196,6 @@ const Income = () => {
 
     const handleAddCategory = async () => {
         if (!newCategory.trim()) return;
-
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
 
@@ -217,7 +208,6 @@ const Income = () => {
                 },
                 body: JSON.stringify({ id_user: userId, category_name: newCategory })
             });
-
             if (response.ok) {
                 const result = await response.json();
                 const newCat = {
@@ -244,7 +234,6 @@ const Income = () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
-    
         const currentCategory = categories.find(cat => cat.id_category === categoryId);
         const updateCategory = {
             category_name: editCategory || currentCategory.category_name,
@@ -263,15 +252,11 @@ const Income = () => {
             if (response.ok) {
                 const result = await response.json();
                 const updatedCategoryName = result.category_name;
-
                 setCategories(prevCategories =>
                     prevCategories.map(cat =>
-                        cat.id_category === categoryId
-                            ? { ...cat, category_name: updatedCategoryName }
-                            : cat
+                        cat.id_category === categoryId ? { ...cat, category_name: updatedCategoryName } : cat
                     )
                 );
-    
                 setTransactions(prevTransactions =>
                     prevTransactions.map(transaction => ({
                         ...transaction,
@@ -353,7 +338,6 @@ const Income = () => {
         return descriptionMatch || categoryMatch;
     });
 
-    
     return (
         <IncomeComponents
             transactions={transactions}
@@ -407,24 +391,18 @@ const Income = () => {
     );
 };
 
-
-
-
-
 const LineChart = ({ data }) => {
     const chartRef = React.useRef(null);
     const chartInstance = React.useRef(null);
 
     useEffect(() => {
-        if (chartInstance.current) {
-            chartInstance.current.destroy();
-        }
+        if (chartInstance.current) { chartInstance.current.destroy(); }
 
         const sortedData = data
             .filter(d => d.amount && d.date && !isNaN(new Date(d.date).getTime()))
             .map(d => ({
-                 date: new Date(d.date),
-                 amount: d.amount,
+                date: new Date(d.date),
+                amount: d.amount,
             }))
             .sort((a, b) => a.date- b.date);
 
@@ -460,33 +438,19 @@ const LineChart = ({ data }) => {
                 scales: {
                     x: {
                         type: 'time',
-                        time: {
-                            unit: 'day',
-                            stepSize: 1,
-
-                        },
-                        title: {
-                            display: true,
-                            text: 'Timestamp',
-                        },
+                        time: { unit: 'day',stepSize: 1 },
+                        title: { display: true, text: 'Timestamp' },
                     },
                     y: {
-                        title: {
-                            display: true,
-                            text: 'Amount',
-                        },
-                        ticks: {
-                            callback: (value) => `$${value.toFixed(2)}`,
-                        }
+                        title: { display: true, text: 'Amount' },
+                        ticks: { callback: (value) => `$${value.toFixed(2)}`}
                     }
                 }
             }
         });
 
         return () => {
-            if (chartInstance.current) {
-                chartInstance.current.destroy();
-            }
+            if (chartInstance.current) { chartInstance.current.destroy(); }
         };
     }, [data]);
 
@@ -498,10 +462,7 @@ const PieChart = ({ data, categories}) => {
     const chartInstance = React.useRef(null);
 
     useEffect(() => {
-        if (chartInstance.current) {
-            chartInstance.current.destroy();
-        }
-
+        if (chartInstance.current) { chartInstance.current.destroy(); }
 
         const groupedData = data.reduce((acc, transaction) => {
             const categoryId = transaction.categories?.[0];
@@ -509,7 +470,6 @@ const PieChart = ({ data, categories}) => {
             acc[category] = (acc[category] || 0) + transaction.mount;
             return acc;
         }, {});
-
         const labels = Object.keys(groupedData);
         const amounts = Object.values(groupedData);
 
@@ -551,9 +511,7 @@ const PieChart = ({ data, categories}) => {
         });
 
         return () => {
-            if (chartInstance.current) {
-                chartInstance.current.destroy();
-            }
+            if (chartInstance.current) { chartInstance.current.destroy(); }
         };
     }, [data, categories]);
 
