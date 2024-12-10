@@ -137,11 +137,16 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       });
 
       if (response.ok) {
+        const updatedData = await response.json();
+      
         setScheduledTransactions((prevTransactions) =>
-          prevTransactions.map(transaction =>
-            transaction.id_transaction === editingTransactionId ? { ...transaction, ...formattedData } : transaction
-          )
-        );
+        prevTransactions.map(transaction =>
+          transaction.id_transaction === editingTransactionId
+            ? { ...transaction, ...updatedData, categories_details: updatedData.categories_details }
+            : transaction
+        )
+      );
+
         setFormData({
           amount: '',
           description: '',
