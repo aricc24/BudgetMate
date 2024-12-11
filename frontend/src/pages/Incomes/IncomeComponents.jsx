@@ -67,6 +67,7 @@ const IncomeComponents = ({
                         timeIntervals={15}
                         dateFormat="yyyy-MM-dd HH:mm"
                         className="datepicker"
+                        onKeyDown={(e) => e.preventDefault()}
                     />
                     <button
                         className="select-category-button"
@@ -201,6 +202,7 @@ const IncomeComponents = ({
                             timeIntervals={15}
                             dateFormat="yyyy-MM-dd HH:mm"
                             className="datepicker"
+                            onKeyDown={(e) => e.preventDefault()}
                         />
 
                         <button

@@ -67,6 +67,7 @@ const ExpensesComponents = ({
                         timeIntervals={15}
                         dateFormat="yyyy-MM-dd HH:mm"
                         className="datepicker"
+                        onKeyDown={(e) => e.preventDefault()}
                     />
                     <button
                         className="select-category-button"
@@ -199,6 +200,7 @@ const ExpensesComponents = ({
                             timeIntervals={15}
                             dateFormat="yyyy-MM-dd HH:mm"
                             className="datepicker"
+                            onKeyDown={(e) => e.preventDefault()}
                         />
     
                         <button

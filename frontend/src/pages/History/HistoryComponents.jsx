@@ -47,7 +47,7 @@ const HistoryComponents = ({
                         onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={minAmount}
                         onChange={(e) => setMinAmount(e.target.value)}
-                        placeholder="Monto mínimo"
+                        placeholder="Min. Amount"
                     />
                     <input
                         type="number"
@@ -55,7 +55,7 @@ const HistoryComponents = ({
                         onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={maxAmount}
                         onChange={(e) => setMaxAmount(e.target.value)}
-                        placeholder="Monto máximo"
+                        placeholder="Max. Amount"
                     />
                     <button
                         className="select-category-button"
@@ -139,15 +139,19 @@ const HistoryComponents = ({
                     />
                     <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={minAmountIncomes}
                         onChange={(e) => setMinAmountIncomes(e.target.value)}
-                        placeholder="Monto mínimo"
+                        placeholder="Min. Amount"
                     />
                     <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={maxAmountIncomes}
                         onChange={(e) => setMaxAmountIncomes(e.target.value)}
-                        placeholder="Monto máximo"
+                        placeholder="Max. Amount"
                     />
                     <button
                         className="select-category-button"

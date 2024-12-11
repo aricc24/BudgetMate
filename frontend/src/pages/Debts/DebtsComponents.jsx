@@ -100,6 +100,7 @@ const DebtsComponents = ({
                         timeIntervals={15}
                         dateFormat="yyyy-MM-dd HH:mm"
                         className="datepicker"
+                        onKeyDown={(e) => e.preventDefault()}
                     />
     
                     <label htmlFor="dueDatePicker">Due date:</label>
@@ -112,6 +113,7 @@ const DebtsComponents = ({
                         timeIntervals={15}
                         dateFormat="yyyy-MM-dd HH:mm"
                         className="datepicker"
+                        onKeyDown={(e) => e.preventDefault()}
                     />
     
                     <div>
@@ -278,6 +280,7 @@ const DebtsComponents = ({
                             timeIntervals={15}
                             dateFormat="yyyy-MM-dd HH:mm"
                             className="datepicker"
+                            onKeyDown={(e) => e.preventDefault()}
                         />
 
                         <label htmlFor="dueDatePicker">Due date:</label>
@@ -290,6 +293,7 @@ const DebtsComponents = ({
                             timeIntervals={15}
                             dateFormat="yyyy-MM-dd HH:mm"
                             className="datepicker"
+                            onKeyDown={(e) => e.preventDefault()}
                         />
         
                         <div>

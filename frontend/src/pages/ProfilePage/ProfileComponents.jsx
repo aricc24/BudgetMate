@@ -76,6 +76,9 @@ const ProfileComponents = ({
                             disabled={!isEditing}
                         />
                         <input
+                            type="number"
+                            min="0"
+                            onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                             name="phone_number"
                             value={profileData.phone_number}
                             onChange={handleChange}
