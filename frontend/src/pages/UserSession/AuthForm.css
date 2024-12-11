@@ -29,37 +29,39 @@
   max-height: 600px;
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-  border-radius: 16px;
-  overflow: hidden;
+  border-radius: 16px; 
   z-index: 2;
   position: relative;
 }
 
 .left-section {
   flex: 1;
-  background: url('https://via.placeholder.com/800') no-repeat center center;
+  background: url('../../assets/background2.jpg') no-repeat center center;
   background-size: cover;
+  background-color: rgba(19, 35, 47, 0.9);
+  background-blend-mode: overlay;
   position: relative;
-}
-
-.left-section .overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
+  overflow: visible;
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center; 
   text-align: center;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 }
 
-.left-section h1 {
+.brand-title {
   font-size: 2.5rem;
+  font-weight: 600;
   margin-bottom: 1rem;
-  line-height: 1.2;
+  color: white;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
 }
 
-.left-section p {
+.brand-subtitle {
   font-size: 1.2rem;
+  color: white;
+  margin-bottom: 0.5rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .right-section {

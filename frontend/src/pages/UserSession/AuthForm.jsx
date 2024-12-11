@@ -24,14 +24,14 @@ const AuthForm = ({
             <div className="background">
                 <div className="window-container">
                     <div className="left-section">
-                        <div className="overlay">
-                            <h1>Create your <br /> Free Account</h1>
-                            <p>Share your artwork and Get project!</p>
-                        </div>
+                        <h1 className="brand-title">BudgetMate</h1>
+                        <p className="brand-subtitle">Create your account</p>
+                        <p className="brand-subtitle">or</p>
+                        <p className="brand-subtitle">Start your session</p>
                     </div>
 
                     <div className="right-section">
-                        <div className="form-container">
+                        <form className="form-container " onSubmit={handleSubmit}>
                             <h1 className="title">{title}</h1>
                             <div className="form-group">
                                 <label htmlFor="email">Email</label>
@@ -74,7 +74,7 @@ const AuthForm = ({
                                     {link.text} <Link to={link.path} className="link-button">{link.linkText}</Link>
                                 </p>
                             ))}
-                        </div>
+                        </form>
                     </div>
                 </div>    
             </div>
