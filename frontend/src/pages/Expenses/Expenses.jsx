@@ -279,6 +279,41 @@ const Expenses = () => {
         }
     };
 
+    const handleDeleteCategory = async (categoryId) => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken || !userId) return;
+    
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/delete_category/${userId}/${categoryId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                },
+            });
+    
+            if (response.ok) {
+                setCategories((prevCategories) =>
+                    prevCategories.filter((category) => category.id_category !== categoryId)
+                );
+                setTransactions((prevTransactions) =>
+                    prevTransactions.map((transaction) => ({
+                        ...transaction,
+                        categories: transaction.categories.filter((id) => id !== categoryId),
+                    }))
+                );
+                alert('Category deleted successfully.');
+            } else {
+                const errorData = await response.json();
+                console.error('Error deleting category:', errorData.error);
+                alert('Failed to delete category.');
+            }
+        } catch (error) {
+            console.error('Error deleting category:', error);
+            alert('An error occurred while trying to delete the category.');
+        }
+    };
+
     const filteredTransactions = transactions.filter(transaction => {
         const descriptionMatch = transaction.description
             .toLowerCase()
@@ -337,6 +372,7 @@ const Expenses = () => {
             handleCategoryChange={handleCategoryChange}
             handleAddCategory={handleAddCategory}
             handleEditCategory={handleEditCategory}
+            handleDeleteCategory={handleDeleteCategory}
         />
     );
 };

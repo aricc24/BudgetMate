@@ -36,6 +36,7 @@ const IncomeComponents = ({
     handleCategoryChange,
     handleAddCategory,
     handleEditCategory,
+    handleDeleteCategory,
 }) => {
     return (
         <Layout>
@@ -250,9 +251,21 @@ const IncomeComponents = ({
                         <div className="dialog-buttons">
                             <button 
                                 onClick={() => {
+                                    if (selectedCategories.length === 1) {
+                                        handleDeleteCategory(selectedCategories[0]);
+                                        setIsCategoryDialogOpen(false);
+                                    } else {
+                                        alert('Please select a single category to delete.');
+                                    }
+                                }}
+                            >
+                                Delete Category
+                            </button>
+                            <button 
+                                onClick={() => {
                                     const selectedCategory = categories.find(c => c.id_category === selectedCategoryId);
                                     setEditCategory(selectedCategory ? selectedCategory.category_name : '');
-                                    setIsCategoryDialogOpen(false)
+                                    setIsCategoryDialogOpen(false);
                                     setIsEditCategoryOpen(true);
                                 }}
                             >

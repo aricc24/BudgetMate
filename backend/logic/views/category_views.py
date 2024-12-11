@@ -103,3 +103,42 @@ def update_user_category(request, id_user, id_category):
             "message": "Category duplicated and updated successfully.",
             "category_name": new_category.category_name,
         }, status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+def delete_user_category(request, id_user, id_category):
+    try:
+        user = User.objects.get(id_user=id_user)
+        category = Category.objects.get(id_category=id_category)
+    except User.DoesNotExist:
+        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+    except Category.DoesNotExist:
+        return Response({"error": "Category not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Caso 1: Categoría global no puede eliminarse
+    if category.is_universal:
+        return Response({"error": "Cannot delete global categories."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Caso 2: Categoría asociada solo con este usuario
+    if not category.users.exclude(id_user=user.id_user).exists():
+        # Eliminar asociación de transacciones
+        transactions = Transaction.objects.filter(categories=category, id_user=id_user)
+        for transaction in transactions:
+            transaction.categories.remove(category)
+            transaction.save()
+
+        # Eliminar categoría
+        category.delete()
+        return Response({"message": "Category deleted successfully."}, status=status.HTTP_200_OK)
+
+    # Caso 3: Categoría asociada con múltiples usuarios
+    else:
+        # Eliminar asociación con el usuario actual
+        user.categories.remove(category)
+
+        # Actualizar transacciones asociadas al usuario actual
+        transactions = Transaction.objects.filter(categories=category, id_user=id_user)
+        for transaction in transactions:
+            transaction.categories.remove(category)
+            transaction.save()
+
+        return Response({"message": "Category disassociated from user successfully."}, status=status.HTTP_200_OK)
