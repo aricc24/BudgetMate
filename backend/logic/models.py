@@ -35,6 +35,18 @@ class User(models.Model):
         null=True
     )
     categories = models.ManyToManyField('Category', related_name='users')
+    email_schedule_frequency = models.CharField(
+        max_length=10,
+        choices=[
+            ('daily', 'Daily'),
+            ('weekly', 'Weekly'),
+            ('monthly', 'Monthly'),
+            ('yearly', 'Yearly'),
+        ],
+        default='monthly',
+    )
+    email_schedule_start_date = models.DateField(default=timezone.now)
+
     class Meta:
         db_table = 'users'
 
