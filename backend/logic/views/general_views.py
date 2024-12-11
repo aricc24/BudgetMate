@@ -16,6 +16,7 @@ from django.core.mail import EmailMessage
 from datetime import datetime
 from logic.models import User, Transaction, Debt, ScheduledTransaction
 from logic.serializer import TransactionSerializer
+from datetime import datetime, timezone
 
 @api_view(['GET'])
 def filter_transactions(request, id_user):
@@ -203,3 +204,15 @@ def send_email(request, id_user):
         return HttpResponse("Email sent successfully!")
     except Exception as e:
         return HttpResponse(f"Failed to send email: {e}")
+    
+@api_view(['POST'])
+def update_email_schedule(request, id_user):
+    user = User.objects.get(id_user=id_user)
+    frequency = request.data.get('frequency', 'monthly')  
+    start_date = request.data.get('start_date', timezone.now().date())
+
+    user.email_schedule_frequency = frequency
+    user.email_schedule_start_date = start_date
+    user.save()
+
+    return Response({'message': 'Email schedule updated successfully!'}, status=200)
