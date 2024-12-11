@@ -166,6 +166,18 @@ const History = () => {
         setSelectedCategoriesIncomes(selectedOptions)
     }
 
+    const adjustTime = (utcDate) => {
+        const date = new Date(utcDate);
+        return date.toLocaleString('default', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short',
+        });
+    };
 
     return(
         <HistoryComponents
@@ -199,6 +211,7 @@ const History = () => {
             handleCategoryChange={handleCategoryChange}
             handleIncomeFilter={handleIncomeFilter}
             handleIncomeCategoryChange={handleIncomeCategoryChange}
+            adjustTime={adjustTime}
         />
     );
 };
