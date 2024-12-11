@@ -14,7 +14,7 @@ from matplotlib.colors import to_hex
 import random
 from django.core.mail import EmailMessage
 from datetime import datetime
-from logic.models import User, Transaction
+from logic.models import User, Transaction, Debt
 from logic.serializer import TransactionSerializer
 
 @api_view(['GET'])
@@ -51,12 +51,32 @@ def filter_transactions(request, id_user):
 def generate_pdf(request, id_user):
    user = User.objects.get(id_user=id_user)
    transactions = Transaction.objects.filter(id_user=user).select_related('id_user').prefetch_related('categories')
+   debts = Debt.objects.filter(id_user=user) 
+
    income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
    expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
+   
+   total_income = sum(t.mount for t in income_data)
+   total_expenses = sum(t.mount for t in expense_data)
+   
+   total_paid_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PAID)
+   total_pending_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PENDING)
+   total_overdue_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.OVERDUE)
+   
+   main_balance = total_income - (total_expenses + total_paid_debt)
+   debt_balance = total_pending_debt + total_overdue_debt
+   suggested_balance = total_income - (total_expenses + total_paid_debt + debt_balance)
+   
+   main_balance_message = ( f"${main_balance:.2f}")
+   debt_balance_message = f"${debt_balance:.2f}"
+   suggested_balance_message = f"${suggested_balance:.2f}"
+
+
    income_dates = [t.date for t in income_data]
    income_amounts = [t.mount for t in income_data]
    expense_dates = [t.date for t in expense_data]
    expense_amounts = [t.mount for t in expense_data]
+
 
    #Line Graph Incomes
    fig, ax = plt.subplots(figsize=(10, 6))
@@ -122,18 +142,33 @@ def generate_pdf(request, id_user):
 
    context = {
        'transactions': transactions,
+       'debts': debts,
        'income_line_chart_base64': income_line_chart_base64,
        'expense_line_chart_base64': expense_line_chart_base64,
        'income_pie_chart_base64': income_pie_chart_base64,
        'expense_pie_chart_base64': expense_pie_chart_base64,
+       'main_balance_message': main_balance_message,
+       'debt_balance_message': debt_balance_message,
+       'suggested_balance_message': suggested_balance_message,
+       'total_income' : total_income, 
+       'total_expenses' : total_expenses, 
+       'total_paid_debt': total_paid_debt, 
+       'total_pending_debt': total_pending_debt, 
+       'total_overdue_debt': total_overdue_debt,
+
    }
+
 
    response = HttpResponse(content_type='application/pdf')
    response['Content-Disposition'] = f'attachment; filename="report_{id_user}.pdf"'
+   from weasyprint import HTML
    html = render(request, 'pdf_template.html', context)
    pdf = HTML(string=html.content.decode('utf-8')).write_pdf()
+
+
    response.write(pdf)
    return response
+
 
 @api_view(['POST'])
 def send_email(request, id_user):

@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import ScheduleComponents from './ScheduleComponents.jsx'
+import React, { useState, useEffect, useCallback } from 'react';
+import Layout from '../../components/Layout/Layout';
 
 const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
   const [formData, setFormData] = useState({
@@ -66,16 +66,9 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       categories: formData.categories.map(id => parseInt(id)),
     };
 
-    console.log('Sending data:', formattedData);
-
-    const requestMethod = editingTransactionId ? 'PATCH' : 'POST';
-    const url = editingTransactionId
-      ? `http://127.0.0.1:8000/api/update_scheduled_transaction/${editingTransactionId}/`
-      : `http://127.0.0.1:8000/api/scheduled-transactions/`;
-
     try {
-      const response = await fetch(url, {
-        method: requestMethod,
+      const response = await fetch(`http://127.0.0.1:8000/api/scheduled-transactions/`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${authToken}`,
@@ -90,7 +83,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
           type: 'INCOME',
           date: '',
           periodicity: 'monthly',
-          categories: []
+          categories: [],
         });
         fetchScheduledTransactions();
       } else {
@@ -100,7 +93,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
     } catch (error) {
       console.error('Error saving scheduled transaction:', error);
     }
-  };
+  }; 
 
   const handleDeleteScheduledTransaction = async (transactionId) => {
     try {
@@ -122,37 +115,47 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
     }
   };
   
-  const handleEditScheduledTransaction = async (transactionId) => {
-    const currentTransaction = scheduledTransactions.find(t => t.id_transaction === transactionId);
-  
-    const updatedTransaction = {
+  const handleEditScheduledTransaction = async () => {
+    const formattedData = {
       user: userId,
-      amount: parseFloat(formData.amount || currentTransaction.amount),
-      description: formData.description || currentTransaction.description,
+      amount: parseFloat(formData.amount),
+      description: formData.description,
       type: formData.type === 'INCOME' ? 0 : 1,
-      schedule_date: formData.date ? formData.date.split('T')[0] : currentTransaction.schedule_date,
-      repeat: formData.periodicity || currentTransaction.repeat,
-      categories: formData.categories.length > 0 ? formData.categories.map(id => parseInt(id)) : currentTransaction.categories,
+      schedule_date: formData.date.split('T')[0],
+      repeat: formData.periodicity,
+      categories: formData.categories.map(id => parseInt(id)),
     };
-  
+
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/update_scheduled_transaction/${transactionId}/`, {
+      const response = await fetch(`http://127.0.0.1:8000/api/update_scheduled_transaction/${editingTransactionId}/`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${authToken}`,
         },
-        body: JSON.stringify(updatedTransaction),
+        body: JSON.stringify(formattedData),
       });
-  
+
       if (response.ok) {
         const updatedData = await response.json();
+      
         setScheduledTransactions((prevTransactions) =>
-          prevTransactions.map(transaction =>
-            transaction.id_transaction === transactionId ? updatedData : transaction
-          )
-        );
-        alert('Scheduled transaction updated successfully.');
+        prevTransactions.map(transaction =>
+          transaction.id_transaction === editingTransactionId
+            ? { ...transaction, ...updatedData, categories_details: updatedData.categories_details }
+            : transaction
+        )
+      );
+
+        setFormData({
+          amount: '',
+          description: '',
+          type: 'INCOME',
+          date: '',
+          periodicity: 'monthly',
+          categories: [],
+        });
+        setEditingTransactionId(null); 
       } else {
         alert('Failed to update scheduled transaction.');
       }
@@ -160,7 +163,8 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       console.error('Error updating scheduled transaction:', error);
     }
   };
-
+  
+  
   return(
     <ScheduleComponents
       categories={categories}
