@@ -32,24 +32,37 @@ const AuthForm = ({
 
                     <div className="right-section">
                         <div className="form-container">
-                            <h1 >{title}</h1>                        
-                            <form className="form" onSubmit={handleSubmit}>
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    placeholder="Email"
-                                />
-                                <input
-                                    type={showPassword ? 'text' : 'password'}
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                    placeholder="Password"
-                                />
-                                <button type="submit" className="button">{submitButtonText}</button>
-                            </form>
+                            <h1 className="title">{title}</h1>
+                            <div className="form-group">
+                                <div className="input-container">
+                                    <i className="fas fa-envelope icon"></i>
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                        placeholder="Email"
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <div className="input-container"> 
+                                    <i className="fas fa-key icon"></i>
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                        placeholder="Password"
+                                    />
+                                    <i
+                                        className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} toggle-password`}
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    ></i>
+                                </div>
+                            </div>
+                            <button type="submit" className="button">{submitButtonText}</button>
+                            
                             {message && <p className="message">{message}</p>}
                             <p className="message">
                                 {linkMessage} <Link to={linkPath} className="link-button">{linkText}</Link>
