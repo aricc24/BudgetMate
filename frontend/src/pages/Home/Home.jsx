@@ -101,6 +101,35 @@ const handleSendEmail = async () => {
     }
 };
 
+const handleUpdateEmailSchedule = async () => {
+    const authToken = localStorage.getItem('authToken');
+    const userId = localStorage.getItem('userId');
+    const frequency = selectedFrequency; 
+    const startDate = selectedStartDate; 
+
+    if (!authToken || !userId) return;
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/update_email_schedule/${userId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`,
+            },
+            body: JSON.stringify({ frequency, start_date: startDate }),
+        });
+
+        if (response.ok) {
+            alert('Email schedule updated successfully.');
+        } else {
+            alert('Failed to update email schedule.');
+        }
+    } catch (error) {
+        console.error('Error updating email schedule:', error);
+    }
+};
+
+
 
 const CombinedChart = ({ data }) => {
     const chartRef = React.useRef(null);

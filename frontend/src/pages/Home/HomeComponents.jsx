@@ -17,6 +17,23 @@ const HomeComponents = ({
                 <h2>Financial Overview</h2>
                 <button onClick={handleDownloadPDF} className="btn btn-primary">Download PDF</button>
                 <button onClick={handleSendEmail} className="btn btn-primary">Send by Email</button>
+                <div className="email-schedule">
+                    <label>Frequency:</label>
+                    <select value={selectedFrequency} onChange={(e) => setSelectedFrequency(e.target.value)}>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                        </select>
+                        <label>Start Date:</label>
+                        <input
+                        type="date"
+                        value={selectedStartDate}
+                        onChange={(e) => setSelectedStartDate(e.target.value)}
+                        />
+                        <button onClick={handleUpdateEmailSchedule}>Update Schedule</button>
+                </div>
+
                  <div className="filter-container">
                     <label>Show data by: </label>
                     <select value={filter} onChange={(e) => setFilter(e.target.value)}>
