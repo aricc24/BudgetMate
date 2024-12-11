@@ -11,6 +11,11 @@ app.conf.beat_schedule = {
         'task': 'logic.tasks.process_scheduled_transactions',
         'schedule': crontab(minute='*/1'),  # Ejecutar cada minuto
     },
+
+    'send-scheduled-emails-daily': {
+        'task': 'logic.tasks.send_scheduled_emails',
+        'schedule': crontab(hour=0, minute=0),  
+    },
 }
 
 app.autodiscover_tasks()
