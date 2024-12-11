@@ -208,9 +208,10 @@ def send_email(request, id_user):
     except Exception as e:
         return HttpResponse(f"Failed to send email: {e}")
     
-@api_view(['POST'])
-def send_email_to_user(id_user):
-    transactions = Transaction.objects.filter(id_user=id_user)
+
+def send_email_to_user(user_id):
+    user = User.objects.get(id_user=user_id)
+    transactions = Transaction.objects.filter(id_user=user)
     context = {'transactions': transactions}
 
     html_content = render_to_string('pdf_template.html', context)
@@ -218,17 +219,19 @@ def send_email_to_user(id_user):
     pdf_file = BytesIO()
     HTML(string=html_content).write_pdf(target=pdf_file)
     pdf_file.seek(0)
+
     subject = "Your Financial Report"
     message = "Hi, attached is your financial report. Thank you for using our service!"
     email = EmailMessage(
         subject,
         message,
-        to=[id_user.email],
+        to=[user.email],
         from_email='ariadnamich10@gmail.com'
     )
-    email.attach(f'report_{id_user.id_user}.pdf', pdf_file.read(), 'application/pdf')
+    email.attach(f'report_{user.id_user}.pdf', pdf_file.read(), 'application/pdf')
 
     email.send()
+
 
     
 @api_view(['POST'])

@@ -36,10 +36,11 @@ def process_scheduled_transactions():
 @shared_task
 def send_scheduled_emails():
     users = User.objects.all()
+    today = now().date()
+
     for user in users:
         next_send_date = user.email_schedule_start_date
         frequency = user.email_schedule_frequency
-        today = now().date()
 
         if frequency == 'daily' and next_send_date <= today:
             send_email_to_user(user.id_user)
@@ -49,9 +50,9 @@ def send_scheduled_emails():
             user.email_schedule_start_date = today + timedelta(weeks=1)
         elif frequency == 'monthly' and next_send_date <= today:
             send_email_to_user(user.id_user)
-            user.email_schedule_start_date = today + timedelta(days=30)  
+            user.email_schedule_start_date = today + relativedelta(months=1)
         elif frequency == 'yearly' and next_send_date <= today:
             send_email_to_user(user.id_user)
-            user.email_schedule_start_date = today + timedelta(days=365)
+            user.email_schedule_start_date = today + relativedelta(years=1)
         
         user.save()
