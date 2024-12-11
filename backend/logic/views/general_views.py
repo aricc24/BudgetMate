@@ -17,6 +17,9 @@ from datetime import datetime
 from logic.models import User, Transaction, Debt, ScheduledTransaction
 from logic.serializer import TransactionSerializer
 from datetime import datetime, timezone
+from django.utils import timezone
+from django.template.loader import render_to_string
+
 
 @api_view(['GET'])
 def filter_transactions(request, id_user):
@@ -204,6 +207,29 @@ def send_email(request, id_user):
         return HttpResponse("Email sent successfully!")
     except Exception as e:
         return HttpResponse(f"Failed to send email: {e}")
+    
+@api_view(['POST'])
+def send_email_to_user(id_user):
+    transactions = Transaction.objects.filter(id_user=id_user)
+    context = {'transactions': transactions}
+
+    html_content = render_to_string('pdf_template.html', context)
+
+    pdf_file = BytesIO()
+    HTML(string=html_content).write_pdf(target=pdf_file)
+    pdf_file.seek(0)
+    subject = "Your Financial Report"
+    message = "Hi, attached is your financial report. Thank you for using our service!"
+    email = EmailMessage(
+        subject,
+        message,
+        to=[id_user.email],
+        from_email='ariadnamich10@gmail.com'
+    )
+    email.attach(f'report_{id_user.id_user}.pdf', pdf_file.read(), 'application/pdf')
+
+    email.send()
+
     
 @api_view(['POST'])
 def update_email_schedule(request, id_user):

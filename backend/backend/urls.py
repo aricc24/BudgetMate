@@ -49,4 +49,6 @@ urlpatterns = [
     path('api/scheduled-transactions/user/<int:id_user>/', get_scheduled_transactions_by_user, name='get-scheduled-transactions-by-user'),
     path('api/delete_scheduled_transaction/<int:transaction_id>/', delete_scheduled_transaction, name='delete_scheduled_transaction'),
     path('api/update_scheduled_transaction/<int:transaction_id>/', update_scheduled_transaction, name='update_scheduled_transaction'),
+    path('api/update_email_schedule/<int:id_user>/', update_email_schedule, name='update_email_schedule'),
+
 ]

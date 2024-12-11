@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils import timezone
+from django.utils.timezone import now
+
 
 # Create your models here.
 
@@ -45,8 +47,7 @@ class User(models.Model):
         ],
         default='monthly',
     )
-    email_schedule_start_date = models.DateField(default=timezone.now)
-
+    email_schedule_start_date = models.DateField(default=now().date)
     class Meta:
         db_table = 'users'
 

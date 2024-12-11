@@ -3,7 +3,8 @@ from .models import ScheduledTransaction, Transaction, User
 from django.utils.timezone import now
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
-from .views import send_email
+from logic.views.general_views import send_email_to_user
+
 
 @shared_task
 def process_scheduled_transactions():
@@ -41,16 +42,16 @@ def send_scheduled_emails():
         today = now().date()
 
         if frequency == 'daily' and next_send_date <= today:
-            send_email(user.id_user)
+            send_email_to_user(user.id_user)
             user.email_schedule_start_date = today + timedelta(days=1)
         elif frequency == 'weekly' and next_send_date <= today:
-            send_email(user.id_user)
+            send_email_to_user(user.id_user)
             user.email_schedule_start_date = today + timedelta(weeks=1)
         elif frequency == 'monthly' and next_send_date <= today:
-            send_email(user.id_user)
+            send_email_to_user(user.id_user)
             user.email_schedule_start_date = today + timedelta(days=30)  
         elif frequency == 'yearly' and next_send_date <= today:
-            send_email(user.id_user)
+            send_email_to_user(user.id_user)
             user.email_schedule_start_date = today + timedelta(days=365)
         
         user.save()
