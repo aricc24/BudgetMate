@@ -34,6 +34,7 @@ const AuthForm = ({
                         <div className="form-container">
                             <h1 className="title">{title}</h1>
                             <div className="form-group">
+                                <label htmlFor="email">Email</label>
                                 <div className="input-container">
                                     <i className="fas fa-envelope icon"></i>
                                     <input
@@ -46,7 +47,8 @@ const AuthForm = ({
                                 </div>
                             </div>
                             <div className="form-group">
-                                <div className="input-container"> 
+                                <label htmlFor="password">Password</label>
+                                <div className="input-container">
                                     <i className="fas fa-key icon"></i>
                                     <input
                                         type={showPassword ? 'text' : 'password'}
