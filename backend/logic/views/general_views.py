@@ -14,7 +14,7 @@ from matplotlib.colors import to_hex
 import random
 from django.core.mail import EmailMessage
 from datetime import datetime
-from logic.models import User, Transaction, Debt
+from logic.models import User, Transaction, Debt, ScheduledTransaction
 from logic.serializer import TransactionSerializer
 
 @api_view(['GET'])
@@ -52,6 +52,7 @@ def generate_pdf(request, id_user):
    user = User.objects.get(id_user=id_user)
    transactions = Transaction.objects.filter(id_user=user).select_related('id_user').prefetch_related('categories')
    debts = Debt.objects.filter(id_user=user) 
+   scheduled_transactions = ScheduledTransaction.objects.filter(user=user).prefetch_related('categories')
 
    income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
    expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
@@ -143,6 +144,7 @@ def generate_pdf(request, id_user):
    context = {
        'transactions': transactions,
        'debts': debts,
+       'scheduled_transactions': scheduled_transactions,
        'income_line_chart_base64': income_line_chart_base64,
        'expense_line_chart_base64': expense_line_chart_base64,
        'income_pie_chart_base64': income_pie_chart_base64,

@@ -110,6 +110,37 @@
     </tbody>
     </table>
 
+    <h2>Scheduled Transactions</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Schedule Date</th>
+                <th>Repeat</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for scheduled in scheduled_transactions %}
+            <tr>
+                <td>
+                    {% for category in scheduled.categories.all %}
+                        {{ category.category_name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ scheduled.get_type_display }}</td>
+                <td>$ {{ scheduled.amount }}</td>
+                <td>{{ scheduled.description }}</td>
+                <td>{{ scheduled.schedule_date }}</td>
+                <td>{{ scheduled.repeat }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+
    <h2>Income line graph</h2>
    <img src="data:image/png;base64,{{ income_line_chart_base64 }}" alt="Incomes Graph">
 
@@ -154,8 +185,8 @@
     <!-- Suggested Balance -->
     <div>
         <p style="font-size: 16px; font-weight: bold; color: #333; margin: 0;">Suggested Balance:</p>
-        <p style="font-size: 14px; color: #000; margin: 5px 0;">Main Balance: <span style="font-weight: normal;">${{ main_balance_message }}</span></p>
-        <p style="font-size: 14px; color: #000; margin: 5px 0;">Debts Balance: <span style="font-weight: normal;">${{debt_balance_message }}</span></p>
+        <p style="font-size: 14px; color: #000; margin: 5px 0;">Main Balance: <span style="font-weight: normal;">{{ main_balance_message }}</span></p>
+        <p style="font-size: 14px; color: #000; margin: 5px 0;">Debts Balance: <span style="font-weight: normal;">{{debt_balance_message }}</span></p>
         <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
         <p style="font-size: 14px; color: #000; margin: 5px 0;">Main Balance - Debt Balance: <span style="font-weight: normal;">{{ suggested_balance_message }}</span></p>
         <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
