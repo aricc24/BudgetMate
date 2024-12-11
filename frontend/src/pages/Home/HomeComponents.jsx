@@ -9,7 +9,12 @@ const HomeComponents = ({
     CombinedChart,
     CombinedPieChart,
     handleDownloadPDF, 
-    handleSendEmail, 
+    handleSendEmail,
+    selectedFrequency,
+    setSelectedFrequency,
+    selectedStartDate,
+    setSelectedStartDate,
+    handleUpdateEmailSchedule, 
 }) => {
     return (
         <Layout>
