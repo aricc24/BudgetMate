@@ -14,7 +14,7 @@ app.conf.beat_schedule = {
 
     'send-scheduled-emails-daily': {
         'task': 'logic.tasks.send_scheduled_emails',
-        'schedule': crontab(minute='*/1'),
+        'schedule': crontab(hour=0, minute=0),  #todos los días a las doce en punto
     },
 }
 
