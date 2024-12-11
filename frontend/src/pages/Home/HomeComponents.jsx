@@ -8,11 +8,15 @@ const HomeComponents = ({
     chartData,
     CombinedChart,
     CombinedPieChart,
+    handleDownloadPDF, 
+    handleSendEmail, 
 }) => {
     return (
         <Layout>
             <div className="home">
                 <h2>Financial Overview</h2>
+                <button onClick={handleDownloadPDF} className="btn btn-primary">Download PDF</button>
+                <button onClick={handleSendEmail} className="btn btn-primary">Send by Email</button>
                  <div className="filter-container">
                     <label>Show data by: </label>
                     <select value={filter} onChange={(e) => setFilter(e.target.value)}>

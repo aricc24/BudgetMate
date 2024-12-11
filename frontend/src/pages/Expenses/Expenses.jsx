@@ -281,54 +281,6 @@ const Expenses = () => {
         }
     };
 
-    const handleDownloadPDF = async () => {
-        const authToken = localStorage.getItem('authToken');
-        const userId = localStorage.getItem('userId');
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/generate_pdf/${userId}/`, {
-                headers: { 'Authorization': `Bearer ${authToken}` }
-            });
-            if (response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `report_${userId}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-            } else {
-                console.error('Failed to generate PDF');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-     };
-     
-    const handleSendEmail = async () => {
-        const authToken = localStorage.getItem('authToken');
-        const userId = localStorage.getItem('userId');
-    
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/send_email/${userId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`
-                },
-                body: JSON.stringify({}) 
-            });
-    
-            if (response.ok) {
-                console.log('Email sent successfully');
-            } else {
-                console.error('Failed to send email');
-            }
-        } catch (error) {
-            console.error('Error sending email:', error);
-        }
-    };
-
     const filteredTransactions = transactions.filter(transaction => {
         const descriptionMatch = transaction.description
             .toLowerCase()
@@ -377,8 +329,6 @@ const Expenses = () => {
             setSelectedCategoryId={setSelectedCategoryId}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
-            handleDownloadPDF={handleDownloadPDF}
-            handleSendEmail={handleSendEmail}
             handleAddExpense={handleAddExpense}
             filteredTransactions={filteredTransactions}
             adjustTime={adjustTime}

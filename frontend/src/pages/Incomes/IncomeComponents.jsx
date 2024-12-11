@@ -26,8 +26,6 @@ const IncomeComponents = ({
     editCategory, setEditCategory,
     selectedCategoryId, setSelectedCategoryId,
     searchTerm, setSearchTerm,
-    handleDownloadPDF,
-    handleSendEmail,
     handleAddIncome,
     filteredTransactions,
     adjustTime,
@@ -44,8 +42,6 @@ const IncomeComponents = ({
             <div className="income-page">
                 <div className="top-left">Incomes</div>
                 <div className="button-container">
-                <button onClick={handleDownloadPDF} className="btn btn-primary">Download PDF</button>
-                <button onClick={handleSendEmail} className="btn btn-primary">Send by Email</button>
                 </div>
                
                 <div className="add-income-form">

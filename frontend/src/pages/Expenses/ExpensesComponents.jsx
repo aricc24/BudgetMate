@@ -26,8 +26,6 @@ const ExpensesComponents = ({
     editCategory, setEditCategory,
     selectedCategoryId, setSelectedCategoryId,
     searchTerm, setSearchTerm,
-    handleDownloadPDF,
-    handleSendEmail,
     handleAddExpense,
     filteredTransactions,
     adjustTime,
@@ -44,8 +42,6 @@ const ExpensesComponents = ({
             <div className="expenses-page">
                 <div className="top-left">Expenses</div>
                 <div className="button-container">
-                <button onClick={handleDownloadPDF} className="btn btn-primary">Download PDF</button>
-                <button onClick={handleSendEmail} className="btn btn-primary">Send by Email</button>
                 </div>
 
                 <div className="add-expense-form">
