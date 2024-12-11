@@ -2,7 +2,7 @@ from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import ValidationError
-from logic.models import Debt
+from logic.models import Debt, Transaction
 from logic.serializer import DebtsSerializer
 from datetime import datetime, timezone
 from dateutil.parser import isoparse
@@ -43,8 +43,9 @@ def update_user_debt(request, id_user, id_debt):
         debt = Debt.objects.get(id_debt=id_debt, id_user=id_user)
     except Debt.DoesNotExist:
         return Response({"error": "Debt not found."}, status=status.HTTP_404_NOT_FOUND)
-    
-    print("Received Data:", request.data)
+
+    previous_status = debt.status
+    previous_total_amount = debt.totalAmount
 
     amount = float(request.data.get('amount', debt.amount))
     interest_rate = float(request.data.get('interestAmount', debt.interestAmount))
@@ -62,11 +63,30 @@ def update_user_debt(request, id_user, id_debt):
 
     request.data['interestAmount'] = interest
     request.data['totalAmount'] = total_amount
+
+    Transaction.objects.filter(
+        id_user=debt.id_user,
+        description=f"Payment for debt: {debt.description or 'No description'}",
+        type=Transaction.TransEnum.EXPENSE
+    ).delete()
+
     serializer = DebtsSerializer(debt, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save()
+
+        new_status = serializer.validated_data.get('status', debt.status)
+
+        if new_status == Debt.StatusEnum.PAID:
+            Transaction.objects.create(
+                id_user=debt.id_user,
+                mount=total_amount,
+                description=f"Payment for debt: {serializer.validated_data.get('description', debt.description or 'No description')}",
+                type=Transaction.TransEnum.EXPENSE
+            )
+
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET'])
 def get_debts_by_user(request, id_user):
@@ -78,6 +98,13 @@ def get_debts_by_user(request, id_user):
 def delete_debt(request, id_debt):
     try:
         debt = Debt.objects.get(id_debt=id_debt)
+
+        Transaction.objects.filter(
+            id_user=debt.id_user,
+            description=f"Payment for debt: {debt.description or 'No description'}",
+            type=Transaction.TransEnum.EXPENSE
+        ).delete()
+
         debt.delete()
         return Response({'message': 'Debt deleted successfully!'}, status=status.HTTP_200_OK)
     except Debt.DoesNotExist:
