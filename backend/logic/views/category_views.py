@@ -114,28 +114,23 @@ def delete_user_category(request, id_user, id_category):
     except Category.DoesNotExist:
         return Response({"error": "Category not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    # Caso 1: Categoría global no puede eliminarse
+    # universal category
     if category.is_universal:
         return Response({"error": "Cannot delete global categories."}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Caso 2: Categoría asociada solo con este usuario
+    # associated with this user
     if not category.users.exclude(id_user=user.id_user).exists():
-        # Eliminar asociación de transacciones
         transactions = Transaction.objects.filter(categories=category, id_user=id_user)
         for transaction in transactions:
             transaction.categories.remove(category)
             transaction.save()
 
-        # Eliminar categoría
         category.delete()
         return Response({"message": "Category deleted successfully."}, status=status.HTTP_200_OK)
 
-    # Caso 3: Categoría asociada con múltiples usuarios
+    # associated with multiple users
     else:
-        # Eliminar asociación con el usuario actual
         user.categories.remove(category)
-
-        # Actualizar transacciones asociadas al usuario actual
         transactions = Transaction.objects.filter(categories=category, id_user=id_user)
         for transaction in transactions:
             transaction.categories.remove(category)
