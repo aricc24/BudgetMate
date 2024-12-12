@@ -116,6 +116,10 @@ const IncomeComponents = ({
                             <th>Amount</th>
                             <th>Description</th>
                             <th>Date</th>
+                            <th className="options-header">
+                                <i className="fas fa-pencil-alt" title="Edit"></i> /
+                                <i className="fas fa-trash" title="Delete"></i>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -137,7 +141,7 @@ const IncomeComponents = ({
                                             <span>Uncategorized</span>
                                         )}
                                     </td>
-                                    <td>- ${transaction.mount}</td>
+                                    <td>${transaction.mount}</td>
                                     <td>{transaction.description || 'No description'}</td>
                                     <td>{adjustTime(transaction.date)}</td>
                                     <td>
@@ -148,7 +152,10 @@ const IncomeComponents = ({
                                                 setisOptionsOpen(true);
                                             }}
                                         >
-                                            <i className="fas fa-ellipsis-v"></i>
+                                            
+                                                <i className="fas fa-pencil-alt" title="Edit"></i>
+                                                <i className="fas fa-trash" title="Delete"></i>
+                                            
                                         </button>
                                     </td>
                                 </tr>
