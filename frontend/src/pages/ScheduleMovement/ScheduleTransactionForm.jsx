@@ -41,8 +41,11 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       }
     };
 
+    
     fetchCategories();
     fetchScheduledTransactions(); 
+    const intervalId = setInterval(fetchScheduledTransactions, 60000);
+    return () => clearInterval(intervalId);
   }, [userId, authToken, fetchScheduledTransactions]);
 
   const handleChange = (e) => {
@@ -107,6 +110,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
           prevTransactions.filter((transaction) => transaction.id_transaction !== transactionId)
         );
         alert('Scheduled transaction deleted successfully.');
+        fetchScheduledTransactions();
       } else {
         alert('Failed to delete scheduled transaction.');
       }
@@ -156,6 +160,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
           categories: [],
         });
         setEditingTransactionId(null); 
+        fetchScheduledTransactions();
       } else {
         alert('Failed to update scheduled transaction.');
       }
