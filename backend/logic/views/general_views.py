@@ -72,7 +72,7 @@ def generate_pdf(request, id_user):
    
    main_balance = total_income - total_expenses #+ total_paid_debt)
    debt_balance = total_pending_debt + total_overdue_debt
-   suggested_balance = total_income - (total_expenses + total_paid_debt + debt_balance)
+   suggested_balance = main_balance - (total_pending_debt + total_overdue_debt)
    
    main_balance_message = ( f"${main_balance:.2f}")
    debt_balance_message = f"${debt_balance:.2f}"
