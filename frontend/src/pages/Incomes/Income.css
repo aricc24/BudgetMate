@@ -170,6 +170,35 @@
     font-size: 1.2rem;
 }
 
+.inactive {
+    pointer-events: none; /* Bloquea clics en todo excepto el diálogo */
+    opacity: 0.5; /* Oscurece visualmente el fondo */
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 100; /* El overlay queda detrás del diálogo */
+}
+
+.add-income-dialog, dialog {
+    z-index: 200; /* El diálogo debe estar por encima del overlay */
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #184346;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+
 .chart-container {
     display: flex;
     flex-direction: column;

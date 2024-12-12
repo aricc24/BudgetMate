@@ -15,7 +15,6 @@ const Income = () => {
     const [newCategory, setNewCategory] = useState('');
     const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
     const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
-    const [isOptionsOpen, setisOptionsOpen] = useState(false);
     const [selectedTransactionId, setSelectedTransactionId] = useState(null);
     const [editAmount, setEditAmount] = useState('');
     const [editDescription, setEditDescription] = useState('');
@@ -341,8 +340,6 @@ const Income = () => {
             setIsCategoryDialogOpen={setIsCategoryDialogOpen}
             isNewCategoryDialogOpen={isNewCategoryDialogOpen}
             setIsNewCategoryDialogOpen={setIsNewCategoryDialogOpen}
-            isOptionsOpen={isOptionsOpen}
-            setisOptionsOpen={setisOptionsOpen}
             selectedTransactionId={selectedTransactionId}
             setSelectedTransactionId={setSelectedTransactionId}
             editAmount={editAmount}
