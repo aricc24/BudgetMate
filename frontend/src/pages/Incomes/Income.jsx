@@ -397,13 +397,13 @@ const LineChart = ({ data }) => {
                     {
                         label: 'Income',
                         data: sortedData.map(d => d.amount),
-                        borderColor: 'green',
-                        backgroundColor: 'rgba(144, 238, 144, 0.5)',
+                        borderColor: '#1ab188', // línea principal
+                        backgroundColor: 'rgba(26, 177, 136, 0.2)', // area bajo la línea
                         fill: true,
                         tension: 0.4,
                         pointRadius: 10,
-                        pointBackgroundColor: 'blue',
-                        pointBorderColor: 'darkblue',
+                        pointBackgroundColor: '#1ab188', // puntos
+                        pointBorderColor: '#184346', // bordes de los puntos
                         pointHoverRadius: 7,
                     }
                 ]
@@ -422,11 +422,17 @@ const LineChart = ({ data }) => {
                     x: {
                         type: 'time',
                         time: { unit: 'day',stepSize: 1 },
-                        title: { display: true, text: 'Timestamp' },
+                        title: { display: true, text: 'Date', color: '#1ab188' },
+                        ticks: { color: '#1ab188' }, //marcas del eje 
+                        grid: { color: '#184346' }, // líneas de la cuadrícula
                     },
                     y: {
-                        title: { display: true, text: 'Amount' },
-                        ticks: { callback: (value) => `$${value.toFixed(2)}`}
+                        title: { display: true, text: 'Amount', color: '#1ab188' },
+                        ticks: {
+                            color: '#1ab188',
+                            callback: value => `$${value.toFixed(2)}`,
+                        },
+                        grid: { color: '#184346' },
                     }
                 }
             }
@@ -487,8 +493,17 @@ const PieChart = ({ data, categories}) => {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { position: 'top' },
-                    title: { display: true, text: 'Income Breakdown' },
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#1ab188', // etiquetas
+                        },
+                    },
+                    title: {
+                        display: true,
+                        text: 'Income Breakdown',
+                        color: '#1ab188',
+                    },
                 },
             },
         });

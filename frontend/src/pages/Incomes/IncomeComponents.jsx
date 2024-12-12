@@ -49,6 +49,7 @@ const IncomeComponents = ({
             <div className="income-page">
                 <label>Incomes</label>
                 <button 
+                    className="Buttons1"
                     onClick={handleOpenAddIncomeDialog}>
                     Add Income
                 </button> 
@@ -79,13 +80,13 @@ const IncomeComponents = ({
                             onKeyDown={(e) => e.preventDefault()} 
                         /> 
                         <button 
-                            className="select-category-button" 
+                            className="Buttons1" 
                             onClick={() => setIsCategoryDialogOpen(true)} 
                         > 
                             Select Category 
                         </button> 
                         <button 
-                            className='done-button' 
+                            className="Buttons1"
                             onClick={handleCloseAddIncomeDialog} 
                         > 
                             Done 
@@ -122,15 +123,19 @@ const IncomeComponents = ({
                             filteredTransactions.map(transaction => (
                                 <tr key={transaction.id_transaction}>
                                     <td>
-                                        {transaction.categories.map((categoryId, index) => {
-                                            const category = categories.find(c => c.id_category === categoryId);
-                                            return (
-                                                <span key={categoryId}>
-                                                    {category ? category.category_name : 'Unknown category'}
-                                                    {index < transaction.categories.length - 1 && ', '}
-                                                </span>
-                                            );
-                                        })}
+                                        {transaction.categories.length > 0 ? (
+                                            transaction.categories.map((categoryId, index) => {
+                                                const category = categories.find(c => c.id_category === categoryId);
+                                                return (
+                                                    <span key={categoryId || index}>
+                                                        {category ? category.category_name : 'Uncategorized'}
+                                                        {index < transaction.categories.length - 1 && ', '}
+                                                    </span>
+                                                );
+                                            })
+                                        ) : (
+                                            <span>Uncategorized</span>
+                                        )}
                                     </td>
                                     <td>- ${transaction.mount}</td>
                                     <td>{transaction.description || 'No description'}</td>
@@ -157,18 +162,19 @@ const IncomeComponents = ({
                 </table>
     
                 <div className="chart-container">
-                    <h4>Line Chart</h4>
+                    <h4 className="chart-title">Line Chart</h4>
                     {chartData && <LineChart data={chartData} />}
                 </div>
-    
+
                 <div className="chart-container">
-                    <h4>Pie Chart</h4>
+                    <h4 className="chart-title">Pie Chart</h4>
                     {transactions.length > 0 && <PieChart data={transactions} categories={categories} />}
                 </div>
+
                 {isOptionsOpen && (
-                    <dialog className='' open>
+                    <dialog  open>
                         <button
-                            className='delete-button'
+                            
                             onClick={() => {
                                 handleDeleteIncome(selectedTransactionId)
                                 setisOptionsOpen(false);
@@ -177,7 +183,6 @@ const IncomeComponents = ({
                             Delete
                         </button>
                         <button
-                            className='edited-button'
                             onClick={() => {
                                 const transactionToEdit = transactions.find(t => t.id_transaction === selectedTransactionId);
                                 setEditAmount(transactionToEdit.mount);
@@ -199,7 +204,7 @@ const IncomeComponents = ({
                 )}
 
                 {isEditOpen && (
-                    <dialog className='' open>
+                    <dialog open>
                         <input
                         type="number"
                         min="0"
@@ -233,7 +238,6 @@ const IncomeComponents = ({
                             Select Category
                         </button>
                         <button
-                            className='edited-button'
                             onClick={() => {
                                 handleEditIncome(selectedTransactionId)
                                 setisEditOpen(false);
@@ -250,7 +254,7 @@ const IncomeComponents = ({
                 )}
 
                 {isCategoryDialogOpen && (
-                    <dialog className="category-dialog" open>
+                    <dialog open>
                         <h3>Select Categories</h3>
                         <h6>Hold ctrl or left click to select multiple categories</h6>
                         <select
@@ -263,12 +267,11 @@ const IncomeComponents = ({
                             ))}
                         </select>
                         <button
-                            className="add-category-button"
                             onClick={() => setIsNewCategoryDialogOpen(true)}
                         >
                             +
                         </button>
-                        <div className="dialog-buttons">
+                        
                             <button 
                                 onClick={() => {
                                     if (selectedCategories.length === 1) {
@@ -293,12 +296,12 @@ const IncomeComponents = ({
                             </button>
                             <button onClick={() => setIsCategoryDialogOpen(false)}>Done</button>
                             <button onClick={() => setIsCategoryDialogOpen(false)}>Cancel</button>
-                        </div>
+                        
                     </dialog>
                 )}
 
                 {isNewCategoryDialogOpen && (
-                    <dialog className="new-category-dialog" open>
+                    <dialog open>
                         <h3>Add New Category</h3>
                         <input
                             type="text"
@@ -306,15 +309,15 @@ const IncomeComponents = ({
                             onChange={(e) => setNewCategory(e.target.value)}
                             placeholder="Category Name"
                         />
-                        <div className="dialog-buttons">
+                        
                             <button onClick={handleAddCategory}>Add</button>
                             <button onClick={() => setIsNewCategoryDialogOpen(false)}>Cancel</button>
-                        </div>
+                        
                     </dialog>
                 )}
 
                 {isEditCategoryOpen && (
-                    <dialog className='' open>
+                    <dialog  open>
                         <h3>Edit Category</h3>
                         <select
                             value={selectedCategoryId}
@@ -338,7 +341,6 @@ const IncomeComponents = ({
                             placeholder="New name"
                         />
                         <button
-                            className='edited-button'
                             onClick={() => {
                                 handleEditCategory(parseInt(selectedCategoryId));
                                 setIsEditCategoryOpen(false);
