@@ -117,7 +117,7 @@ class ScheduledTransaction(models.Model):
     schedule_date = models.DateField()  
     repeat = models.CharField(
         max_length=10,
-        choices=[('none', 'None'), ('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')],
+        choices=[('none', 'None'), ('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly'),  ('yearly', 'Yearly')],
         default='none'
     )
 

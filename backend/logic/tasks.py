@@ -27,10 +27,14 @@ def process_scheduled_transactions():
             scheduled.schedule_date += timedelta(weeks=1)
         elif scheduled.repeat == 'monthly':
             scheduled.schedule_date += relativedelta(months=1)
+        elif scheduled.repeat == 'yearly':
+            scheduled.schedule_date += relativedelta(years=1)
         elif scheduled.repeat == 'none':
             scheduled.delete()
             continue
 
+        print(f"New schedule date: {scheduled.schedule_date}")
+        scheduled.save()
         scheduled.save()
 
 @shared_task

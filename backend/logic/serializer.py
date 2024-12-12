@@ -54,6 +54,7 @@ class DebtsSerializer(serializers.ModelSerializer):
 class ScheduledTransactionSerializer(serializers.ModelSerializer):
     categories_details = CategorySerializer(many=True, read_only=True, source='categories')
     categories = serializers.PrimaryKeyRelatedField(many=True, queryset=Category.objects.all())
+    PERIODICITY_CHOICES = ['daily', 'weekly', 'monthly', 'yearly']
 
     def create(self, validated_data):
         print("Original data:", self.initial_data)
