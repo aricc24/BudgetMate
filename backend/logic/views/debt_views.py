@@ -33,11 +33,24 @@ class DebtsCreateView(generics.CreateAPIView):
         request.data['interestAmount'] = interest
         request.data['totalAmount'] = total_amount
 
-        try:
-            return super().create(request, *args, **kwargs)
-        except ValidationError as e:
-            print(f"Validation Error: {e.detail}")
-            raise
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        debt = serializer.save()
+
+        if debt.status == Debt.StatusEnum.PAID:
+            user = debt.id_user
+            result = create_or_associate_category_logic("Debt", user)
+            debt_category = result["category"]
+
+            transaction = Transaction.objects.create(
+                id_user=user,
+                mount=total_amount,
+                description=f"{debt.description or 'No description'}",
+                type=Transaction.TransEnum.EXPENSE
+            )
+            transaction.categories.add(debt_category)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['PATCH'])
 def update_user_debt(request, id_user, id_debt):
@@ -67,7 +80,7 @@ def update_user_debt(request, id_user, id_debt):
 
     Transaction.objects.filter(
         id_user=debt.id_user,
-        description=f"Payment for debt: {debt.description or 'No description'}",
+        description=f"{debt.description or 'No description'}",
         type=Transaction.TransEnum.EXPENSE
     ).delete()
 
@@ -84,7 +97,7 @@ def update_user_debt(request, id_user, id_debt):
             transaction = Transaction.objects.create(
                 id_user=user,
                 mount=total_amount,
-                description=f"Payment for debt: {serializer.validated_data.get('description', debt.description or 'No description')}",
+                description=f"{serializer.validated_data.get('description', debt.description or 'No description')}",
                 type=Transaction.TransEnum.EXPENSE
             )
             transaction.categories.add(debt_category)
@@ -107,7 +120,7 @@ def delete_debt(request, id_debt):
 
         Transaction.objects.filter(
             id_user=debt.id_user,
-            description=f"Payment for debt: {debt.description or 'No description'}",
+            description=f"{debt.description or 'No description'}",
             type=Transaction.TransEnum.EXPENSE
         ).delete()
 
