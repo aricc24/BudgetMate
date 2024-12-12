@@ -13,7 +13,7 @@ const IncomeComponents = ({
     amount, setAmount,
     description, setDescription,
     selectedDate, setSelectedDate,
-    selectedCategories,
+    selectedCategories, setSelectedCategories,
     newCategory, setNewCategory,
     isCategoryDialogOpen, setIsCategoryDialogOpen,
     isNewCategoryDialogOpen, setIsNewCategoryDialogOpen,
@@ -180,7 +180,10 @@ const IncomeComponents = ({
                             className='edited-button'
                             onClick={() => {
                                 const transactionToEdit = transactions.find(t => t.id_transaction === selectedTransactionId);
+                                setEditAmount(transactionToEdit.mount);
+                                setEditDescription(transactionToEdit.description);
                                 setSelectedDate(new Date(transactionToEdit.date));
+                                setSelectedCategories(transactionToEdit.categories);
                                 setisOptionsOpen(false);
                                 setisEditOpen(true);
                             }}
