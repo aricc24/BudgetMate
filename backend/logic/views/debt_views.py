@@ -6,6 +6,8 @@ from logic.models import Debt, Transaction
 from logic.serializer import DebtsSerializer
 from datetime import datetime, timezone
 from dateutil.parser import isoparse
+from logic.views.category_views import  create_or_associate_category_logic
+from logic.models import Category
 
 class DebtsCreateView(generics.CreateAPIView):
     queryset = Debt.objects.all()
@@ -45,7 +47,6 @@ def update_user_debt(request, id_user, id_debt):
         return Response({"error": "Debt not found."}, status=status.HTTP_404_NOT_FOUND)
 
     previous_status = debt.status
-    previous_total_amount = debt.totalAmount
 
     amount = float(request.data.get('amount', debt.amount))
     interest_rate = float(request.data.get('interestAmount', debt.interestAmount))
@@ -77,15 +78,20 @@ def update_user_debt(request, id_user, id_debt):
         new_status = serializer.validated_data.get('status', debt.status)
 
         if new_status == Debt.StatusEnum.PAID:
-            Transaction.objects.create(
-                id_user=debt.id_user,
+            user = debt.id_user
+            result = create_or_associate_category_logic("Debt", user)
+            debt_category = result["category"]
+            transaction = Transaction.objects.create(
+                id_user=user,
                 mount=total_amount,
                 description=f"Payment for debt: {serializer.validated_data.get('description', debt.description or 'No description')}",
                 type=Transaction.TransEnum.EXPENSE
             )
+            transaction.categories.add(debt_category)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @api_view(['GET'])
