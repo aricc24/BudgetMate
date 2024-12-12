@@ -68,7 +68,7 @@ const Expenses = () => {
     useEffect(() => {
         fetchTransactions();
         fetchCategories();
-        const intervalId = setInterval(fetchTransactions, 10000);
+        const intervalId = setInterval(fetchTransactions, 100000);
         return () => clearInterval(intervalId);
     }, [navigate]);
     
@@ -164,9 +164,9 @@ const Expenses = () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
-
+    
         const currentTransaction = transactions.find(t => t.id_transaction === transactionId);
-        const updateTransaction = {
+        const updatedTransaction = {
             id_user: userId,
             mount: editAmount ? parseFloat(editAmount) : currentTransaction.mount,
             description: editDescription || currentTransaction.description,
@@ -174,7 +174,7 @@ const Expenses = () => {
             categories: selectedCategories.length > 0 ? selectedCategories : currentTransaction.categories,
             date: selectedDate ? selectedDate.toISOString() : currentTransaction.date,
         };
-
+    
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/update_transaction/${userId}/${transactionId}/`, {
                 method: 'PATCH',
@@ -182,16 +182,16 @@ const Expenses = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${authToken}`
                 },
-                body: JSON.stringify(updateTransaction)
+                body: JSON.stringify(updatedTransaction)
             });
             if (response.ok) {
                 const savedTransaction = await response.json();
-                setTransactions(prevTransactions =>
-                    prevTransactions.map(transaction =>
-                        transaction.id_transaction === transactionId ? savedTransaction : transaction
-                    )
-                );                
-                updateChartData([...transactions, savedTransaction]);
+    
+                const updatedTransactions = transactions.map(transaction =>
+                    transaction.id_transaction === transactionId ? savedTransaction : transaction
+                );
+                setTransactions(updatedTransactions);
+                updateChartData(updatedTransactions);
                 setEditAmount('');
                 setEditDescription('');
                 setSelectedCategories([]);
@@ -203,6 +203,7 @@ const Expenses = () => {
             console.error('Error updating transaction:', error);
         }
     };
+    
 
     const handleAddCategory = async () => {
         if (!newCategory.trim()) return;
