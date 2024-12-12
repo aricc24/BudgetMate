@@ -68,7 +68,7 @@ const Expenses = () => {
     useEffect(() => {
         fetchTransactions();
         fetchCategories();
-        const intervalId = setInterval(fetchTransactions, 100000);
+        const intervalId = setInterval(fetchTransactions, 60000);
         return () => clearInterval(intervalId);
     }, [navigate]);
     

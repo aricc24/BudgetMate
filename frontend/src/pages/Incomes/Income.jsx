@@ -34,12 +34,12 @@ const Income = () => {
                 navigate('/login');
                 return;
             }
-
+    
             try {
                 const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}/`, {
                     headers: { 'Authorization': `Bearer ${authToken}` }
                 });
-
+    
                 if (response.ok) {
                     const data = await response.json();
                     const incomeTransactions = data.filter(t => t.type === 0);
@@ -52,24 +52,29 @@ const Income = () => {
                 console.error('Error fetching transactions:', error);
             }
         };
+    
         const fetchCategories = async () => {
             const userId = localStorage.getItem('userId');
             fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Error fetching user categories");
-                }
-                return response.json();
-            })
-            .then((data) => {setCategories(data);})
-            .catch((error) => {
-                console.error("Error fetching user categories:", error)
-            });
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Error fetching user categories");
+                    }
+                    return response.json();
+                })
+                .then((data) => { setCategories(data); })
+                .catch((error) => {
+                    console.error("Error fetching user categories:", error);
+                });
         };
         fetchTransactions();
         fetchCategories();
+    
+        const intervalId = setInterval(fetchTransactions, 60000);
+        return () => clearInterval(intervalId);
     }, [navigate]);
 
+    
     const updateChartData = (transactions) => {
         const filteredData = transactions.map(transaction => ({
             date: new Date(transaction.date),
@@ -155,8 +160,9 @@ const Income = () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
+    
         const currentTransaction = transactions.find(t => t.id_transaction === transactionId);
-        const updateTransaction = {
+        const updatedTransaction = {
             id_user: userId,
             mount: editAmount ? parseFloat(editAmount) : currentTransaction.mount,
             description: editDescription || currentTransaction.description,
@@ -164,7 +170,7 @@ const Income = () => {
             categories: selectedCategories.length > 0 ? selectedCategories : currentTransaction.categories,
             date: selectedDate ? selectedDate.toISOString() : currentTransaction.date,
         };
-
+    
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/update_transaction/${userId}/${transactionId}/`, {
                 method: 'PATCH',
@@ -172,16 +178,15 @@ const Income = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${authToken}`
                 },
-                body: JSON.stringify(updateTransaction)
+                body: JSON.stringify(updatedTransaction)
             });
             if (response.ok) {
                 const savedTransaction = await response.json();
-                setTransactions(prevTransactions =>
-                    prevTransactions.map(transaction =>
-                        transaction.id_transaction === transactionId ? savedTransaction : transaction
-                    )
-                );                
-                updateChartData([...transactions, savedTransaction]);
+                const updatedTransactions = transactions.map(transaction =>
+                    transaction.id_transaction === transactionId ? savedTransaction : transaction
+                );
+                setTransactions(updatedTransactions);
+                updateChartData(updatedTransactions);
                 setEditAmount('');
                 setEditDescription('');
                 setSelectedCategories([]);
@@ -193,6 +198,7 @@ const Income = () => {
             console.error('Error updating transaction:', error);
         }
     };
+    
 
     const handleAddCategory = async () => {
         if (!newCategory.trim()) return;
