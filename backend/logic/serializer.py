@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import *
+from datetime import datetime, date
+
 
 class UserSerializer(serializers.ModelSerializer):
     categories = serializers.PrimaryKeyRelatedField(many=True, queryset=Category.objects.all(), required=False)
@@ -13,6 +15,18 @@ class UserSerializer(serializers.ModelSerializer):
         universal_categories = Category.objects.filter(is_universal=True)
         user.categories.add(*universal_categories)
         return user
+    def create(self, validated_data):
+        print("Valid data:", validated_data)
+        user = super().create(validated_data)
+        universal_categories = Category.objects.filter(is_universal=True)
+        user.categories.add(*universal_categories)
+        return user
+    def validate_email_schedule_start_date(self, value):
+        """Valida que `email_schedule_start_date` sea un datetime válido."""
+        if not isinstance(value, datetime):
+            raise serializers.ValidationError("Invalid datetime format. Expected a valid datetime.")
+        return value
+
 
 class TransactionSerializer(serializers.ModelSerializer):
     categories = serializers.PrimaryKeyRelatedField(many=True,queryset=Category.objects.all(),required=False)

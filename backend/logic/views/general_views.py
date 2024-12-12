@@ -19,7 +19,8 @@ from logic.serializer import TransactionSerializer
 from datetime import datetime, timezone
 from django.utils import timezone
 from django.template.loader import render_to_string
-
+from django.utils.timezone import now
+from django.utils.dateparse import parse_datetime
 
 @api_view(['GET'])
 def filter_transactions(request, id_user):
@@ -233,15 +234,25 @@ def send_email_to_user(user_id):
     email.send()
 
 
-    
 @api_view(['POST'])
 def update_email_schedule(request, id_user):
-    user = User.objects.get(id_user=id_user)
+    try:
+        user = User.objects.get(id_user=id_user)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
     frequency = request.data.get('frequency', 'monthly')  
-    start_date = request.data.get('start_date', timezone.now().date())
+    start_date = request.data.get('start_date', now()) 
+
+    if isinstance(start_date, str):
+        start_date = parse_datetime(start_date) 
+
+    if not isinstance(start_date, datetime.datetime):
+        return Response({'error': 'Invalid start_date format'}, status=status.HTTP_400_BAD_REQUEST)
 
     user.email_schedule_frequency = frequency
     user.email_schedule_start_date = start_date
     user.save()
 
-    return Response({'message': 'Email schedule updated successfully!'}, status=200)
+    return Response({'message': 'Email schedule updated successfully!'}, status=status.HTTP_200_OK)
+

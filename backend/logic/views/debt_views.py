@@ -49,8 +49,11 @@ class DebtsCreateView(generics.CreateAPIView):
                 type=Transaction.TransEnum.EXPENSE
             )
             transaction.categories.add(debt_category)
+            debt.transaction = transaction
+            debt.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 @api_view(['PATCH'])
 def update_user_debt(request, id_user, id_debt):
@@ -78,22 +81,21 @@ def update_user_debt(request, id_user, id_debt):
     request.data['interestAmount'] = interest
     request.data['totalAmount'] = total_amount
 
-    Transaction.objects.filter(
-        id_user=debt.id_user,
-        description=f"{debt.description or 'No description'}",
-        type=Transaction.TransEnum.EXPENSE
-    ).delete()
-
     serializer = DebtsSerializer(debt, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save()
 
         new_status = serializer.validated_data.get('status', debt.status)
 
+        if previous_status == Debt.StatusEnum.PAID and debt.transaction:
+            debt.transaction.delete()
+            debt.transaction = None
+
         if new_status == Debt.StatusEnum.PAID:
             user = debt.id_user
             result = create_or_associate_category_logic("Debt", user)
             debt_category = result["category"]
+
             transaction = Transaction.objects.create(
                 id_user=user,
                 mount=total_amount,
@@ -101,9 +103,12 @@ def update_user_debt(request, id_user, id_debt):
                 type=Transaction.TransEnum.EXPENSE
             )
             transaction.categories.add(debt_category)
+            debt.transaction = transaction
+            debt.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -118,11 +123,8 @@ def delete_debt(request, id_debt):
     try:
         debt = Debt.objects.get(id_debt=id_debt)
 
-        Transaction.objects.filter(
-            id_user=debt.id_user,
-            description=f"{debt.description or 'No description'}",
-            type=Transaction.TransEnum.EXPENSE
-        ).delete()
+        if debt.transaction:
+            debt.transaction.delete()
 
         debt.delete()
         return Response({'message': 'Debt deleted successfully!'}, status=status.HTTP_200_OK)

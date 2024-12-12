@@ -47,7 +47,8 @@ class User(models.Model):
         ],
         default='monthly',
     )
-    email_schedule_start_date = models.DateField(default=now().date)
+    email_schedule_start_date = models.DateTimeField(default=now) # ojooo
+    # my_date_field = models.DateField(default=datetime.now().date())
     class Meta:
         db_table = 'users'
 
@@ -83,24 +84,21 @@ class Debt(models.Model):
     id_debt = models.AutoField(primary_key=True)
     id_user = models.ForeignKey('User', on_delete=models.CASCADE)
     amount = models.FloatField()
+    interestAmount = models.FloatField(default=0)
+    totalAmount = models.FloatField(default=0)
     description = models.CharField(max_length=128, null=True, blank=True)
-    lender = models.CharField(max_length=35, null=True, blank=True)
-    hasInterest = models.BooleanField(default=False)
-    interestAmount = models.FloatField(default=0.0)
-    totalAmount = models.FloatField()
-    init_date = models.DateTimeField(default=timezone.now)
-    due_date = models.DateTimeField(default=timezone.now)
-    class StatusEnum(models.IntegerChoices):
-        PENDING =  0, 'Pending'
-        PAID =  1, 'Paid'
-        OVERDUE = 2, 'Overdue'
 
-    status = models.IntegerField(
-        choices=StatusEnum.choices,
-        default=StatusEnum.PENDING
-    )
+    class StatusEnum(models.TextChoices):
+        PENDING = 'pending', 'Pending'
+        OVERDUE = 'overdue', 'Overdue'
+        PAID = 'paid', 'Paid'
+
+    status = models.CharField(max_length=10, choices=StatusEnum.choices, default=StatusEnum.PENDING)
+    transaction = models.OneToOneField('Transaction', on_delete=models.SET_NULL, null=True, blank=True)
+    
     class Meta:
         db_table = 'debts'
+
 
 class ScheduledTransaction(models.Model):
     id_transaction = models.AutoField(primary_key=True)
