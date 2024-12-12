@@ -243,17 +243,28 @@ def update_email_schedule(request, id_user):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
     frequency = request.data.get('frequency', 'monthly')  
-    start_date = request.data.get('start_date', now()) 
+    start_date = request.data.get('start_date', now().isoformat())  
 
-    if isinstance(start_date, str):
-        start_date = parse_datetime(start_date) 
-
-    if not isinstance(start_date, datetime):
+    try:
+        start_date = parse_datetime(start_date)
+        if not start_date:
+            raise ValueError("Invalid date format")
+    except ValueError:
         return Response({'error': 'Invalid start_date format'}, status=status.HTTP_400_BAD_REQUEST)
+
+    valid_frequencies = ['daily', 'weekly', 'monthly', 'yearly']
+    if frequency not in valid_frequencies:
+        return Response({'error': 'Invalid frequency'}, status=status.HTTP_400_BAD_REQUEST)
 
     user.email_schedule_frequency = frequency
     user.email_schedule_start_date = start_date
     user.save()
 
-    return Response({'message': 'Email schedule updated successfully!'}, status=status.HTTP_200_OK)
+    return Response({
+        'message': 'Email schedule updated successfully!',
+        'data': {
+            'frequency': user.email_schedule_frequency,
+            'start_date': user.email_schedule_start_date.isoformat(),
+        }
+    }, status=status.HTTP_200_OK)
 

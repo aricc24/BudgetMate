@@ -23,6 +23,7 @@ const HomeComponents = ({
                 <button onClick={handleDownloadPDF} className="btn btn-primary">Download PDF</button>
                 <button onClick={handleSendEmail} className="btn btn-primary">Send by Email Now</button>
                 <div className="email-schedule">
+                <div className="email-schedule">
                     <label>Frequency:</label>
                     <select value={selectedFrequency} onChange={(e) => setSelectedFrequency(e.target.value)}>
                         <option value="daily">Daily</option>
@@ -38,6 +39,8 @@ const HomeComponents = ({
                         />
                         <button onClick={handleUpdateEmailSchedule}>Update Schedule</button>
                 </div>
+                </div>
+
 
                  <div className="filter-container">
                     <label>Show data by: </label>

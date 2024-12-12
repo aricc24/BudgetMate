@@ -14,9 +14,19 @@ const Home = () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         const frequency = selectedFrequency; 
-        const startDate = selectedStartDate; 
+        let startDate = selectedStartDate; 
     
-        if (!authToken || !userId) return;
+        if (!authToken || !userId) {
+            alert('User is not authenticated.');
+            return;
+        }
+    
+        if (!startDate) {
+            alert('Please select a start date.');
+            return;
+        }
+
+        startDate = `${startDate}T00:00:00`;
     
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/update_email_schedule/${userId}/`, {
@@ -29,12 +39,15 @@ const Home = () => {
             });
     
             if (response.ok) {
-                alert('Email schedule updated successfully.');
+                const data = await response.json();
+                alert(`Email schedule updated successfully. Start Date: ${data.data.start_date}`);
             } else {
-                alert('Failed to update email schedule.');
+                const errorData = await response.json();
+                alert(`Failed to update email schedule: ${errorData.error}`);
             }
         } catch (error) {
             console.error('Error updating email schedule:', error);
+            alert('An error occurred while updating the schedule.');
         }
     };
     
