@@ -22,7 +22,7 @@ html, body {
   align-items: center;
   padding: 30px 20px;
   background-color: #01090f;
-  color: white; 
+  color: #1ab188;
   position: fixed; 
   top: 0; 
   left: 0; 
@@ -33,13 +33,17 @@ html, body {
 .menu-icon {
   background: none;
   border: none;
-  color: white;
+  color: #1ab188;
   font-size: 1.5rem;
   cursor: pointer;
   position: absolute;
   top: 15px;
   left: 15px;
   z-index: 1004;
+}
+
+.menu-icon:hover {
+  color: #6ed6ba;
 }
 
 .overlay {
