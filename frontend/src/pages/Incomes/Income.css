@@ -95,8 +95,7 @@
 
 .content-container {
     display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
+    flex-direction: column;
     gap: 20px;
     width: 100%;
 }
@@ -106,13 +105,20 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    flex: 2;
-    max-width: 60%;
+    width: 100%; /* Asegura que el contenedor ocupe el ancho completo */
+    max-width: 100%;
+    overflow-x: auto;
+    text-align: left;
+    margin: 0 auto;
+    overflow-x: auto; /* Scroll horizontal para contenido más ancho */
+    overflow-y: hidden; /* Evita desbordamiento vertical si no es necesario */
+    white-space: nowrap; 
 }
 
 .table-container table {
     width: 100%;
     border-collapse: collapse;
+    margin-left: 0;
 }
 
 .table-container th {
@@ -138,11 +144,8 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
     margin-top: 20px;
-    flex: 1;
-    max-width: 45%;
-    max-width: 60%; 
-    height: 200px; 
 }
 
 dialog {
@@ -443,7 +446,7 @@ dialog input {
   button.cancel-button {
     margin-top: 10px;
     padding: 10px;
-    background-color: #ff6347; /* Color rojo para cancelar */
+    background-color: #ff6347;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -452,6 +455,17 @@ dialog input {
   }
   
   button.cancel-button:hover {
-    background-color: #ff7f7f; /* Color rojo claro para hover */
+    background-color: #ff7f7f;
   }
   
+
+  @media (max-width: 768px) {
+    .table-container {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .table-container table {
+        font-size: 0.8rem;
+    }
+}

@@ -48,7 +48,6 @@ const IncomeComponents = ({
         <Layout>
             <div className="income-page">
                 <label>Incomes</label>
-               
                 <button 
                     onClick={handleOpenAddIncomeDialog}>
                     Add Income
@@ -99,9 +98,7 @@ const IncomeComponents = ({
                     </dialog> 
                 )}
 
-                <div className="content-container">
-                    <div className="table-container">        
-                    <div className="search-container">
+                <div className="search-container">
                     <input
                         type="text"
                         placeholder="Search by description or category"
@@ -110,7 +107,8 @@ const IncomeComponents = ({
                         className="mb-4 p-2 border border-gray-300 rounded"
                     />
                 </div>
-                <table border="1">
+    
+                <table border="1" className="table">
                     <thead>
                         <tr>
                             <th>Category</th>
@@ -157,16 +155,15 @@ const IncomeComponents = ({
                         )}
                     </tbody>
                 </table>
-                    </div>
-                    <div className="chart-container">
-                        <h4>Line Chart</h4>
-                        {chartData && <LineChart data={chartData} />}
-                    </div>
-
-                    <div className="chart-container">
-                        <h4>Pie Chart</h4>
-                        {transactions.length > 0 && <PieChart data={transactions} categories={categories} />}
-                    </div>
+    
+                <div className="chart-container">
+                    <h4>Line Chart</h4>
+                    {chartData && <LineChart data={chartData} />}
+                </div>
+    
+                <div className="chart-container">
+                    <h4>Pie Chart</h4>
+                    {transactions.length > 0 && <PieChart data={transactions} categories={categories} />}
                 </div>
                 {isOptionsOpen && (
                     <dialog className='' open>
@@ -355,7 +352,7 @@ const IncomeComponents = ({
                 )}
             </div>
         </Layout>
-    );
+    );    
 };
 
 export default IncomeComponents;
