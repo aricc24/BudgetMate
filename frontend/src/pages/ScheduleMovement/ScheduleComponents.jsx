@@ -80,6 +80,8 @@ const ScheduledTransactionsForm = ({
               <option value="weekly">Weekly</option>
               <option value="monthly">Monthly</option>
               <option value="yearly">Yearly</option>
+              <option value="none">None</option>
+
             </select>
           </div>
 

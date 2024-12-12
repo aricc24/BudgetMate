@@ -121,7 +121,7 @@ const DebtsComponents = ({
                             value={selectedOption}
                             onChange={(e) => setSelectedOption(e.target.value)}
                         >
-                            <option value="Paid">Pending</option>
+                            <option value="Pending">Pending</option>
                             <option value="Paid">Paid</option>
                             <option value="Overdue">Overdue</option>
                         </select>
@@ -299,7 +299,7 @@ const DebtsComponents = ({
                                 value={selectedOption}
                                 onChange={(e) => setSelectedOption(e.target.value)}
                             >
-                                <option value="Paid">Pending</option>
+                                <option value="Pending">Pending</option>
                                 <option value="Paid">Paid</option>
                                 <option value="Overdue">Overdue</option>
                             </select>
