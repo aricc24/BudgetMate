@@ -20,6 +20,9 @@ const ProfileComponents = ({
                     <button type="button" className="edit-button" onClick={handleEdit}>
                         Edit
                     </button>
+                    <button type="button" className="exit-button" onClick={handleExit}>
+                        Exit
+                    </button>
                 </div>
                 <div className="profile-form">
                     <h2>My Profile</h2>
@@ -100,13 +103,8 @@ const ProfileComponents = ({
                         </div>
                     )}
                 </div>
-                <div className="exit-button-container">
-                    <button type="button" className="exit-button" onClick={handleExit}>
-                        Exit
-                    </button>
-                </div>
             </div>
-        </Layout>
+        </Layout>    
     );
 };
 
