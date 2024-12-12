@@ -1,131 +1,129 @@
 .profile-page {
-    display: flex;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px; 
-    background-color: #184346;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    color: #1ab188;
-    text-align: center;
-  }
-  
-  .profile-left{
-    flex: 1; 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px; 
-  }
+  display: flex;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px; 
+  background-color: #184346;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: #1ab188;
+  text-align: center;
+}
 
-  .profile-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    margin-bottom: 15px;
-  }
+.profile-left{
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px; 
+}
 
-  .edit-button {
-    padding: 8px 16px;
-    font-size: 1rem;
-    color: #fff;
-    background-color: #000;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
+.profile-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
 
-  .edit-button:hover{
-    background-color: #333;
-  }
+.edit-button {
+  padding: 8px 16px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #1ab188;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
-  .profile-right {
-    flex: 2;
-    padding: 20px;
-  }
+.edit-button:hover{
+  background-color: #6ed6ba;
+}
 
-  .profile-right h2 {
-    font-size: 1.8rem;
-    color: #333;
-    margin-bottom: 20px;
-    text-align: left;
-    padding-left: 80px;
-  }
+.profile-right {
+  flex: 2;
+  padding: 20px;
+}
 
-  
+.profile-right h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: left;
+  padding-left: 80px;
+}
 
-  form{
-    display: flex; 
-    gap: 20px; 
-  }
 
-  .form-column {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
 
-  .form-group:first-child {
-    margin-left: 40px;
-  }
+form{
+  display: flex; 
+  gap: 20px; 
+}
 
-  form input{
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
+.form-column {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
 
-  form input::placeholder {
-    color: rgba(0, 0, 0, 0.5); 
-    font-size: 1rem;
-  }
-  
-  .button-group{
-    display: flex; 
-    gap: 10px; 
-    justify-content: flex-end;
-    margin-top: 20px;
-  }
+.form-group:first-child {
+  margin-left: 40px;
+}
 
-  .button-group button{
-    padding: 10px 20px;
-    font-size: 1rem;
-    color: #fff;
-    background-color: #000;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer; 
-    transition: background-color 0.3s;
-  }
+form input{
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
 
-  .button-group button:hover{
-    background-color: #333;
-  }
-  
-  .exit-button-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-  }
+form input::placeholder {
+  color: rgba(0, 0, 0, 0.5); 
+  font-size: 1rem;
+}
 
-  .exit-button {
-    padding: 8px 16px;
-    font-size: 1rem;
-    color: #ffffff;
-    background-color: #555;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s;
-  }
-  
-  .exit-button:hover {
-    background-color: #333;
-  }
-  
-  
+.button-group{
+  display: flex; 
+  gap: 10px; 
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.button-group button{
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #1ab188;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer; 
+  transition: background-color 0.3s;
+}
+
+.button-group button:hover{
+  background-color: #6ed6ba;
+}
+
+.exit-button-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.exit-button {
+  padding: 8px 16px;
+  font-size: 1rem;
+  color: #ffffff;
+  background-color: #1ab188;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.exit-button:hover {
+  background-color: #6ed6ba;
+}
