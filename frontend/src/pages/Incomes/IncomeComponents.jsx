@@ -186,12 +186,13 @@ const IncomeComponents = ({
                                 Select Category 
                             </button> 
                             <button 
-                                className="Buttons1"
+                                className="Buttons2"
                                 onClick={handleCloseAddIncomeDialog} 
                             > 
                                 Done 
                             </button> 
-                            <button 
+                            <button
+                                className="Buttons2"
                                 onClick={() => setIsAddIncomeDialogOpen(false)} 
                             > 
                                 Cancel 

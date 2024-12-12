@@ -38,25 +38,75 @@
   background-color: #6ed6ba;
 }
 
-
-
 .add-income-dialog {
-    border: none;
-    padding: 20px;
-    border-radius: 8px;
+    z-index: 200;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     background-color: #184346;
-    color: #1ab188;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .add-income-dialog input,
-  .add-income-dialog .datepicker {
-    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    padding: 20px;
     width: 100%;
-  }
+    max-width: 400px;
+    color: #1ab188;
+}
 
+.add-income-dialog input,
+.add-income-dialog .datepicker {
+    margin-bottom: 15px;
+    width: calc(100% - 20px);
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #1ab188;
+    border-radius: 8px;
+    outline: none;
+    background-color: #132e2f;
+    color: #fff;
+}
 
-  
+.add-income-dialog input::placeholder {
+    color: #a0b3b0;
+    font-style: italic;
+}
+
+.add-income-dialog input:focus {
+    border-color: #6ed6ba;
+    box-shadow: 0 0 5px rgba(102, 230, 186, 0.8);
+}
+
+.add-income-dialog button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #1ab188;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.add-income-dialog button:hover {
+    background-color: #6ed6ba;
+}
+
+.add-income-dialog .Buttons1 {
+    margin-left: 27px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #1ab188;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.Buttons2 {
+    margin-left: 10px;
+    margin-top: -10px;
+}
+
 .search-container {
     width: 100%;
     display: flex;
@@ -171,8 +221,8 @@
 }
 
 .inactive {
-    pointer-events: none; /* Bloquea clics en todo excepto el diálogo */
-    opacity: 0.5; /* Oscurece visualmente el fondo */
+    pointer-events: none;
+    opacity: 0.5;
 }
 
 .overlay {
@@ -182,11 +232,11 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
-    z-index: 100; /* El overlay queda detrás del diálogo */
+    z-index: 100;
 }
 
-.add-income-dialog, dialog {
-    z-index: 200; /* El diálogo debe estar por encima del overlay */
+.dialog {
+    z-index: 200;
     position: fixed;
     left: 50%;
     top: 50%;
