@@ -19,6 +19,7 @@ from logic.serializer import TransactionSerializer
 from datetime import datetime, timezone
 from django.utils import timezone
 from django.template.loader import render_to_string
+
 from django.utils.timezone import now
 from django.utils.dateparse import parse_datetime
 
@@ -247,7 +248,7 @@ def update_email_schedule(request, id_user):
     if isinstance(start_date, str):
         start_date = parse_datetime(start_date) 
 
-    if not isinstance(start_date, datetime.datetime):
+    if not isinstance(start_date, datetime):
         return Response({'error': 'Invalid start_date format'}, status=status.HTTP_400_BAD_REQUEST)
 
     user.email_schedule_frequency = frequency

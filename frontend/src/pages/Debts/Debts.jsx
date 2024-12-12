@@ -67,13 +67,13 @@ const Debts = () => {
             status: (() => {
                 switch (selectedOption) {
                     case 'Pending':
-                        return 0;
+                        return 'pending';
                     case 'Paid':
-                        return 1;
+                        return 'paid';
                     case 'Overdue':
-                        return 2;
+                        return 'overdue';
                     default:
-                        return 0;
+                        return 'pending';
                 }
             })(),
         };        
@@ -160,13 +160,13 @@ const Debts = () => {
             status: (() => {
                 switch (selectedOption) {
                     case 'Pending':
-                        return 0;
+                        return 'pending';
                     case 'Paid':
-                        return 1;
+                        return 'paid';
                     case 'Overdue':
-                        return 2;
+                        return 'overdue';
                     default:
-                        return 0;
+                        return 'pending';
                 }
             })(),
         };
