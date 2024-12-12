@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import 'chartjs-adapter-date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -38,45 +38,66 @@ const IncomeComponents = ({
     handleEditCategory,
     handleDeleteCategory,
 }) => {
+
+    const [isAddIncomeDialogOpen, setIsAddIncomeDialogOpen] = useState(false); 
+    const handleOpenAddIncomeDialog = () => { setIsAddIncomeDialogOpen(true); };
+    const handleCloseAddIncomeDialog = () => { handleAddIncome(); setIsAddIncomeDialogOpen(false);
+    };
+
     return (
         <Layout>
             <div className="income-page">
-                <div className="top-left">Incomes</div>
-                
+                <label>Incomes</label>
                
-                <div className="add-income-form">
-                    <input
-                        type="number"
-                        min="0"
-                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        placeholder="Amount"
-                    />
-                    <input
-                        type="text"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Description"
-                    />
-                    <DatePicker
-                        selected={selectedDate}
-                        onChange={date => setSelectedDate(date)}
-                        showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={15}
-                        dateFormat="yyyy-MM-dd HH:mm"
-                        className="datepicker"
-                        onKeyDown={(e) => e.preventDefault()}
-                    />
-                    <button
-                        className="select-category-button"
-                        onClick={() => setIsCategoryDialogOpen(true)}
-                    >
-                        Select Categories
-                    </button>
-                    <button className="add-income-button" onClick={handleAddIncome}>Add Income</button>
-                </div>
+                <button 
+                    onClick={handleOpenAddIncomeDialog}>
+                    Add Income
+                </button> 
+                {isAddIncomeDialogOpen && ( 
+                    <dialog className='add-income-dialog' open> 
+                        <input 
+                            type="number" 
+                            min="0" 
+                            onKeyDown={(e) => { if (['e', 'E', '+', '-'].includes(e.key)) { e.preventDefault(); } }} 
+                            value={amount} 
+                            onChange={(e) => setAmount(e.target.value)} 
+                            placeholder="Amount" 
+                        /> 
+                        <input 
+                            type="text" 
+                            value={description} 
+                            onChange={(e) => setDescription(e.target.value)} 
+                            placeholder="Description" 
+                        /> 
+                        <DatePicker 
+                            selected={selectedDate} 
+                            onChange={date => setSelectedDate(date)} 
+                            showTimeSelect 
+                            timeFormat="HH:mm" 
+                            timeIntervals={15} 
+                            dateFormat="yyyy-MM-dd HH:mm" 
+                            className="datepicker" 
+                            onKeyDown={(e) => e.preventDefault()} 
+                        /> 
+                        <button 
+                            className="select-category-button" 
+                            onClick={() => setIsCategoryDialogOpen(true)} 
+                        > 
+                            Select Category 
+                        </button> 
+                        <button 
+                            className='done-button' 
+                            onClick={handleCloseAddIncomeDialog} 
+                        > 
+                            Done 
+                        </button> 
+                        <button 
+                            onClick={() => setIsAddIncomeDialogOpen(false)} 
+                        > 
+                            Cancel 
+                        </button> 
+                    </dialog> 
+                )}
 
                 <div className="content-container">
                     <div className="table-container">        
