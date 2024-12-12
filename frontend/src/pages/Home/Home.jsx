@@ -196,6 +196,7 @@ const CombinedChart = ({ data }) => {
                     },
                 },
             },
+            
         });
 
         return () => {if (chartInstance.current) {chartInstance.current.destroy();}};

@@ -17,7 +17,7 @@ function SignIn() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
             });
-            setMessage(response.ok ? 'User added successfully!' : 'Error adding user.');
+            setMessage(response.ok ? 'User added successfully! Please login' : 'Error adding user: The user already exists or the provided data is invalid');
         } catch (error) {
             console.error('Error:', error);
             setMessage('Error adding user.');
