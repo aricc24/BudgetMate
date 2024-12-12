@@ -1,7 +1,7 @@
 html, body {
   height: 100%;
   margin: 0;
-  background-color: #13232F;
+  background-color: #0a1e20;
 }
 
 .layout {
@@ -11,7 +11,7 @@ html, body {
 }
 
 .layout-content {
-  background-color: #13232F;
+  background-color: #0a1e20;
   flex-grow: 1;
   padding-top: 120px;
 }
@@ -21,7 +21,7 @@ html, body {
   justify-content: space-between;
   align-items: center;
   padding: 30px 20px;
-  background-color: #01090f;
+  background-color: #010e0f;
   color: #1ab188;
   position: fixed; 
   top: 0; 
