@@ -119,38 +119,56 @@
     color: #1ab188;
 }
 
-.table tr:hover {
-    background-color: #1ab188;
-    color: #184346;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-
-.table th.options-header, .table td.options-cell {
+.table th.opt, .table td.opt {
     text-align: center;
-    vertical-align: middle;
-    padding: 0;
+    width: 20px;
 }
 
-.table .three-dots {
+.table .Edit {
     background: none;
     border: none;
     color: #1ab188;
     cursor: pointer;
+    display: flex;
     transition: color 0.3s;
-    align-items: center;
-    justify-content: center;
+    margin-left: 15px;
 }
 
-.table .three-dots:hover {
+.table td.icons {
+    padding-right: 0;
+    padding-left: 0;
+    border: 1px solid #1ab189be;
+    table-layout: fixed;
+}
+
+.table .Edit:hover {
     color: #6ed6ba;
 }
 
-.table .three-dots i {
+.table .Edit i {
     font-size: 1.2rem;
 }
 
+.table .Delete {
+    background: none;
+    border: none;
+    color: #ff4d4d;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s;
+    margin-left: 15px;
+    margin-top: 10px;
+}
 
+.table .Delete:hover {
+    color: #ff6b6b;
+}
+
+.table .Delete i {
+    font-size: 1.2rem;
+}
 
 .chart-container {
     display: flex;
@@ -159,7 +177,7 @@
     justify-content: center;
     margin: 20px 0;
     padding: 20px;
-    background-color: #0f393a; /* Fondo oscuro */
+    background-color: #0f393a;
     border: 1px solid #1ab188;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -178,8 +196,3 @@
     color: #1ab188;
     margin-bottom: 10px;
 }
-
-
-
-
-

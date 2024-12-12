@@ -116,9 +116,8 @@ const IncomeComponents = ({
                             <th>Amount</th>
                             <th>Description</th>
                             <th>Date</th>
-                            <th className="options-header">
-                                <i className="fas fa-pencil-alt" title="Edit"></i> /
-                                <i className="fas fa-trash" title="Delete"></i>
+                            <th className="opt">
+                                <i className="fas fa-cog" title="Options"></i>
                             </th>
                         </tr>
                     </thead>
@@ -144,18 +143,28 @@ const IncomeComponents = ({
                                     <td>${transaction.mount}</td>
                                     <td>{transaction.description || 'No description'}</td>
                                     <td>{adjustTime(transaction.date)}</td>
-                                    <td>
+                                    <td className="icons">
                                         <button
-                                            className="three-dots"
+                                            className="Edit"
                                             onClick={() => {
+                                                const transactionToEdit = transactions.find(t => t.id_transaction === transaction.id_transaction);
+                                                setEditAmount(transactionToEdit.mount);
+                                                setEditDescription(transactionToEdit.description);
+                                                setSelectedDate(new Date(transactionToEdit.date));
+                                                setSelectedCategories(transactionToEdit.categories);
                                                 setSelectedTransactionId(transaction.id_transaction);
-                                                setisOptionsOpen(true);
+                                                setisEditOpen(true);
                                             }}
                                         >
-                                            
-                                                <i className="fas fa-pencil-alt" title="Edit"></i>
-                                                <i className="fas fa-trash" title="Delete"></i>
-                                            
+                                            <i className="fas fa-pencil-alt" title="Edit"></i>
+                                        </button>
+                                        <button
+                                            className="Delete"
+                                            onClick={() => {
+                                                handleDeleteIncome(transaction.id_transaction);
+                                            }}
+                                        >
+                                            <i className="fas fa-trash" title="Delete"></i>
                                         </button>
                                     </td>
                                 </tr>
