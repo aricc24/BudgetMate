@@ -70,7 +70,7 @@ def generate_pdf(request, id_user):
    total_pending_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PENDING)
    total_overdue_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.OVERDUE)
    
-   main_balance = total_income - (total_expenses + total_paid_debt)
+   main_balance = total_income - total_expenses #+ total_paid_debt)
    debt_balance = total_pending_debt + total_overdue_debt
    suggested_balance = total_income - (total_expenses + total_paid_debt + debt_balance)
    
