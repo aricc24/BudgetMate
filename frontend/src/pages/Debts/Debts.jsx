@@ -50,34 +50,37 @@ const Debts = () => {
         fetchDebts();
     }, [navigate]);     
 
-    const handleAddDebt = async () =>  {
+    const handleAddDebt = async () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
-
+    
         const newDebt = {
-            id_user: userId,
+            id_user: parseInt(userId, 10),
             amount: parseFloat(amount),
-            description: description,
-            lender: lender,
+            description: description.trim() || null,
+            lender: lender.trim() || null,
             hasInterest: hasInterest,
             interestAmount: hasInterest ? parseFloat(interestAmount || 0) : 0.0,
-            init_date: init_Date.toISOString(),
-            due_date: due_Date.toISOString(),
+            init_date: init_Date.toISOString().split('.')[0] + 'Z',
+            due_date: due_Date.toISOString().split('.')[0] + 'Z',
             status: (() => {
-                switch (selectedOption) {
-                    case 'Pending':
+                switch (selectedOption.toLowerCase()) {
+                    case 'pending':
                         return 'pending';
-                    case 'Paid':
+                    case 'paid':
                         return 'paid';
-                    case 'Overdue':
+                    case 'overdue':
                         return 'overdue';
                     default:
                         return 'pending';
                 }
             })(),
-        };        
+        };
 
+        console.log('Payload:', newDebt);
+
+    
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/debts/`, {
                 method: 'POST',
@@ -87,7 +90,7 @@ const Debts = () => {
                 },
                 body: JSON.stringify(newDebt)
             });
-
+    
             if (response.ok) {
                 const savedDebt = await response.json();
                 setDebts(prevDebts => [...prevDebts, savedDebt]);
@@ -99,12 +102,14 @@ const Debts = () => {
                 setInitDate(new Date());
                 setDueDate(new Date());
             } else {
-                console.error('Failed to add debt');
+                const errorResponse = await response.json();
+                console.error('Failed to add debt:', errorResponse);
             }
         } catch (error) {
             console.error('Error adding debt:', error);
         }
     };
+    
 
     const adjustTime = (utcDate) => {
         const date = new Date (utcDate);

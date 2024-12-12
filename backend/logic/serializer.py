@@ -8,7 +8,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
-
     def create(self, validated_data):
         print("Valid data:", validated_data)
         user = super().create(validated_data)
