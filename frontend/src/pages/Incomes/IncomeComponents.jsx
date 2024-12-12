@@ -42,8 +42,7 @@ const IncomeComponents = ({
         <Layout>
             <div className="income-page">
                 <div className="top-left">Incomes</div>
-                <div className="button-container">
-                </div>
+                
                
                 <div className="add-income-form">
                     <input

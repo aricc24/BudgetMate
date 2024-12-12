@@ -1,11 +1,15 @@
 .income-page {
-    position: relative;
-    padding: 20px;
-    color: #333;
-    font-family: 'Arial', sans-serif;
     display: flex;
     flex-direction: column;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    color: #1ab188;
+    font-family: 'Arial', sans-serif;
     align-items: center;
+    position: relative;
+    min-height: 100vh;
+    min-width: 100vh;
 }
 
 .income-page h2 {
@@ -310,14 +314,10 @@ dialog input {
 }
 
 .top-left {
-    position: absolute;
-    color: white;
-    background-color: #2a5a8c;
-    border-radius: 5%;
-    top: -100px;
-    left: 475px;
-    margin: 10px;
-    font-size: 40px;
+    font-size: 1.8rem;
+  color: #1ab188;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .three-dots {
