@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import IncomeComponents from './IncomeComponents.jsx';
@@ -26,49 +26,51 @@ const Income = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        const fetchTransactions = async () => {
-            const authToken = localStorage.getItem('authToken');
-            const userId = localStorage.getItem('userId');
-            if (!authToken) {
-                navigate('/login');
-                return;
-            }
+    
+    const fetchTransactions = useCallback(async () => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken) {
+            navigate('/login');
+            return;
+        }
 
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}/`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const incomeTransactions = data.filter(t => t.type === 0);
-                    setTransactions(incomeTransactions);
-                    updateChartData(incomeTransactions);
-                } else {
-                    console.error('Failed to fetch transactions');
-                }
-            } catch (error) {
-                console.error('Error fetching transactions:', error);
-            }
-        };
-        const fetchCategories = async () => {
-            const userId = localStorage.getItem('userId');
-            fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Error fetching user categories");
-                }
-                return response.json();
-            })
-            .then((data) => {setCategories(data);})
-            .catch((error) => {
-                console.error("Error fetching user categories:", error)
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}/`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
             });
-        };
+
+            if (response.ok) {
+                const data = await response.json();
+                const incomeTransactions = data.filter(t => t.type === 0);
+                setTransactions(incomeTransactions);
+                updateChartData(incomeTransactions);
+            } else {
+                console.error('Failed to fetch transactions');
+            }
+        } catch (error) {
+            console.error('Error fetching transactions:', error);
+        }
+    }, [navigate]);
+
+    const fetchCategories = async () => {
+        const userId = localStorage.getItem('userId');
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`);
+            if (!response.ok) {
+                throw new Error("Error fetching user categories");
+            }
+            const data = await response.json();
+            setCategories(data);
+        } catch (error) {
+            console.error("Error fetching user categories:", error);
+        }
+    };
+    
+    useEffect(() => {
         fetchTransactions();
         fetchCategories();
-    }, [navigate]);
+    }, [fetchTransactions]);
 
     const updateChartData = (transactions) => {
         const filteredData = transactions.map(transaction => ({
@@ -253,6 +255,7 @@ const Income = () => {
                     }))
                 );
                 console.log(result.message);
+                await fetchTransactions();
             } else {
                 const errorData = await response.json();
                 console.error(errorData.error);
