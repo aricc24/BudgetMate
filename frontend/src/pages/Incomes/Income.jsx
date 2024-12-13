@@ -25,7 +25,6 @@ const Income = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
 
-    
     const fetchTransactions = useCallback(async () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
@@ -132,11 +131,11 @@ const Income = () => {
                 );
                 alert('Transaction deleted successfully.');
             } else {
-                alert('Fail on delete transaction.');
+                alert('Fail on delete income.');
             }
         } catch (error) {
             console.error('Error deleting transaction:', error);
-            alert('An error occurred while trying to delete the transaction.');
+            alert('An error occurred while trying to delete the income.');
         }
     }; 
 
@@ -299,11 +298,13 @@ const Income = () => {
                         categories: transaction.categories.filter((id) => id !== categoryId),
                     }))
                 );
+                await fetchCategories();
+                await fetchTransactions();
                 alert('Category deleted successfully.');
             } else {
                 const errorData = await response.json();
                 console.error('Error deleting category:', errorData.error);
-                alert('Failed to delete category.');
+                alert('Cannot delete default categories.');
             }
         } catch (error) {
             console.error('Error deleting category:', error);
