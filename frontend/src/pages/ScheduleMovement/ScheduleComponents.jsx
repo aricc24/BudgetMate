@@ -17,8 +17,7 @@ const ScheduledTransactionsForm = ({
     return (
     <Layout>
       <form className="form-container">
-        <h2 className="form-header">Schedule Transaction</h2>
-
+        <h2 className="form-header">Schedule Transactions</h2>
         <div className="form-grid">
           <div className="input-group">
             <label className="label">Amount:</label>
@@ -71,23 +70,6 @@ const ScheduledTransactionsForm = ({
           </div>
 
           <div className="input-group">
-            <label className="label">Periodicity:</label>
-            <select
-              name="periodicity"
-              value={formData.periodicity}
-              onChange={handleChange}
-              className="input"
-            >
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="yearly">Yearly</option>
-              <option value="none">None</option>
-
-            </select>
-          </div>
-
-          <div className="input-group">
             <label className="label">Categories:</label>
             <select
               name="categories"
@@ -116,6 +98,23 @@ const ScheduledTransactionsForm = ({
           </div>
         </div>
 
+        <div className="input-group">
+          <label className="periodicity-label">Periodicity:</label>
+          <select
+          className="periodicity"
+            name="periodicity"
+            value={formData.periodicity}
+            onChange={handleChange}
+          >
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+            <option value="none">None</option>
+
+          </select>
+        </div>
+
         {editingTransactionId ? (
           <button
             type="button"
@@ -127,7 +126,7 @@ const ScheduledTransactionsForm = ({
         ) : (
           <button
             type="submit"
-            className="button"
+            className="save-button"
             onClick={handleSubmit}
           >
             Save
@@ -135,7 +134,6 @@ const ScheduledTransactionsForm = ({
         )}
       </form>
 
-      <h2>Scheduled Transactions</h2>
       <div className="table-container">
         <table className="table">
           <thead>
