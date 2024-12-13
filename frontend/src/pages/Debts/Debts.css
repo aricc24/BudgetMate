@@ -20,7 +20,6 @@
     margin-bottom: 20px;
     margin-top: -70px;
 }
-
 .add-debt-dialog {
     z-index: 200;
     position: fixed;
@@ -31,58 +30,80 @@
     border-radius: 8px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
     padding: 20px;
-    width: 100%;
-    max-width: 400px;
+    max-width: 800px;
+    width: 90%;
     color: #1ab188;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.add-debt-dialog h2 {
+    font-size: 1.8rem;
+    color: #1ab188;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.add-debt-dialog form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.add-debt-dialog .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .add-debt-dialog input,
-.add-debt-dialog .datepicker {
-    margin-bottom: 15px;
-    width: calc(100% - 20px);
+.add-debt-dialog select {
     padding: 10px;
     font-size: 1rem;
-    border: 1px solid #1ab188;
+    border: 1px solid #538173;
     border-radius: 8px;
     outline: none;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
     background-color: #132e2f;
     color: #fff;
+    width: 100%;
 }
 
 .add-debt-dialog input::placeholder {
     color: #a0b3b0;
-    font-style: italic;
 }
 
-.add-debt-dialog input:focus {
-    border-color: #6ed6ba;
-    box-shadow: 0 0 5px rgba(102, 230, 186, 0.8);
+.add-debt-dialog input:focus,
+.add-debt-dialog select:focus {
+    border-color: #1ab188;
 }
 
-.add-debt-dialog button {
-    padding: 10px 15px;
+.add-debt-dialog .has-interest-group {
+    grid-column: span 1;
+}
+
+.add-debt-dialog .button-group {
+    grid-column: span 3;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.add-debt-dialog .button-group button {
+    padding: 10px 20px;
     font-size: 1rem;
     color: #fff;
     background-color: #1ab188;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
+    transition: background-color 0.3s;
 }
 
-.add-debt-dialog button:hover {
+.add-debt-dialog .button-group button:hover {
     background-color: #6ed6ba;
-}
-
-.add-debt-dialog .Buttons1 {
-    margin-left: 27px;
-    font-size: 1rem;
-    color: #fff;
-    background-color: #1ab188;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
 }
 
 .react-datepicker {
