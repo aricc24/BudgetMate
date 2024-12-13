@@ -67,36 +67,36 @@ const DebtsComponents = ({
                                     <th>Status</th>
                                     <th>Init Date</th>
                                     <th>Due Date</th>
+                                    <th className="opt">
+                                        <i className="fas fa-cog" title="Options"></i>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {debts.map((debt) => {
-                                    console.log(debt);
-                                    return (
-                                        <tr key={debt.id_debt}>
-                                            <td>- ${debt.amount}</td>
-                                            <td>{debt.description || "No description"}</td>
-                                            <td>{debt.lender || "Unknown"}</td>
-                                            <td>{debt.hasInterest}</td>
-                                            <td>{debt.interestAmount}</td>
-                                            <td>{debt.totalAmount}</td>
-                                            <td>{debt.status}</td>
-                                            <td>{adjustTime(debt.init_date)}</td>
-                                            <td>{adjustTime(debt.due_date)}</td>
-                                            <td>
-                                                <button
-                                                    className="three-dots"
-                                                    onClick={() => {
-                                                        setSelectedDebtId(debt.id_debt);
-                                                        setisOptionsOpen(true);
-                                                    }}
-                                                >
-                                                    <i className="fas fa-ellipsis-v"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
+                                {[...debts].reverse().map((debt) => (
+                                    <tr key={debt.id_debt}>
+                                        <td>- ${debt.amount}</td>
+                                        <td>{debt.description || "No description"}</td>
+                                        <td>{debt.lender || "Unknown"}</td>
+                                        <td>{debt.hasInterest ? "Yes" : "No"}</td>
+                                        <td>{debt.interestAmount || "N/A"}</td>
+                                        <td>{debt.totalAmount || "N/A"}</td>
+                                        <td>{debt.status || "Pending"}</td>
+                                        <td>{adjustTime(debt.init_date)}</td>
+                                        <td>{adjustTime(debt.due_date)}</td>
+                                        <td>
+                                            <button
+                                                className="three-dots"
+                                                onClick={() => {
+                                                    setSelectedDebtId(debt.id_debt);
+                                                    setisOptionsOpen(true);
+                                                }}
+                                            >
+                                                <i className="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
