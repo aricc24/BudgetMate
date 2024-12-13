@@ -50,6 +50,7 @@ const HistoryComponents = ({
                     
 
                     <div className="numbers">
+                        <h3 htmlFor="start-date">Min. Amount</h3>
                         <input
                             type="number"
                             min="0"
@@ -58,6 +59,7 @@ const HistoryComponents = ({
                             onChange={(e) => setMinAmount(e.target.value)}
                             placeholder="Min. Amount"
                         />
+                        <h3 htmlFor="start-date">Max. Amount</h3>
                         <input
                             type="number"
                             min="0"

@@ -25,7 +25,6 @@
     margin-top: -70px;
 }
 
-/* Form styling (already existing in your code) */
 .exp-form {
     z-index: 200;
     position: center;
@@ -89,21 +88,21 @@
     background-color: #6ed6ba;
 }
 
-/* Adjust .dates and .numbers for column layout */
 .dates-numbers-container {
-    display: flex; /* This ensures dates and numbers are side by side */
-    gap: 20px; /* Space between the two columns */
+    display: flex;
+    gap: 20px;
     width: 100%;
     justify-content: space-between;
-    margin-bottom: 20px; /* Optional: add margin to space out the form */
+    margin-bottom: 20px;
 }
 
 .dates, .numbers {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    gap: 15px; /* Space between elements inside the columns */
-    width: 45%; /* Ensure both columns take up equal space */
+    gap: 15px;
+    height: 8%;
+    width: 10%;
 }
 
 .dates h3, .numbers h3 {
@@ -112,15 +111,6 @@
     color: #fff;
 }
 
-.dates {
-    padding: 0;
-}
-
-.numbers {
-    padding: 0;
-}
-
-/* Optional: Additional styling for input fields */
 .dates input, .numbers input {
     padding: 10px;
     font-size: 1rem;
@@ -134,8 +124,34 @@
 
 .dates input:focus, .numbers input:focus {
     border-color: #1ab188;
+    box-shadow: 0 0 5px rgba(102, 230, 185, 0.438);
 }
 
+.dates {
+    position: relative;
+    bottom: 30px;
+    left: 30px;
+    padding: 0%;
+}
+
+.dates h3 {
+    position: relative;
+    font-size: 0.9rem;
+    bottom: -10px;
+}
+
+.numbers {
+    position: relative;
+    bottom: 30px;
+    left: 30px;
+    padding: 0%;
+}
+
+.numbers h3 {
+    position: relative;
+    font-size: 0.9rem;
+    bottom: -10px;
+}
 
 .react-datepicker {
     background-color: #184346;
