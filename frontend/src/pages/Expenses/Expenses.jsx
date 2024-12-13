@@ -25,61 +25,6 @@ const Expenses = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState(''); 
 
-<<<<<<< HEAD
-    useEffect(() => {
-        const fetchTransactions = async () => {
-            const authToken = localStorage.getItem('authToken');
-            const userId = localStorage.getItem('userId');
-            if (!authToken) {
-                navigate('/login');
-                return;
-            }
-    
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}/`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-    
-                if (response.ok) {
-                    const data = await response.json();
-                    const expenseTransactions = data.filter(t => t.type === 1);
-                    setTransactions(expenseTransactions);
-                    updateChartData(expenseTransactions);
-                } else {
-                    console.error('Failed to fetch transactions');
-                }
-            } catch (error) {
-                console.error('Error fetching transactions:', error);
-            }
-        };
-    
-        const fetchCategories = async () => {
-            const userId = localStorage.getItem('userId');
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`);
-                if (!response.ok) {
-                    throw new Error("Error fetching user categories");
-                }
-                const data = await response.json();
-                setCategories(data);
-            } catch (error) {
-                console.error("Error fetching user categories:", error);
-            }
-        };
-
-        const updateChartData = (transactions) => {
-            const filteredData = transactions.map(transaction => ({
-                date: new Date(transaction.date),
-                amount: parseFloat(transaction.mount)
-            }));
-            setChartData(filteredData);
-        };
-        fetchTransactions();
-        fetchCategories();
-        const intervalId = setInterval(fetchTransactions, 60000);
-        return () => clearInterval(intervalId);
-    }, [navigate]);
-=======
     const fetchTransactions = useCallback(async () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
@@ -123,7 +68,6 @@ const Expenses = () => {
         fetchTransactions();
         fetchCategories();
     }, [fetchTransactions]);
->>>>>>> origin/fix-style/program
 
 
     
@@ -178,25 +122,8 @@ const Expenses = () => {
         }
     };
 
-<<<<<<< HEAD
-
-    const adjustTime = (utcDate) => {
-        const date = new Date(utcDate);
-        return date.toLocaleString('default', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZoneName: 'short',
-        });
-    };
-
-    const handelDeleteExpense = async (transactionId) => {
-=======
+    
     const handleDeleteExpense = async (transactionId) => {
->>>>>>> origin/fix-style/program
         const authToken = localStorage.getItem('authToken');
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/delete_transaction/${transactionId}/`, {
@@ -411,8 +338,6 @@ const Expenses = () => {
         return descriptionMatch || categoryMatch;
     });
 
-<<<<<<< HEAD
-=======
     const adjustTime = (utcDate) => {
         const date = new Date(utcDate);
         const year = date.getFullYear();
@@ -422,7 +347,6 @@ const Expenses = () => {
         const minutes = String(date.getMinutes()).padStart(2, '0');
         return `${year}/${month}/${day}, ${hours}:${minutes}`;
     };
->>>>>>> origin/fix-style/program
 
     return (
         <ExpensesComponents
