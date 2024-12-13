@@ -112,7 +112,6 @@
     border: 1px solid #1ab188;
     border-radius: 8px;
     color: #ffffff;
-    
 }
 
 .react-datepicker__header {
@@ -280,8 +279,40 @@
     box-shadow: 0 0 8px #6ed6ba;
 }
 
+.table2 {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1rem;
+    text-align: left;
+    background-color: none;
+    color: #1ab188;
+    border: none;
+    overflow: hidden;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.table2::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table2::-webkit-scrollbar-thumb {
+    background-color: #1ab188;
+    border-radius: 10px;
+}
+
+.table2::-webkit-scrollbar-thumb:hover {
+    background-color: #6ed6ba;
+}
+
+.table2::-webkit-scrollbar-track {
+    background-color: #0d2628;
+}
+
 .table {
     width: 100%;
+    max-height: 500px;
     border-collapse: collapse;
     margin: 20px 0;
     font-size: 1rem;

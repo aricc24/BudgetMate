@@ -72,73 +72,76 @@ const IncomeComponents = ({
                     />
                 </div>
     
-                <table border="1" className="table">
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Amount</th>
-                            <th>Description</th>
-                            <th>Date</th>
-                            <th className="opt">
-                                <i className="fas fa-cog" title="Options"></i>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredTransactions.length > 0 ? (
-                            filteredTransactions.map(transaction => (
-                                <tr key={transaction.id_transaction}>
-                                    <td>
-                                        {transaction.categories.length > 0 ? (
-                                            transaction.categories.map((categoryId, index) => {
-                                                const category = categories.find(c => c.id_category === categoryId);
-                                                return (
-                                                    <span key={categoryId || index}>
-                                                        {category ? category.category_name : 'Uncategorized'}
-                                                        {index < transaction.categories.length - 1 && ', '}
-                                                    </span>
-                                                );
-                                            })
-                                        ) : (
-                                            <span>Uncategorized</span>
-                                        )}
-                                    </td>
-                                    <td>${transaction.mount}</td>
-                                    <td>{transaction.description || 'No description'}</td>
-                                    <td>{adjustTime(transaction.date)}</td>
-                                    <td className="icons">
-                                        <button
-                                            className="Edit"
-                                            onClick={() => {
-                                                const transactionToEdit = transactions.find(t => t.id_transaction === transaction.id_transaction);
-                                                setEditAmount(transactionToEdit.mount);
-                                                setEditDescription(transactionToEdit.description);
-                                                setSelectedDate(new Date(transactionToEdit.date));
-                                                setSelectedCategories(transactionToEdit.categories);
-                                                setSelectedTransactionId(transaction.id_transaction);
-                                                setisEditOpen(true);
-                                            }}
-                                        >
-                                            <i className="fas fa-pencil-alt" title="Edit"></i>
-                                        </button>
-                                        <button
-                                            className="Delete"
-                                            onClick={() => {
-                                                handleDeleteIncome(transaction.id_transaction);
-                                            }}
-                                        >
-                                            <i className="fas fa-trash" title="Delete"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
+                <div className="table2">
+                    <table border="1" className="table">
+                        <thead>
                             <tr>
-                                <td colSpan="4">No results found</td>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                                <th className="opt">
+                                    <i className="fas fa-cog" title="Options"></i>
+                                </th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {filteredTransactions.length > 0 ? (
+                                filteredTransactions.map(transaction => (
+                                    <tr key={transaction.id_transaction}>
+                                        <td>
+                                            {transaction.categories.length > 0 ? (
+                                                transaction.categories.map((categoryId, index) => {
+                                                    const category = categories.find(c => c.id_category === categoryId);
+                                                    return (
+                                                        <span key={categoryId || index}>
+                                                            {category ? category.category_name : 'Uncategorized'}
+                                                            {index < transaction.categories.length - 1 && ', '}
+                                                        </span>
+                                                    );
+                                                })
+                                            ) : (
+                                                <span>Uncategorized</span>
+                                            )}
+                                        </td>
+                                        <td>${transaction.mount}</td>
+                                        <td>{transaction.description || 'No description'}</td>
+                                        <td>{adjustTime(transaction.date)}</td>
+                                        <td className="icons">
+                                            <button
+                                                className="Edit"
+                                                onClick={() => {
+                                                    const transactionToEdit = transactions.find(t => t.id_transaction === transaction.id_transaction);
+                                                    setEditAmount(transactionToEdit.mount);
+                                                    setEditDescription(transactionToEdit.description);
+                                                    setSelectedDate(new Date(transactionToEdit.date));
+                                                    setSelectedCategories(transactionToEdit.categories);
+                                                    setSelectedTransactionId(transaction.id_transaction);
+                                                    setisEditOpen(true);
+                                                }}
+                                            >
+                                                <i className="fas fa-pencil-alt" title="Edit"></i>
+                                            </button>
+                                            <button
+                                                className="Delete"
+                                                onClick={() => {
+                                                    handleDeleteIncome(transaction.id_transaction);
+                                                }}
+                                            >
+                                                <i className="fas fa-trash" title="Delete"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="4">No results found</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
     
                 <div className="chart-container">
                     <h4 className="chart-title">Line Chart</h4>
