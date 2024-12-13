@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import ExpensesComponents from './ExpensesComponents.jsx'
@@ -15,7 +15,6 @@ const Expenses = () => {
     const [newCategory, setNewCategory] = useState('');
     const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
     const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
-    const [isOptionsOpen, setisOptionsOpen] = useState(false);
     const [selectedTransactionId, setSelectedTransactionId] = useState(null);
     const [editAmount, setEditAmount] = useState('');
     const [editDescription, setEditDescription] = useState('');
@@ -26,6 +25,7 @@ const Expenses = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState(''); 
 
+<<<<<<< HEAD
     useEffect(() => {
         const fetchTransactions = async () => {
             const authToken = localStorage.getItem('authToken');
@@ -79,6 +79,51 @@ const Expenses = () => {
         const intervalId = setInterval(fetchTransactions, 60000);
         return () => clearInterval(intervalId);
     }, [navigate]);
+=======
+    const fetchTransactions = useCallback(async () => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken) {
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}/`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const expenseTransactions = data.filter(t => t.type === 1);
+                setTransactions(expenseTransactions);
+                updateChartData(expenseTransactions);
+            } else {
+                console.error('Failed to fetch transactions');
+            }
+        } catch (error) {
+            console.error('Error fetching transactions:', error);
+        }
+    }, [navigate]);
+
+    const fetchCategories = async () => {
+        const userId = localStorage.getItem('userId');
+        fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`)
+        .then((response) => {
+            if (!response.ok) { throw new Error("Error fetching user categories"); }
+            return response.json();
+        })
+        .then((data) => { setCategories(data); })
+        .catch((error) => {
+            console.error("Error fetching user categories:", error)
+        });
+    };
+
+    useEffect(() => {
+        fetchTransactions();
+        fetchCategories();
+    }, [fetchTransactions]);
+>>>>>>> origin/fix-style/program
 
 
     
@@ -126,12 +171,14 @@ const Expenses = () => {
                 setSelectedDate(new Date());
             } else {
                 console.error('Failed to add transaction');
+                alert('Please fill in the amount field.');
             }
         } catch (error) {
             console.error('Error adding transaction:', error);
         }
     };
 
+<<<<<<< HEAD
 
     const adjustTime = (utcDate) => {
         const date = new Date(utcDate);
@@ -147,6 +194,9 @@ const Expenses = () => {
     };
 
     const handelDeleteExpense = async (transactionId) => {
+=======
+    const handleDeleteExpense = async (transactionId) => {
+>>>>>>> origin/fix-style/program
         const authToken = localStorage.getItem('authToken');
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/delete_transaction/${transactionId}/`, {
@@ -162,11 +212,11 @@ const Expenses = () => {
                 updateChartData(deleteTransactions);
                 alert('Transaction deleted successfully.');
             } else {
-                alert('Fail on delete transaction.');
+                alert('Fail on delete expense.');
             }
         } catch (error) {
             console.error('Error deleting transaction:', error);
-            alert('An error occurred while trying to delete the transaction.');
+            alert('An error occurred while trying to delete the expense.');
         }
     }; 
 
@@ -220,6 +270,16 @@ const Expenses = () => {
 
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
+
+        const categoryExists = categories.some(
+            (category) =>
+                category.category_name.toLowerCase() === newCategory.trim().toLowerCase()
+        );
+    
+        if (categoryExists) {
+            alert('This category already exists.');
+            return;
+        }        
 
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/create_category/`, {
@@ -292,12 +352,51 @@ const Expenses = () => {
                     }))
                 );
                 console.log(result.message);
+                await fetchTransactions();
             } else {
                 const errorData = await response.json();
                 console.error(errorData.error);
+                alert('Cannot edit default categories.');
             }
         } catch (error) {
             console.error('Error updating category:', error);
+        }
+    };
+
+    const handleDeleteCategory = async (categoryId) => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken || !userId) return;
+    
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/delete_category/${userId}/${categoryId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                },
+            });
+    
+            if (response.ok) {
+                setCategories((prevCategories) =>
+                    prevCategories.filter((category) => category.id_category !== categoryId)
+                );
+                setTransactions((prevTransactions) =>
+                    prevTransactions.map((transaction) => ({
+                        ...transaction,
+                        categories: transaction.categories.filter((id) => id !== categoryId),
+                    }))
+                );
+                await fetchCategories();
+                await fetchTransactions();
+                alert('Category deleted successfully.');
+            } else {
+                const errorData = await response.json();
+                console.error('Error deleting category:', errorData.error);
+                alert('Cannot delete default categories.');
+            }
+        } catch (error) {
+            console.error('Error deleting category:', error);
+            alert('An error occurred while trying to delete the category.');
         }
     };
 
@@ -312,6 +411,18 @@ const Expenses = () => {
         return descriptionMatch || categoryMatch;
     });
 
+<<<<<<< HEAD
+=======
+    const adjustTime = (utcDate) => {
+        const date = new Date(utcDate);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}/${month}/${day}, ${hours}:${minutes}`;
+    };
+>>>>>>> origin/fix-style/program
 
     return (
         <ExpensesComponents
@@ -332,8 +443,6 @@ const Expenses = () => {
             setIsCategoryDialogOpen={setIsCategoryDialogOpen}
             isNewCategoryDialogOpen={isNewCategoryDialogOpen}
             setIsNewCategoryDialogOpen={setIsNewCategoryDialogOpen}
-            isOptionsOpen={isOptionsOpen}
-            setisOptionsOpen={setisOptionsOpen}
             selectedTransactionId={selectedTransactionId}
             setSelectedTransactionId={setSelectedTransactionId}
             editAmount={editAmount}
@@ -355,11 +464,12 @@ const Expenses = () => {
             adjustTime={adjustTime}
             LineChart={LineChart}
             PieChart={PieChart}
-            handelDeleteExpense={handelDeleteExpense}
+            handleDeleteExpense={handleDeleteExpense}
             handleEditExpense={handleEditExpense}
             handleCategoryChange={handleCategoryChange}
             handleAddCategory={handleAddCategory}
             handleEditCategory={handleEditCategory}
+            handleDeleteCategory={handleDeleteCategory}
         />
     );
 };

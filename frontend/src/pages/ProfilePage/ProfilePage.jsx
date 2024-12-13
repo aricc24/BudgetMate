@@ -16,6 +16,7 @@ function ProfilePage() {
         phone_number: '',
     });
     const [isEditing, setIsEditing] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -84,6 +85,8 @@ function ProfilePage() {
             handleSave={handleSave}
             handleCancel={handleCancel}
             handleExit={handleExit}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
         />
     );
 }

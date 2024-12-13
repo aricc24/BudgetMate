@@ -112,16 +112,14 @@ const Debts = () => {
     
 
     const adjustTime = (utcDate) => {
-        const date = new Date (utcDate);
-        return date.toLocaleString('default', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZoneName: 'short',
-        });
+        const date = new Date(utcDate);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}/${month}/${day}, ${hours}:${minutes}:${seconds}`;
     };
 
     const handelDeleteDebt = async (id_debt) => {

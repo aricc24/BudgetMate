@@ -23,6 +23,7 @@ const HistoryComponents = ({
     handleCategoryChange,
     handleIncomeFilter,
     handleIncomeCategoryChange,
+    adjustTime,
 }) => {
     return (
         <Layout>
@@ -47,7 +48,7 @@ const HistoryComponents = ({
                         onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={minAmount}
                         onChange={(e) => setMinAmount(e.target.value)}
-                        placeholder="Monto mínimo"
+                        placeholder="Min. Amount"
                     />
                     <input
                         type="number"
@@ -55,7 +56,7 @@ const HistoryComponents = ({
                         onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={maxAmount}
                         onChange={(e) => setMaxAmount(e.target.value)}
-                        placeholder="Monto máximo"
+                        placeholder="Max. Amount"
                     />
                     <button
                         className="select-category-button"
@@ -95,7 +96,7 @@ const HistoryComponents = ({
                                             </td>
                                             <td>- ${transaction.mount}</td>
                                             <td>{transaction.description || "No description"}</td>
-                                            <td>{transaction.date}</td>
+                                            <td>{adjustTime(transaction.date)}</td>
                                         </tr>
                                     );
                                 })}
@@ -139,15 +140,19 @@ const HistoryComponents = ({
                     />
                     <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={minAmountIncomes}
                         onChange={(e) => setMinAmountIncomes(e.target.value)}
-                        placeholder="Monto mínimo"
+                        placeholder="Min. Amount"
                     />
                     <input
                         type="number"
+                        min="0"
+                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
                         value={maxAmountIncomes}
                         onChange={(e) => setMaxAmountIncomes(e.target.value)}
-                        placeholder="Monto máximo"
+                        placeholder="Max. Amount"
                     />
                     <button
                         className="select-category-button"
@@ -186,7 +191,7 @@ const HistoryComponents = ({
                                             </td>
                                             <td>- ${income.mount}</td>
                                             <td>{income.description || "No description"}</td>
-                                            <td>{income.date}</td>
+                                            <td>{adjustTime(income.date)}</td>
                                         </tr>
                                     );
                                 })}
@@ -207,7 +212,7 @@ const HistoryComponents = ({
                             ))}
                         </select>
                         <div className="dialog-buttons">
-                            <button onClick={() => setIsCategoryDialogOpen(false)}>Done</button>
+                            <button onClick={() => setIsCategoryIncomeDialogOpen(false)}>Done</button>
                         </div>
                     </dialog>
                 )}

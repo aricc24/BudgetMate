@@ -44,13 +44,18 @@ const HomeComponents = ({
 
                  <div className="filter-container">
                     <label>Show data by: </label>
-                    <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+                    <select value={selectedFrequency} onChange={(e) => selectedFrequency(e.target.value)}>
                         <option value="all">All</option>
                         <option value="daily">Daily</option>
                         <option value="weekly">Weekly</option>
                         <option value="monthly">Monthly</option>
                         <option value="yearly">Yearly</option>
                     </select>
+                    <input
+                        type="date"
+                        value={selectedStartDate}
+                        onChange={(e) => setSelectedStartDate(e.target.value)}
+                    />
                 </div>
                 <div className="charts-container">
                     <div className="chart-block">

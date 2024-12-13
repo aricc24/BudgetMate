@@ -24,6 +24,8 @@ const ScheduledTransactionsForm = ({
             <label className="label">Amount:</label>
             <input
               type="number"
+              min="0"
+              onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
               name="amount"
               value={formData.amount}
               onChange={handleChange}

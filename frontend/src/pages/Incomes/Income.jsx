@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import IncomeComponents from './IncomeComponents.jsx';
@@ -15,7 +15,6 @@ const Income = () => {
     const [newCategory, setNewCategory] = useState('');
     const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
     const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
-    const [isOptionsOpen, setisOptionsOpen] = useState(false);
     const [selectedTransactionId, setSelectedTransactionId] = useState(null);
     const [editAmount, setEditAmount] = useState('');
     const [editDescription, setEditDescription] = useState('');
@@ -26,6 +25,7 @@ const Income = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
 
+<<<<<<< HEAD
     useEffect(() => {
         const fetchTransactions = async () => {
             const authToken = localStorage.getItem('authToken');
@@ -73,6 +73,52 @@ const Income = () => {
         const intervalId = setInterval(fetchTransactions, 60000);
         return () => clearInterval(intervalId);
     }, [navigate]);
+=======
+    const fetchTransactions = useCallback(async () => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken) {
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}/`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const incomeTransactions = data.filter(t => t.type === 0);
+                setTransactions(incomeTransactions);
+                updateChartData(incomeTransactions);
+            } else {
+                console.error('Failed to fetch transactions');
+            }
+        } catch (error) {
+            console.error('Error fetching transactions:', error);
+        }
+    }, [navigate]);
+
+    const fetchCategories = async () => {
+        const userId = localStorage.getItem('userId');
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`);
+            if (!response.ok) {
+                throw new Error("Error fetching user categories");
+            }
+            const data = await response.json();
+            setCategories(data);
+        } catch (error) {
+            console.error("Error fetching user categories:", error);
+        }
+    };
+    
+    useEffect(() => {
+        fetchTransactions();
+        fetchCategories();
+    }, [fetchTransactions]);
+>>>>>>> origin/fix-style/program
 
     
     const updateChartData = (transactions) => {
@@ -116,23 +162,11 @@ const Income = () => {
                 setSelectedDate(new Date());
             } else {
                 console.error('Failed to add transaction');
+                alert('Please fill in the amount field.');
             }
         } catch (error) {
             console.error('Error adding transaction:', error);
         }
-    };
-
-    const adjustTime = (utcDate) => {
-        const date = new Date(utcDate);
-        return date.toLocaleString('default', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZoneName: 'short',
-        });
     };
 
     const handleDeleteIncome = async (transactionId) => {
@@ -150,11 +184,11 @@ const Income = () => {
                 updateChartData(deleteTransactions);
                 alert('Transaction deleted successfully.');
             } else {
-                alert('Fail on delete transaction.');
+                alert('Fail on delete income.');
             }
         } catch (error) {
             console.error('Error deleting transaction:', error);
-            alert('An error occurred while trying to delete the transaction.');
+            alert('An error occurred while trying to delete the income.');
         }
     }; 
 
@@ -169,7 +203,7 @@ const Income = () => {
             mount: editAmount ? parseFloat(editAmount) : currentTransaction.mount,
             description: editDescription || currentTransaction.description,
             type: 0,
-            categories: selectedCategories.length > 0 ? selectedCategories : currentTransaction.categories,
+            categories: selectedCategories,
             date: selectedDate ? selectedDate.toISOString() : currentTransaction.date,
         };
     
@@ -206,6 +240,16 @@ const Income = () => {
         if (!newCategory.trim()) return;
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
+
+        const categoryExists = categories.some(
+            (category) =>
+                category.category_name.toLowerCase() === newCategory.trim().toLowerCase()
+        );
+    
+        if (categoryExists) {
+            alert('This category already exists.');
+            return;
+        }        
 
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/create_category/`, {
@@ -274,14 +318,53 @@ const Income = () => {
                     }))
                 );
                 console.log(result.message);
+                await fetchTransactions();
             } else {
                 const errorData = await response.json();
                 console.error(errorData.error);
+                alert('Cannot edit default categories.');
             }
         } catch (error) {
             console.error('Error updating category:', error);
         }
     };
+
+    const handleDeleteCategory = async (categoryId) => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        if (!authToken || !userId) return;
+    
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/delete_category/${userId}/${categoryId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                },
+            });
+    
+            if (response.ok) {
+                setCategories((prevCategories) =>
+                    prevCategories.filter((category) => category.id_category !== categoryId)
+                );
+                setTransactions((prevTransactions) =>
+                    prevTransactions.map((transaction) => ({
+                        ...transaction,
+                        categories: transaction.categories.filter((id) => id !== categoryId),
+                    }))
+                );
+                await fetchCategories();
+                await fetchTransactions();
+                alert('Category deleted successfully.');
+            } else {
+                const errorData = await response.json();
+                console.error('Error deleting category:', errorData.error);
+                alert('Cannot delete default categories.');
+            }
+        } catch (error) {
+            console.error('Error deleting category:', error);
+            alert('An error occurred while trying to delete the category.');
+        }
+    };    
     
     const filteredTransactions = transactions.filter(transaction => {
         const descriptionMatch = transaction.description
@@ -293,6 +376,16 @@ const Income = () => {
         });
         return descriptionMatch || categoryMatch;
     });
+
+    const adjustTime = (utcDate) => {
+        const date = new Date(utcDate);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}/${month}/${day}, ${hours}:${minutes}`;
+    };
 
     return (
         <IncomeComponents
@@ -313,8 +406,6 @@ const Income = () => {
             setIsCategoryDialogOpen={setIsCategoryDialogOpen}
             isNewCategoryDialogOpen={isNewCategoryDialogOpen}
             setIsNewCategoryDialogOpen={setIsNewCategoryDialogOpen}
-            isOptionsOpen={isOptionsOpen}
-            setisOptionsOpen={setisOptionsOpen}
             selectedTransactionId={selectedTransactionId}
             setSelectedTransactionId={setSelectedTransactionId}
             editAmount={editAmount}
@@ -341,6 +432,7 @@ const Income = () => {
             handleCategoryChange={handleCategoryChange}
             handleAddCategory={handleAddCategory}
             handleEditCategory={handleEditCategory}
+            handleDeleteCategory={handleDeleteCategory}
         />
     );
 };
@@ -368,13 +460,13 @@ const LineChart = ({ data }) => {
                     {
                         label: 'Income',
                         data: sortedData.map(d => d.amount),
-                        borderColor: 'green',
-                        backgroundColor: 'rgba(144, 238, 144, 0.5)',
+                        borderColor: '#1ab188', // línea principal
+                        backgroundColor: 'rgba(26, 177, 136, 0.2)', // area bajo la línea
                         fill: true,
                         tension: 0.4,
                         pointRadius: 10,
-                        pointBackgroundColor: 'blue',
-                        pointBorderColor: 'darkblue',
+                        pointBackgroundColor: '#1ab188', // puntos
+                        pointBorderColor: '#184346', // bordes de los puntos
                         pointHoverRadius: 7,
                     }
                 ]
@@ -393,11 +485,17 @@ const LineChart = ({ data }) => {
                     x: {
                         type: 'time',
                         time: { unit: 'day',stepSize: 1 },
-                        title: { display: true, text: 'Timestamp' },
+                        title: { display: true, text: 'Date', color: '#1ab188' },
+                        ticks: { color: '#1ab188' }, //marcas del eje 
+                        grid: { color: '#184346' }, // líneas de la cuadrícula
                     },
                     y: {
-                        title: { display: true, text: 'Amount' },
-                        ticks: { callback: (value) => `$${value.toFixed(2)}`}
+                        title: { display: true, text: 'Amount', color: '#1ab188' },
+                        ticks: {
+                            color: '#1ab188',
+                            callback: value => `$${value.toFixed(2)}`,
+                        },
+                        grid: { color: '#184346' },
                     }
                 }
             }
@@ -458,8 +556,17 @@ const PieChart = ({ data, categories}) => {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { position: 'top' },
-                    title: { display: true, text: 'Income Breakdown' },
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#1ab188', // etiquetas
+                        },
+                    },
+                    title: {
+                        display: true,
+                        text: 'Income Breakdown',
+                        color: '#1ab188',
+                    },
                 },
             },
         });

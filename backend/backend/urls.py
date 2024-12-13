@@ -37,6 +37,7 @@ urlpatterns = [
     path('api/get_categories/<int:id_user>/', get_categories_by_user, name="get-categories"),
     path('api/create_category/', create_or_associate_category, name="create-category"),
     path('api/update_category/<int:id_user>/<int:id_category>/', update_user_category, name="category-update"),
+    path('api/delete_category/<int:id_user>/<int:id_category>/', delete_user_category, name="category-delete"),
     path('api/filter_transactions/<int:id_user>/', filter_transactions, name="filter-transaction"),
     path('api/generate_pdf/<int:id_user>/', generate_pdf, name='generate_pdf'),
     path('api/debts/', DebtsCreateView.as_view(), name="debts-list"),
@@ -51,6 +52,10 @@ urlpatterns = [
     path('api/delete_scheduled_transaction/<int:transaction_id>/', delete_scheduled_transaction, name='delete_scheduled_transaction'),
     path('api/update_scheduled_transaction/<int:transaction_id>/', update_scheduled_transaction, name='update_scheduled_transaction'),
     path('api/update_email_schedule/<int:id_user>/', update_email_schedule, name='update_email_schedule'),
+<<<<<<< HEAD
     
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+=======
+]
+>>>>>>> origin/fix-style/program
