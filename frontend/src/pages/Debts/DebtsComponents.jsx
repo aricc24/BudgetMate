@@ -53,9 +53,9 @@ const DebtsComponents = ({
                     Add Debt
                 </button>
     
-                <div className="content-container">
-                    <div className="table-container">
-                        <table>
+                
+                    <div className="table-content">
+                        <table border="1" className="tableD">
                             <thead>
                                 <tr>
                                     <th>Amount</th>
@@ -100,7 +100,7 @@ const DebtsComponents = ({
                             </tbody>
                         </table>
                     </div>
-                </div>
+                
 
 
 
@@ -255,10 +255,7 @@ const DebtsComponents = ({
                         </button>
                     </dialog>
                 )}
-
             </div>
-
-
 
             {isAddDebtDialogOpen && (
                 <>
@@ -333,6 +330,13 @@ const DebtsComponents = ({
                                 selected={init_Date}
                                 onChange={(date) => setInitDate(date)}
                                 showTimeSelect
+                                showMonthDropdown
+                                showYearDropdown
+                                popperPlacement="bottom-start"
+                                popperModifiers={[
+                                    { name: "preventOverflow", options: { boundary: "viewport" } },
+                                    { name: "flip", options: { fallbackPlacements: [] } },
+                                ]}
                                 timeFormat="HH:mm"
                                 timeIntervals={15}
                                 dateFormat="yyyy-MM-dd HH:mm"
@@ -345,6 +349,13 @@ const DebtsComponents = ({
                                 selected={due_Date}
                                 onChange={(date) => setDueDate(date)}
                                 showTimeSelect
+                                showMonthDropdown
+                                showYearDropdown
+                                popperPlacement="bottom-start"
+                                popperModifiers={[
+                                    { name: "preventOverflow", options: { boundary: "viewport" } },
+                                    { name: "flip", options: { fallbackPlacements: [] } },
+                                ]}
                                 timeFormat="HH:mm"
                                 timeIntervals={15}
                                 dateFormat="yyyy-MM-dd HH:mm"
@@ -363,7 +374,7 @@ const DebtsComponents = ({
                                     <option value="Overdue">Overdue</option>
                                 </select>
                             </div>
-                            <button onClick={handleAddDebt}>Add Debt</button>
+                            <button onClick={handleCloseAddDebtDialog}>Done</button>
                         </>
                     </dialog>
                 </>
