@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>PDF Report</title>
+   <style>
+       body {
+           font-family: Arial, sans-serif;
+           margin: 20px;
+           color: #000;
+       }
+
+       h1 {
+           text-align: center;
+           color: #333; 
+       }
+
+       table {
+           width: 100%;
+           border-collapse: collapse;
+           margin: 20px 0;
+           font-size: 12px;
+           text-align: left;
+       }
+
+       table thead {
+           background-color: #d3d3d3; 
+           color: #000; 
+       }
+
+       table th, table td {
+           padding: 8px 10px;
+           border: 1px solid #ddd;
+       }
+
+       table tbody tr:nth-child(even) {
+           background-color: #f9f9f9; 
+       }
+
+       table tbody tr:hover {
+           background-color: #f1f1f1;
+       }
+
+       img {
+           display: block;
+           margin: 20px auto;
+           max-width: 80%;
+           height: auto;
+       }
+   </style>
+</head>
+<body>
+   <h1>Financial Report</h1>
+   <h2>Transactions</h2>
+   <table>
+       <thead>
+           <tr>
+               <th>Category</th>
+               <th>Type</th> 
+               <th>Amount</th>
+               <th>Description</th>
+               <th>Date</th>
+           </tr>
+       </thead>
+       <tbody>
+        
+           
+           <tr>
+               <td>
+                   
+                       comida
+                   
+               </td>
+               <td>Expense</td>
+               <td>3000.0</td>
+               <td>calvo</td>
+               <td>Dec. 10, 2024, 3:18 a.m.</td>
+           </tr>
+           
+           <tr>
+               <td>
+                   
+                       comida
+                   
+               </td>
+               <td>Income</td>
+               <td>23123.0</td>
+               <td>343</td>
+               <td>Dec. 10, 2024, 3:18 a.m.</td>
+           </tr>
+           
+       </tbody>
+   </table>
+
+   <h2>Income line graph</h2>
+   <img src="data:image/png;base64," alt="Incomes Graph">
+
+   <h2>Expenses line graph</h2>
+   <img src="data:image/png;base64," alt="Expenses Graph">
+
+   <h2>Income distribution by category</h2>
+   <img src="data:image/png;base64," alt="Income Distribution">
+
+   <h2>Expenses distribution by category</h2>
+   <img src="data:image/png;base64," alt="Expenses distribution">
+
+
+</body>
+</html>

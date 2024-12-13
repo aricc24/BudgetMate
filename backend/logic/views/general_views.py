@@ -29,6 +29,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from weasyprint import HTML
 from django.utils.timezone import localtime
 
+
 @api_view(['GET'])
 def filter_transactions(request, id_user):
     start_date = request.GET.get('start_date')
@@ -64,7 +65,7 @@ def generate_pdf(request, id_user):
    user = User.objects.get(id_user=id_user)
    transactions = Transaction.objects.filter(id_user=user).select_related('id_user').prefetch_related('categories')
    for transaction in transactions:
-    transaction.date = localtime(transaction.date)
+    transaction.date = localtime(transaction.date)   
    debts = Debt.objects.filter(id_user=user) 
    scheduled_transactions = ScheduledTransaction.objects.filter(user=user).prefetch_related('categories')
 
