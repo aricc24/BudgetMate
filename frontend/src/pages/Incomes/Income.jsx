@@ -143,9 +143,11 @@ const Income = () => {
                 headers: { 'Authorization': `Bearer ${authToken}` },
             });
             if (response.ok) {
-                setTransactions((prevTransactions) =>
-                    prevTransactions.filter((transaction) => transaction.id_transaction !== transactionId)
+                const deleteTransactions = transactions.filter(
+                    (transaction) => transaction.id_transaction !== transactionId
                 );
+                setTransactions(deleteTransactions);
+                updateChartData(deleteTransactions);
                 alert('Transaction deleted successfully.');
             } else {
                 alert('Fail on delete transaction.');
