@@ -26,52 +26,60 @@ const Expenses = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState(''); 
 
-    const fetchTransactions = async () => {
-        const authToken = localStorage.getItem('authToken');
-        const userId = localStorage.getItem('userId');
-        if (!authToken) {
-            navigate('/login');
-            return;
-        }
-
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}/`, {
-                headers: { 'Authorization': `Bearer ${authToken}` }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                const expenseTransactions = data.filter(t => t.type === 1);
-                setTransactions(expenseTransactions);
-                updateChartData(expenseTransactions);
-            } else {
-                console.error('Failed to fetch transactions');
-            }
-        } catch (error) {
-            console.error('Error fetching transactions:', error);
-        }
-    };
-
-    const fetchCategories = async () => {
-        const userId = localStorage.getItem('userId');
-        fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`)
-            .then((response) => {
-                if (!response.ok) { throw new Error("Error fetching user categories"); }
-                return response.json();
-            })
-            .then((data) => { setCategories(data); })
-            .catch((error) => {
-                console.error("Error fetching user categories:", error);
-            });
-    };
-
     useEffect(() => {
+        const fetchTransactions = async () => {
+            const authToken = localStorage.getItem('authToken');
+            const userId = localStorage.getItem('userId');
+            if (!authToken) {
+                navigate('/login');
+                return;
+            }
+    
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/get_transactions/${userId}/`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+    
+                if (response.ok) {
+                    const data = await response.json();
+                    const expenseTransactions = data.filter(t => t.type === 1);
+                    setTransactions(expenseTransactions);
+                    updateChartData(expenseTransactions);
+                } else {
+                    console.error('Failed to fetch transactions');
+                }
+            } catch (error) {
+                console.error('Error fetching transactions:', error);
+            }
+        };
+    
+        const fetchCategories = async () => {
+            const userId = localStorage.getItem('userId');
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/get_categories/${userId}/`);
+                if (!response.ok) {
+                    throw new Error("Error fetching user categories");
+                }
+                const data = await response.json();
+                setCategories(data);
+            } catch (error) {
+                console.error("Error fetching user categories:", error);
+            }
+        };
+
+        const updateChartData = (transactions) => {
+            const filteredData = transactions.map(transaction => ({
+                date: new Date(transaction.date),
+                amount: parseFloat(transaction.mount)
+            }));
+            setChartData(filteredData);
+        };
         fetchTransactions();
         fetchCategories();
         const intervalId = setInterval(fetchTransactions, 60000);
         return () => clearInterval(intervalId);
     }, [navigate]);
-    
+
 
     
     const updateChartData = (transactions) => {
