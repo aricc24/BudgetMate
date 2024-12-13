@@ -56,6 +56,7 @@ class DebtsCreateView(generics.CreateAPIView):
 
 @api_view(['PATCH'])
 def update_user_debt(request, id_user, id_debt):
+    print("Received Data:", request.data)
     try:
         debt = Debt.objects.get(id_debt=id_debt, id_user=id_user)
     except Debt.DoesNotExist:
@@ -77,8 +78,9 @@ def update_user_debt(request, id_user, id_debt):
         interest = 0
         total_amount = amount
 
-    request.data['interestAmount'] = interest
-    request.data['totalAmount'] = total_amount
+    if interest_rate != debt.interestAmount or amount != debt.amount:
+        request.data['interestAmount'] = interest
+        request.data['totalAmount'] = total_amount
 
     serializer = DebtsSerializer(debt, data=request.data, partial=True)
     if serializer.is_valid():
