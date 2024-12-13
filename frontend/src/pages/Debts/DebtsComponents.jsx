@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import 'chartjs-adapter-date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -29,108 +29,29 @@ const DebtsComponents = ({
     handleEditDebt,
     handelDeleteDebt,
 }) => {
+
+    const [isAddDebtDialogOpen, setIsAddDebtDialogOpen] = useState(false); 
+
+    useEffect(() => {
+        if (isAddDebtDialogOpen || isEditOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }, [isAddDebtDialogOpen, isEditOpen]);
+    
+    const handleOpenAddDebtDialog = () => { setIsAddDebtDialogOpen(true); };
+    const handleCloseAddDebtDialog = () => { handleAddDebt(); setIsAddDebtDialogOpen(false);};
+
     return (
         <Layout>
-            <div className="debt-page">
-                <div className="add-debt-form">
-                    <input
-                        type="number"
-                        min="0"
-                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
-                        value={amount}
-                        onChange={(e) => setAmount(parseFloat(e.target.value))}
-                        placeholder="Amount"
-                    />
-                    <input
-                        type="text"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Description"
-                    />
-                    <input
-                        type="text"
-                        value={lender}
-                        onChange={(e) => setLender(e.target.value)}
-                        placeholder="Lender"
-                    />
-    
-                    <div className="interest-question">
-                        <label>Has interest?</label>
-                        <div>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="interest"
-                                    value="true"
-                                    checked={hasInterest === true}
-                                    onChange={() => setHasInterest(true)}
-                                />
-                                Yes
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="interest"
-                                    value="false"
-                                    checked={hasInterest === false}
-                                    onChange={() => setHasInterest(false)}
-                                />
-                                No
-                            </label>
-                        </div>
-                    </div>
-    
-                    <input
-                        type="number"
-                        min="0"
-                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
-                        value={interestAmount}
-                        onChange={(e) => setInterestAmount(e.target.value)}
-                        placeholder="Interest Amount"
-                        disabled={!hasInterest}
-                    />
-    
-                    <label htmlFor="initDatePicker">Init date:</label>
-                    <DatePicker
-                        id="initDatePicker"
-                        selected={init_Date}
-                        onChange={(date) => setInitDate(date)}
-                        showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={15}
-                        dateFormat="yyyy-MM-dd HH:mm"
-                        className="datepicker"
-                        onKeyDown={(e) => e.preventDefault()}
-                    />
-    
-                    <label htmlFor="dueDatePicker">Due date:</label>
-                    <DatePicker
-                        id="dueDatePicker"
-                        selected={due_Date}
-                        onChange={(date) => setDueDate(date)}
-                        showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={15}
-                        dateFormat="yyyy-MM-dd HH:mm"
-                        className="datepicker"
-                        onKeyDown={(e) => e.preventDefault()}
-                    />
-    
-                    <div>
-                        <label htmlFor="optionsDropdown">Status:</label>
-                        <select
-                            id="optionsDropdown"
-                            value={selectedOption}
-                            onChange={(e) => setSelectedOption(e.target.value)}
-                        >
-                            <option value="Paid">Pending</option>
-                            <option value="Paid">Paid</option>
-                            <option value="Overdue">Overdue</option>
-                        </select>
-                    </div>
-    
-                    <button onClick={handleAddDebt}>Add Debt</button>
-                </div>
+            <div className={`debt-page ${isAddDebtDialogOpen || isEditOpen ? 'inactive' : ''}`}>
+                <label>Debts</label>
+                <button 
+                    className="Buttons1"
+                    onClick={handleOpenAddDebtDialog}>
+                    Add Debt
+                </button>
     
                 <div className="content-container">
                     <div className="table-container">
@@ -180,6 +101,15 @@ const DebtsComponents = ({
                         </table>
                     </div>
                 </div>
+
+
+
+                
+
+
+
+
+
                 
                 {isOptionsOpen && (
                     <dialog className='' open>
@@ -327,6 +257,117 @@ const DebtsComponents = ({
                 )}
 
             </div>
+
+
+
+            {isAddDebtDialogOpen && (
+                <>
+                    <div className="overlay"></div>
+                    <dialog className="add-debt-dialog" open>
+                        <>
+                            <input
+                                type="number"
+                                min="0"
+                                onKeyDown={(e) => {
+                                    if (['e', 'E', '+', '-'].includes(e.key)) {
+                                        e.preventDefault();
+                                    }
+                                }}
+                                value={amount}
+                                onChange={(e) => setAmount(parseFloat(e.target.value))}
+                                placeholder="Amount"
+                            />
+                            <input
+                                type="text"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                placeholder="Description"
+                            />
+                            <input
+                                type="text"
+                                value={lender}
+                                onChange={(e) => setLender(e.target.value)}
+                                placeholder="Lender"
+                            />
+                            <div className="interest-question">
+                                <label>Has interest?</label>
+                                <div>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="interest"
+                                            value="true"
+                                            checked={hasInterest === true}
+                                            onChange={() => setHasInterest(true)}
+                                        />
+                                        Yes
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="interest"
+                                            value="false"
+                                            checked={hasInterest === false}
+                                            onChange={() => setHasInterest(false)}
+                                        />
+                                        No
+                                    </label>
+                                </div>
+                            </div>
+                            <input
+                                type="number"
+                                min="0"
+                                onKeyDown={(e) => {
+                                    if (['e', 'E', '+', '-'].includes(e.key)) {
+                                        e.preventDefault();
+                                    }
+                                }}
+                                value={interestAmount}
+                                onChange={(e) => setInterestAmount(e.target.value)}
+                                placeholder="Interest Amount"
+                                disabled={!hasInterest}
+                            />
+                            <label htmlFor="initDatePicker">Init date:</label>
+                            <DatePicker
+                                id="initDatePicker"
+                                selected={init_Date}
+                                onChange={(date) => setInitDate(date)}
+                                showTimeSelect
+                                timeFormat="HH:mm"
+                                timeIntervals={15}
+                                dateFormat="yyyy-MM-dd HH:mm"
+                                className="datepicker"
+                                onKeyDown={(e) => e.preventDefault()}
+                            />
+                            <label htmlFor="dueDatePicker">Due date:</label>
+                            <DatePicker
+                                id="dueDatePicker"
+                                selected={due_Date}
+                                onChange={(date) => setDueDate(date)}
+                                showTimeSelect
+                                timeFormat="HH:mm"
+                                timeIntervals={15}
+                                dateFormat="yyyy-MM-dd HH:mm"
+                                className="datepicker"
+                                onKeyDown={(e) => e.preventDefault()}
+                            />
+                            <div>
+                                <label htmlFor="optionsDropdown">Status:</label>
+                                <select
+                                    id="optionsDropdown"
+                                    value={selectedOption}
+                                    onChange={(e) => setSelectedOption(e.target.value)}
+                                >
+                                    <option value="Paid">Pending</option>
+                                    <option value="Paid">Paid</option>
+                                    <option value="Overdue">Overdue</option>
+                                </select>
+                            </div>
+                            <button onClick={handleAddDebt}>Add Debt</button>
+                        </>
+                    </dialog>
+                </>
+            )}
         </Layout>
     );
 };
