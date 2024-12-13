@@ -193,7 +193,7 @@ const IncomeComponents = ({
                                 onKeyDown={(e) => e.preventDefault()}
                             />
                             <button
-                                className="Buttons1"
+                                className="button-cat"
                                 onClick={() => setIsCategoryDialogOpen(true)}
                             >
                                 Select Category
@@ -256,7 +256,7 @@ const IncomeComponents = ({
                                 onKeyDown={(e) => e.preventDefault()}
                             />
                             <button
-                                className="Buttons1"
+                                className="button-cat"
                                 onClick={() => setIsCategoryDialogOpen(true)}
                             >
                                 Select Category

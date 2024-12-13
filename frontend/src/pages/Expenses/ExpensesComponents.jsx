@@ -37,26 +37,26 @@ const ExpensesComponents = ({
     handleEditCategory,
     handleDeleteCategory,
 }) => {
-    const [isAddIncomeDialogOpen, setIsAddIncomeDialogOpen] = useState(false); 
+    const [isAddExpenseDialogOpen, setIsAddExpenseDialogOpen] = useState(false); 
 
     useEffect(() => {
-        if (isAddIncomeDialogOpen || isEditOpen || isCategoryDialogOpen || isNewCategoryDialogOpen || isEditCategoryOpen) {
+        if (isAddExpenseDialogOpen || isEditOpen || isCategoryDialogOpen || isNewCategoryDialogOpen || isEditCategoryOpen) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = '';
         }
-    }, [isAddIncomeDialogOpen, isEditOpen, isCategoryDialogOpen, isNewCategoryDialogOpen, isEditCategoryOpen]);
+    }, [isAddExpenseDialogOpen, isEditOpen, isCategoryDialogOpen, isNewCategoryDialogOpen, isEditCategoryOpen]);
     
-    const handleOpenAddIncomeDialog = () => { setIsAddIncomeDialogOpen(true); };
-    const handleCloseAddIncomeDialog = () => { handleAddExpense(); setIsAddIncomeDialogOpen(false);};
+    const handleOpenAddExpenseDialog = () => { setIsAddExpenseDialogOpen(true); };
+    const handleCloseAddExpenseDialog = () => { handleAddExpense(); setIsAddExpenseDialogOpen(false);};
 
     return (
         <Layout>
-            <div className={`income-page ${isAddIncomeDialogOpen || isEditOpen || isCategoryDialogOpen ? 'inactive' : ''}`}>
+            <div className={`expense-page ${isAddExpenseDialogOpen || isEditOpen || isCategoryDialogOpen ? 'inactive' : ''}`}>
                 <label>Expenses</label>
                 <button 
                     className="Buttons1"
-                    onClick={handleOpenAddIncomeDialog}>
+                    onClick={handleOpenAddExpenseDialog}>
                     Add Expense
                 </button>
 
@@ -152,10 +152,10 @@ const ExpensesComponents = ({
                 </div>
             </div>
 
-            {isAddIncomeDialogOpen && (
+            {isAddExpenseDialogOpen && (
                 <>
                     <div className="overlay"></div>
-                    <dialog className="add-income-dialog" open>
+                    <dialog className="add-expense-dialog" open>
                         <>
                             <input
                                 type="number"
@@ -193,20 +193,20 @@ const ExpensesComponents = ({
                                 onKeyDown={(e) => e.preventDefault()}
                             />
                             <button
-                                className="Buttons1"
+                                className="button-cat"
                                 onClick={() => setIsCategoryDialogOpen(true)}
                             >
                                 Select Category
                             </button>
                             <button
                                 className="Buttons2"
-                                onClick={handleCloseAddIncomeDialog}
+                                onClick={handleCloseAddExpenseDialog}
                             >
                                 Done
                             </button>
                             <button
                                 className="Buttons2"
-                                onClick={() => setIsAddIncomeDialogOpen(false)}
+                                onClick={() => setIsAddExpenseDialogOpen(false)}
                             >
                                 Cancel
                             </button>
@@ -218,7 +218,7 @@ const ExpensesComponents = ({
             {isEditOpen && (
                 <>
                     <div className="overlay"></div>
-                    <dialog className="add-income-dialog" open>
+                    <dialog className="add-expense-dialog" open>
                         <>
                             <input
                                 type="number"
@@ -256,7 +256,7 @@ const ExpensesComponents = ({
                                 onKeyDown={(e) => e.preventDefault()}
                             />
                             <button
-                                className="Buttons1"
+                                className="button-cat"
                                 onClick={() => setIsCategoryDialogOpen(true)}
                             >
                                 Select Category
