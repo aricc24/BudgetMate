@@ -87,8 +87,8 @@
 
 .numbers {
     position: relative;
-    bottom: 20px;
-    left: 100px;
+    bottom: 27px;
+    left: 200px;
     padding: 0%;
     height: 100%;
 }
@@ -100,7 +100,8 @@
 }
 
 .filter-button,
-.select-category-button {
+.select-category-button,
+.clear-fields-button {
     font-size: 1rem;
     color: #fff;
     background-color: #1ab188;
@@ -114,14 +115,20 @@
 
 .select-category-button {
     position: relative;
-    bottom: 60px;
-    left: -100px;
+    bottom: 15px;
+    left: 100px;
+}
+
+.clear-fields-button {
+    position: relative;
+    bottom: -30px;
+    left: -400px;
 }
 
 .filter-button {
     position: relative;
-    bottom: -25px;
-    left: -460px;
+    bottom: 60px;
+    left: -140px;
 }
 
 
@@ -266,9 +273,6 @@
     border: none;
     box-shadow: none;
 }
-
-
-
 
 .table-content {
     width: 100%;

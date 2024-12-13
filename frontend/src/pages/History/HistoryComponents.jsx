@@ -13,20 +13,37 @@ const HistoryComponents = ({
     endDate, setEndDate,
     minAmount, setMinAmount,
     maxAmount, setMaxAmount,
-    selectedCategories,
+    selectedCategories, setSelectedCategories,
     isCategoryIncomeDialogOpen, setIsCategoryIncomeDialogOpen,
     incomes,
     startDateIncomes, setStartDateIncomes,
     endDateIncomes, setEndDateIncomes,
     minAmountIncomes, setMinAmountIncomes,
     maxAmountIncomes, setMaxAmountIncomes,
-    selectedCategoriesIncomes,
+    selectedCategoriesIncomes, setSelectedCategoriesIncomes,
     handleFilter,
     handleCategoryChange,
     handleIncomeFilter,
     handleIncomeCategoryChange,
     adjustTime,
 }) => {
+
+    const clearExpensesFields = () => {
+        setStartDate(null);
+        setEndDate(null);
+        setMinAmount('');
+        setMaxAmount('');
+        setSelectedCategories([]);
+    };
+    
+    const clearIncomesFields = () => {
+        setStartDateIncomes(null);
+        setEndDateIncomes(null);
+        setMinAmountIncomes('');
+        setMaxAmountIncomes('');
+        setSelectedCategoriesIncomes([]);
+    };
+
     return (
         <Layout>
             <div className="history-page">
@@ -102,6 +119,12 @@ const HistoryComponents = ({
                         onClick={handleFilter}
                     >
                         Filter
+                    </button>
+                    <button 
+                        className="clear-fields-button"
+                        onClick={clearExpensesFields}
+                    >
+                        Clear Fields Expenses
                     </button>
                 </div>
 
@@ -233,6 +256,12 @@ const HistoryComponents = ({
                         onClick={handleIncomeFilter}
                     >
                         Filter
+                    </button>
+                    <button 
+                        className="clear-fields-button"
+                        onClick={clearIncomesFields}
+                    >
+                        Clear Fields Incomes
                     </button>
                 </div>
 

@@ -200,6 +200,7 @@ const History = () => {
             maxAmount={maxAmount}
             setMaxAmount={setMaxAmount}
             selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
             isCategoryIncomeDialogOpen={isCategoryIncomeDialogOpen}
             setIsCategoryIncomeDialogOpen={setIsCategoryIncomeDialogOpen}
             incomes={incomes}
