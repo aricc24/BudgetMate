@@ -173,7 +173,7 @@ const DebtsComponents = ({
                                         { name: "flip", options: { fallbackPlacements: [] } },
                                     ]}
                                     timeFormat="HH:mm"
-                                    timeIntervals={15}
+                                    timeIntervals={1}
                                     dateFormat="yyyy-MM-dd HH:mm"
                                     className="datepicker"
                                     onKeyDown={(e) => e.preventDefault()}
@@ -193,7 +193,7 @@ const DebtsComponents = ({
                                         { name: "flip", options: { fallbackPlacements: [] } },
                                     ]}
                                     timeFormat="HH:mm"
-                                    timeIntervals={15}
+                                    timeIntervals={1}
                                     dateFormat="yyyy-MM-dd HH:mm"
                                     className="datepicker"
                                     onKeyDown={(e) => e.preventDefault()}
@@ -331,7 +331,7 @@ const DebtsComponents = ({
                                         { name: "flip", options: { fallbackPlacements: [] } },
                                     ]}
                                     timeFormat="HH:mm"
-                                    timeIntervals={15}
+                                    timeIntervals={1}
                                     dateFormat="yyyy-MM-dd HH:mm"
                                     className="datepicker"
                                     onKeyDown={(e) => e.preventDefault()}
@@ -352,7 +352,7 @@ const DebtsComponents = ({
                                         { name: "flip", options: { fallbackPlacements: [] } },
                                     ]}
                                     timeFormat="HH:mm"
-                                    timeIntervals={15}
+                                    timeIntervals={1}
                                     dateFormat="yyyy-MM-dd HH:mm"
                                     className="datepicker"
                                     onKeyDown={(e) => e.preventDefault()}

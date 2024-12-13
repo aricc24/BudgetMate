@@ -53,7 +53,14 @@ const Debts = () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
-    
+        if(init_Date > due_Date) {
+            alert("The init date cannot be later than the due date.");
+            return;
+        }
+        if (!amount || isNaN(amount) || amount <= 0) {
+            alert("Please enter a valid amount.");
+            return;
+        }
         const newDebt = {
             id_user: parseInt(userId, 10),
             amount: parseFloat(amount),
@@ -146,7 +153,14 @@ const Debts = () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
-
+        if(init_Date > due_Date) {
+            alert("The init date cannot be later than the due date.");
+            return;
+        }
+        if (!editAmount || isNaN(editAmount) || editAmount <= 0) {
+            alert("Please enter a valid amount.");
+            return;
+        }
         const currentDebt = debts.find(t => t.id_debt === id_debt);
 
         const updateDebt = {
