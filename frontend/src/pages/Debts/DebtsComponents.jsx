@@ -54,7 +54,8 @@ const DebtsComponents = ({
                 </button>
     
                 
-                    <div className="table-content">
+                <div className="table-content">
+                    
                         <table border="1" className="tableD">
                             <thead>
                                 <tr>
@@ -62,7 +63,7 @@ const DebtsComponents = ({
                                     <th>Description</th>
                                     <th>Lender</th>
                                     <th>Has Interest</th>
-                                    <th>Interest Amount(per month)</th>
+                                    <th>Interest Amount (per month)</th>
                                     <th>Total Amount</th>
                                     <th>Status</th>
                                     <th>Init Date</th>
@@ -75,7 +76,7 @@ const DebtsComponents = ({
                             <tbody>
                                 {[...debts].reverse().map((debt) => (
                                     <tr key={debt.id_debt}>
-                                        <td>- ${debt.amount}</td>
+                                        <td>${debt.amount}</td>
                                         <td>{debt.description || "No description"}</td>
                                         <td>{debt.lender || "Unknown"}</td>
                                         <td>{debt.hasInterest ? "Yes" : "No"}</td>
@@ -84,24 +85,36 @@ const DebtsComponents = ({
                                         <td>{debt.status || "Pending"}</td>
                                         <td>{adjustTime(debt.init_date)}</td>
                                         <td>{adjustTime(debt.due_date)}</td>
-                                        <td>
+                                        <td className="icons">
                                             <button
-                                                className="three-dots"
+                                                className="Edit"
                                                 onClick={() => {
+                                                    setEditAmount(debt.amount);
+                                                    setEditDescription(debt.description);
+                                                    setEditLender(debt.lender);
+                                                    setEditHInterest(debt.hasInterest);
+                                                    setEditInAmount(debt.interestAmount);
                                                     setSelectedDebtId(debt.id_debt);
-                                                    setisOptionsOpen(true);
+                                                    setisEditOpen(true);
                                                 }}
                                             >
-                                                <i className="fas fa-ellipsis-v"></i>
+                                                <i className="fas fa-pencil-alt" title="Edit"></i>
+                                            </button>
+                                            <button
+                                                className="Delete"
+                                                onClick={() => {
+                                                    handelDeleteDebt(debt.id_debt);
+                                                }}
+                                            >
+                                                <i className="fas fa-trash" title="Delete"></i>
                                             </button>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
-                    </div>
-                
-
+                    
+                </div>
 
 
                 

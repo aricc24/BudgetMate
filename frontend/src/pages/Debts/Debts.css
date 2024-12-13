@@ -9,6 +9,7 @@
     align-items: center;
     position: relative;
     min-height: 100vh;
+    min-width: 100vh;
 }
 
 .debt-page label {
@@ -73,6 +74,17 @@
     background-color: #6ed6ba;
 }
 
+.add-debt-dialog .Buttons1 {
+    margin-left: 27px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #1ab188;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
 .react-datepicker {
     background-color: #184346;
     border: 1px solid #1ab188;
@@ -120,37 +132,142 @@
     background-color: #6ed6ba;
 }
 
-.search-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.react-datepicker__navigation {
+    background-color: transparent;
+    border: 1px solid #1ab188;
 }
 
-.search-container input {
-    padding: 10px 16px;
-    font-size: 1rem;
-    color: #1ab188;
+.react-datepicker__navigation:hover {
+    background-color: #6ed6ba;
+}
+
+.react-datepicker__year-dropdown,
+.react-datepicker__month-dropdown {
     background-color: #184346;
     border: 1px solid #1ab188;
+    border-radius: 15px;
+    height: 180px;
+    overflow-y: auto;
+}
+
+.react-datepicker__year-option,
+.react-datepicker__month-option {
+    background-color: #184346;
+    color: #1ab188;
+}
+
+.react-datepicker__year-option:hover,
+.react-datepicker__month-option:hover {
+    background-color: #6ed6ba;
+    color: #ffffff;
+}
+
+.react-datepicker-popper {
+    margin-top: -30px;
+    transform: translateX(-10px);
+}
+
+.react-datepicker__navigation--years-previous {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.react-datepicker__navigation--years-previous:hover {
+    background-color: #6ed6ba00;
+    color: #ffffff00;
+    border-radius: 0;
+}
+
+.react-datepicker__year-dropdown .react-datepicker__year-option:last-child {
+    background-color: none;
+    color: #ffffff;
+    font-weight: bold;
     border-radius: 8px;
-    outline: none;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+}
+
+.react-datepicker__year-dropdown .react-datepicker__year-option:last-child::after {
+    content: "\f063";
+    font-family: "Font Awesome 5 Free";
+    color: #ffffff;
+    position: absolute;
+    top: 20%;
+}
+
+.react-datepicker__year-dropdown .react-datepicker__year-option:last-child:hover {
+    background-color: #6ed6ba;
+    color: #ffffff;
+}
+
+.react-datepicker__year-dropdown .react-datepicker__year-option:first-child {
+    background-color: none;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 8px;
+    position: relative;
+}
+
+.react-datepicker__year-dropdown .react-datepicker__year-option:first-child::after {
+    content: "\f062";
+    font-family: "Font Awesome 5 Free";
+    color: #ffffff;
+    position: absolute;
+    top: 20%;
+}
+
+.react-datepicker__year-dropdown .react-datepicker__year-option:first-child:hover {
+    background-color: #6ed6ba;
+    color: #ffffff;
+}
+
+.react-datepicker__navigation--years-upcoming {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.table-content {
     width: 100%;
-    max-width: 500px;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1rem;
+    text-align: left;
+    background-color: none;
+    color: #1ab188;
+    border: none;
+    overflow: hidden;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: auto;
 }
 
-.search-container input::placeholder {
-    color: #6ed6ba;
-    font-style: italic;
+.table-content::-webkit-scrollbar:horizontal,
+.table-content::-webkit-scrollbar {
+    width: 8px;
 }
 
-.search-container input:focus {
-    border-color: #6ed6ba;
-    box-shadow: 0 0 8px #6ed6ba;
+.table-content::-webkit-scrollbar:horizontal{
+    height: 8px;
 }
 
-.table {
+.table-content::-webkit-scrollbar-thumb:horizontal,
+.table-content::-webkit-scrollbar-thumb {
+    background-color: #1ab188;
+    border-radius: 10px;
+}
+
+.table-content::-webkit-scrollbar-thumb:horizontal:hover,
+.table-content::-webkit-scrollbar-thumb:hover {
+    background-color: #6ed6ba;
+}
+
+.table-content::-webkit-scrollbar-track:horizontal,
+.table-content::-webkit-scrollbar-track {
+    background-color: #0d2628;
+}
+
+.tableD {
     width: 100%;
     max-height: 500px;
     border-collapse: collapse;
@@ -165,12 +282,12 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.table th, .table td {
+.tableD th, .tableD td {
     padding: 12px 16px;
     border: 1px solid #1ab188;
 }
 
-.table th {
+.tableD th {
     background-color: #1ab192;
     color: #184346;
     font-weight: bold;
@@ -178,17 +295,17 @@
     text-transform: uppercase;
 }
 
-.table td {
+.tableD td {
     background-color: #0f484c;
     color: #1ab188;
 }
 
-.table th.opt, .table td.opt {
+.tableD th.opt, .table td.opt {
     text-align: center;
     width: 20px;
 }
 
-.table .Edit {
+.tableD .Edit {
     background: none;
     border: none;
     color: #1ab188;
@@ -198,15 +315,22 @@
     margin-left: 15px;
 }
 
-.table .Edit:hover {
+.tableD td.icons {
+    padding-right: 0;
+    padding-left: 0;
+    border: 1px solid #1ab189be;
+    table-layout: fixed;
+}
+
+.tableD .Edit:hover {
     color: #6ed6ba;
 }
 
-.table .Edit i {
+.tableD .Edit i {
     font-size: 1.2rem;
 }
 
-.table .Delete {
+.tableD .Delete {
     background: none;
     border: none;
     color: #ff4d4d;
@@ -219,10 +343,166 @@
     margin-top: 10px;
 }
 
-.table .Delete:hover {
+.tableD .Delete:hover {
     color: #ff6b6b;
 }
 
-.table .Delete i {
+.tableD .Delete i {
     font-size: 1.2rem;
+}
+
+.inactive {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 100;
+}
+
+.dialog {
+    z-index: 200;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #184346;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.category-dialog {
+    z-index: 200;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    background-color: #184346;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    color: #1ab188;
+}
+
+.category-dialog h3 {
+    font-size: 2.2rem;
+    color: #1ab188;
+}
+
+.category-dialog h6 {
+    color: #0c8667;
+}
+
+.category-dialog input,
+.category-dialog select {
+    margin-bottom: 15px;
+    width: calc(100% - 20px);
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #1ab188;
+    border-radius: 8px;
+    outline: none;
+    background-color: #132e2f;
+    color: #fff;
+}
+
+.category-dialog input::placeholder {
+    color: #a0b3b0;
+    font-style: italic;
+}
+
+.category-dialog input:focus,
+.category-dialog select:focus {
+    border-color: #6ed6ba;
+    box-shadow: 0 0 5px rgba(102, 230, 186, 0.8);
+}
+
+.category-dialog button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #1ab188;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.category-dialog button:hover {
+    background-color: #6ed6ba;
+}
+
+.category-dialog select option:checked {
+    background-color: #6ed6ba;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #0f393a;
+    border: 1px solid #1ab188;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+}
+
+.chart-container canvas {
+    max-width: 100%;
+    max-height: 300px;
+}
+
+.chart-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1ab188;
+    margin-bottom: 10px;
+}
+
+.Buttons1 {
+    padding: 8px 16px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #1ab188;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    margin-bottom: 50px;
+}
+
+.Buttons1:hover{
+  background-color: #6ed6ba;
+}
+
+.button-cat {
+    margin-left: 25px;
+    margin-bottom: 25px;
+}
+
+.Buttons2 {
+    margin-left: 10px;
+    margin-top: -10px;
+}
+
+.Buttons3 {
+    margin-left: 10px;
+    margin-top: 20px;
+    margin-right: 10px;
 }
