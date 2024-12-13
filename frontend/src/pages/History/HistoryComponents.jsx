@@ -27,37 +27,49 @@ const HistoryComponents = ({
 }) => {
     return (
         <Layout>
-            <div className="expenses-page">
-                <h1 className="type-title">Expenses</h1>
-                <div className="add-expense-form">
-                    <label htmlFor="start-date">Start Date</label>
-                    <input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                    />
-                    <label htmlFor="end-date">End Date</label>
-                    <input
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                    />
-                    <input
-                        type="number"
-                        min="0"
-                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
-                        value={minAmount}
-                        onChange={(e) => setMinAmount(e.target.value)}
-                        placeholder="Min. Amount"
-                    />
-                    <input
-                        type="number"
-                        min="0"
-                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
-                        value={maxAmount}
-                        onChange={(e) => setMaxAmount(e.target.value)}
-                        placeholder="Max. Amount"
-                    />
+            <div className="history-page">
+                <label>History</label>
+                <h3 htmlFor="start-date">Expenses</h3>
+
+                <div className="dates-numbers-container">
+
+                    <div className="dates">
+                        <h3 htmlFor="start-date">Start Date</h3>
+                        <input
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                        />
+                        <h3 htmlFor="end-date">End Date</h3>
+                        <input
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                        />
+                    </div>
+                    
+
+                    <div className="numbers">
+                        <input
+                            type="number"
+                            min="0"
+                            onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
+                            value={minAmount}
+                            onChange={(e) => setMinAmount(e.target.value)}
+                            placeholder="Min. Amount"
+                        />
+                        <input
+                            type="number"
+                            min="0"
+                            onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
+                            value={maxAmount}
+                            onChange={(e) => setMaxAmount(e.target.value)}
+                            placeholder="Max. Amount"
+                        />
+                    </div>
+
+
+                    
                     <button
                         className="select-category-button"
                         onClick={() => setIsCategoryDialogOpen(true)}
