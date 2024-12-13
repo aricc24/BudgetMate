@@ -1,4 +1,5 @@
-.history-page {
+.history-page,
+.history-page2 {
     display: flex;
     flex-direction: column;
     max-width: 1200px;
@@ -12,8 +13,15 @@
     min-width: 100vh;
 }
 
+
+.history-page2 h3,
 .history-page h3 {
     font-size: 2rem;
+}
+
+.history-page2 {
+    position: relative;
+    bottom: 100px;
 }
 
 .history-page label {
@@ -23,69 +31,6 @@
     text-align: center;
     margin-bottom: 20px;
     margin-top: -70px;
-}
-
-.exp-form {
-    z-index: 200;
-    position: center;
-    background-color: none;
-    max-width: 500px;
-    width: 90%;
-    color: #1ab188;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    height: 450px;
-}
-
-.exp-form input,
-.exp-form select {
-    padding: 5px;
-    font-size: 1rem;
-    border: 1px solid #538173;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
-    background-color: #132e2f;
-    color: #fff;
-    width: 30%;
-    height: 8%;
-}
-
-.exp-form input::placeholder {
-    color: #a0b3b0;
-}
-
-.exp-form input:focus,
-.exp-form select:focus {
-    border-color: #1ab188;
-}
-
-.exp-form .has-interest-group {
-    grid-column: span 1;
-}
-
-.exp-form .button-group {
-    grid-column: span 3;
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 20px;
-}
-
-.exp-form .button-group button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    color: #fff;
-    background-color: #1ab188;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.exp-form .button-group button:hover {
-    background-color: #6ed6ba;
 }
 
 .dates-numbers-container {

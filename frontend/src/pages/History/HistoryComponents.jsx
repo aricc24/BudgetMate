@@ -113,12 +113,6 @@ const HistoryComponents = ({
                         </tbody>
                     </table>
                 </div>
-                    
-                
-
-               
-
-
 
                 {isCategoryDialogOpen && (
                     <dialog className="category-dialog" open>
@@ -139,89 +133,98 @@ const HistoryComponents = ({
                     </dialog>
                 )}
             </div>
-
-
-
             
-            <div className="expenses-page">
-                <h1 className="type-title">Incomes</h1>
-                <div className="add-expense-form">
-                    <label htmlFor="start-date">Start Date</label>
-                    <input
-                        type="date"
-                        value={startDateIncomes}
-                        onChange={(e) => setStartDateIncomes(e.target.value)}
-                    />
-                    <label htmlFor="end-date">End Date</label>
-                    <input
-                        type="date"
-                        value={endDateIncomes}
-                        onChange={(e) => setEndDateIncomes(e.target.value)}
-                    />
-                    <input
-                        type="number"
-                        min="0"
-                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
-                        value={minAmountIncomes}
-                        onChange={(e) => setMinAmountIncomes(e.target.value)}
-                        placeholder="Min. Amount"
-                    />
-                    <input
-                        type="number"
-                        min="0"
-                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
-                        value={maxAmountIncomes}
-                        onChange={(e) => setMaxAmountIncomes(e.target.value)}
-                        placeholder="Max. Amount"
-                    />
+
+            <div className="history-page2">
+                <h3 htmlFor="start-date">Incomes</h3>
+                <div className="dates-numbers-container">
+                    <div className="dates">
+                        <h3 htmlFor="start-date">Start Date</h3>
+                        <input
+                            type="date"
+                            value={startDateIncomes}
+                            onChange={(e) => setStartDateIncomes(e.target.value)}
+                        />
+                        <h3 htmlFor="end-date">End Date</h3>
+                        <input
+                            type="date"
+                            value={endDateIncomes}
+                            onChange={(e) => setEndDateIncomes(e.target.value)}
+                        />
+                    </div>
+                    <div className="numbers">
+                        <h3 htmlFor="Min.Amount">Min. Amount</h3>
+                        <input
+                            type="number"
+                            min="0"
+                            onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
+                            value={minAmountIncomes}
+                            onChange={(e) => setMinAmountIncomes(e.target.value)}
+                            placeholder="Min. Amount"
+                        />
+                        <h3 htmlFor="Max.Amount">Max. Amount</h3>
+                        <input
+                            type="number"
+                            min="0"
+                            onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
+                            value={maxAmountIncomes}
+                            onChange={(e) => setMaxAmountIncomes(e.target.value)}
+                            placeholder="Max. Amount"
+                        />
+                    </div>
                     <button
                         className="select-category-button"
                         onClick={() => setIsCategoryIncomeDialogOpen(true)}
                     >
                         Select Categories
                     </button>
-                    <button onClick={handleIncomeFilter}>Filter</button>
+                    <button 
+                        className ="filter-button"
+                        onClick={handleIncomeFilter}
+                    >
+                        Filter
+                    </button>
                 </div>
-                <div className="content-container">
-                    <div className="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Amount</th>
-                                    <th>Description</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {incomes.map(income => {
-                                    console.log(income);
-                                    return (
-                                        <tr key={income.id_transaction}>
-                                            <td>
-                                                {income.categories.map((categoryId, index) => {
-                                                    const category = categories.find(c => c.id_category === categoryId);
-                                                    return (
-                                                        <span key={categoryId}>
-                                                            {category ? category.category_name : 'Unknown category'}
-                                                            {index < income.categories.length - 1 && ", "}
-                                                        </span>
-                                                    );
-                                                }) || "No category"}
-                                            </td>
-                                            <td>- ${income.mount}</td>
-                                            <td>{income.description || "No description"}</td>
-                                            <td>{adjustTime(income.date)}</td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
+
+                <div className="table-content">
+                    <table className="tableD">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {incomes.map(income => {
+                                return (
+                                    <tr key={income.id_transaction}>
+                                        <td>
+                                            {income.categories.map((categoryId, index) => {
+                                                const category = categories.find(c => c.id_category === categoryId);
+                                                return (
+                                                    <span key={categoryId}>
+                                                        {category ? category.category_name : 'Unknown category'}
+                                                        {index < income.categories.length - 1 && ", "}
+                                                    </span>
+                                                );
+                                            }) || "No category"}
+                                        </td>
+                                        <td>- ${income.mount}</td>
+                                        <td>{income.description || "No description"}</td>
+                                        <td>{adjustTime(income.date)}</td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
                 </div>
+
                 {isCategoryIncomeDialogOpen && (
                     <dialog className="category-dialog" open>
                         <h3>Select Categories</h3>
+                        <h6>Hold ctrl or left click to select multiple categories</h6>
                         <select
                             multiple
                             value={selectedCategoriesIncomes}
@@ -236,7 +239,7 @@ const HistoryComponents = ({
                         </div>
                     </dialog>
                 )}
-            </div>
+            </div>            
         </Layout>
     );
 };
