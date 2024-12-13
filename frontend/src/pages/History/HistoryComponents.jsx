@@ -83,44 +83,44 @@ const HistoryComponents = ({
 
 
 
-                <div className="content-container">
-    <div className="table-container">
-        <div className="table-content">
-            <table className="tableD">
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Amount</th>
-                        <th>Description</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {transactions.map(transaction => {
-                        return (
-                            <tr key={transaction.id_transaction}>
-                                <td>
-                                    {transaction.categories.map((categoryId, index) => {
-                                        const category = categories.find(c => c.id_category === categoryId);
+                
+                    
+                        <div className="table-content">
+                            <table className="tableD">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Amount</th>
+                                        <th>Description</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {transactions.map(transaction => {
                                         return (
-                                            <span key={categoryId}>
-                                                {category ? category.category_name : 'Unknown category'}
-                                                {index < transaction.categories.length - 1 && ", "}
-                                            </span>
+                                            <tr key={transaction.id_transaction}>
+                                                <td>
+                                                    {transaction.categories.map((categoryId, index) => {
+                                                        const category = categories.find(c => c.id_category === categoryId);
+                                                        return (
+                                                            <span key={categoryId}>
+                                                                {category ? category.category_name : 'Unknown category'}
+                                                                {index < transaction.categories.length - 1 && ", "}
+                                                            </span>
+                                                        );
+                                                    }) || "No category"}
+                                                </td>
+                                                <td>- ${transaction.mount}</td>
+                                                <td>{transaction.description || "No description"}</td>
+                                                <td>{adjustTime(transaction.date)}</td>
+                                            </tr>
                                         );
-                                    }) || "No category"}
-                                </td>
-                                <td>- ${transaction.mount}</td>
-                                <td>{transaction.description || "No description"}</td>
-                                <td>{adjustTime(transaction.date)}</td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    
+                
 
                
 

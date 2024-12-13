@@ -314,6 +314,9 @@
     box-shadow: none;
 }
 
+
+
+
 .table-content {
     width: 100%;
     border-collapse: collapse;
@@ -322,38 +325,31 @@
     text-align: left;
     background-color: none;
     color: #1ab188;
-    border: none;
+    border: none; /* Eliminar borde */
     overflow: hidden;
-    max-height: 500px;
+    max-height: 400px;
     overflow-y: auto;
     overflow-x: auto;
-}
-
-.table-content::-webkit-scrollbar:horizontal,
+} 
 .table-content::-webkit-scrollbar {
     width: 8px;
-}
-
-.table-content::-webkit-scrollbar:horizontal{
     height: 8px;
 }
 
-.table-content::-webkit-scrollbar-thumb:horizontal,
 .table-content::-webkit-scrollbar-thumb {
     background-color: #1ab188;
     border-radius: 10px;
 }
 
-.table-content::-webkit-scrollbar-thumb:horizontal:hover,
 .table-content::-webkit-scrollbar-thumb:hover {
     background-color: #6ed6ba;
 }
 
-.table-content::-webkit-scrollbar-track:horizontal,
 .table-content::-webkit-scrollbar-track {
     background-color: #0d2628;
 }
 
+/* Estilo de la tabla */
 .tableD {
     width: 100%;
     max-height: 500px;
@@ -369,9 +365,10 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* Eliminar bordes adicionales dentro de la tabla */
 .tableD th, .tableD td {
     padding: 12px 16px;
-    border: 1px solid #1ab188;
+    border: none;
 }
 
 .tableD th {
@@ -387,56 +384,10 @@
     color: #1ab188;
 }
 
-.tableD th.opt, .table td.opt {
-    text-align: center;
-    width: 20px;
-}
 
-.tableD .Edit {
-    background: none;
-    border: none;
-    color: #1ab188;
-    cursor: pointer;
-    display: flex;
-    transition: color 0.3s;
-    margin-left: 15px;
-}
 
-.tableD td.icons {
-    padding-right: 0;
-    padding-left: 0;
-    border: 1px solid #1ab189be;
-    table-layout: fixed;
-}
 
-.tableD .Edit:hover {
-    color: #6ed6ba;
-}
 
-.tableD .Edit i {
-    font-size: 1.2rem;
-}
-
-.tableD .Delete {
-    background: none;
-    border: none;
-    color: #ff4d4d;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.3s;
-    margin-left: 15px;
-    margin-top: 10px;
-}
-
-.tableD .Delete:hover {
-    color: #ff6b6b;
-}
-
-.tableD .Delete i {
-    font-size: 1.2rem;
-}
 
 .inactive {
     pointer-events: none;
@@ -482,10 +433,6 @@
   background-color: #6ed6ba;
 }
 
-.button-cat {
-    margin-left: 25px;
-    margin-bottom: 25px;
-}
 
 .Buttons2 {
     margin-left: 10px;
@@ -547,6 +494,7 @@
     left: 345px;
     padding: 0%;
 }
+
 .exp-form select:focus,
 .exp-form input:focus {
     border-color: #6ed6ba;
