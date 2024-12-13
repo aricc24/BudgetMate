@@ -10,34 +10,34 @@ const Home = () => {
     const [selectedFrequency, setSelectedFrequency] = useState('monthly');
     const [selectedStartDate, setSelectedStartDate] = useState('');
 
-    const handleUpdateEmailSchedule = async () => {
-        const authToken = localStorage.getItem('authToken');
-        const userId = localStorage.getItem('userId');
-        const frequency = selectedFrequency; 
-        const startDate = selectedStartDate; 
-    
-        if (!authToken || !userId) return;
-    
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/update_email_schedule/${userId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`,
-                },
-                body: JSON.stringify({ frequency, start_date: startDate }),
-            });
-    
-            if (response.ok) {
-                alert('Email schedule updated successfully.');
-            } else {
-                alert('Failed to update email schedule.');
-            }
-        } catch (error) {
-            console.error('Error updating email schedule:', error);
+    const filterDataByDateRange = (data, startDate, frequency) => {
+    if (!startDate) return data;
+
+    const start = new Date(startDate);
+
+    return data.filter((item) => {
+        const transactionDate = new Date(item.date);
+
+        switch (frequency) {
+            case 'daily':
+                return transactionDate.toISOString().split('T')[0] === start.toISOString().split('T')[0];
+            case 'weekly':
+                const weekLater = new Date(start);
+                weekLater.setDate(start.getDate() + 7);
+                return transactionDate >= start && transactionDate <= weekLater;
+            case 'monthly':
+                return (
+                    transactionDate.getMonth() === start.getMonth() &&
+                    transactionDate.getFullYear() === start.getFullYear()
+                );
+            case 'yearly':
+                return transactionDate.getFullYear() === start.getFullYear();
+            default:
+                return true;
         }
-    };
-    
+    });
+};
+
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -55,9 +55,16 @@ const Home = () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    // const filteredData = applyTimeFilter(data, filter);
-                    const incomeData = data.filter(t => t.type === 0).map(t => ({ date: t.date, amount: t.mount }));
-                    const expenseData = data.filter(t => t.type === 1).map(t => ({ date: t.date, amount: t.mount }));
+
+                    const filteredData = filterDataByDateRange(data, selectedStartDate, selectedFrequency);
+
+                    const incomeData = filteredData
+                        .filter(t => t.type === 0)
+                        .map(t => ({ date: t.date, amount: t.mount }));
+                    const expenseData = filteredData
+                        .filter(t => t.type === 1)
+                        .map(t => ({ date: t.date, amount: t.mount }));
+
                     setChartData({ income: incomeData, expenses: expenseData });
                 } else {
                     console.error('Failed to fetch transactions');
@@ -68,8 +75,36 @@ const Home = () => {
         };
 
         fetchTransactions();
-    }, [navigate, filter]);
-    
+    }, [navigate, selectedStartDate, selectedFrequency]);
+
+    const handleUpdateEmailSchedule = async () => {
+        const authToken = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId');
+        const frequency = selectedFrequency;
+        const startDate = selectedStartDate;
+
+        if (!authToken || !userId) return;
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/update_email_schedule/${userId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                },
+                body: JSON.stringify({ frequency, start_date: startDate }),
+            });
+
+            if (response.ok) {
+                alert('Email schedule updated successfully.');
+            } else {
+                alert('Failed to update email schedule.');
+            }
+        } catch (error) {
+            console.error('Error updating email schedule:', error);
+        }
+    };
+
     return (
         <HomeComponents
             filter={filter}
@@ -84,10 +119,76 @@ const Home = () => {
             selectedStartDate={selectedStartDate}
             setSelectedStartDate={setSelectedStartDate}
             handleUpdateEmailSchedule={handleUpdateEmailSchedule}
-
         />
     );
 };
+
+const CombinedChart = ({ data }) => {
+    const chartRef = React.useRef(null);
+    const chartInstance = React.useRef(null);
+
+    useEffect(() => {
+        if (chartInstance.current) chartInstance.current.destroy();
+
+        chartInstance.current = new Chart(chartRef.current, {
+            type: 'line',
+            data: {
+                labels: data.income.map(d => d.date),
+                datasets: [
+                    {
+                        label: 'Income',
+                        data: data.income.map(d => d.amount),
+                        borderColor: 'green',
+                        backgroundColor: 'rgba(144, 238, 144, 0.5)',
+                        fill: true,
+                    },
+                    {
+                        label: 'Expenses',
+                        data: data.expenses.map(d => d.amount),
+                        borderColor: 'red',
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        fill: true,
+                    },
+                ],
+            },
+        });
+
+        return () => chartInstance.current.destroy();
+    }, [data]);
+
+    return <canvas ref={chartRef}></canvas>;
+};
+
+const CombinedPieChart = ({ data }) => {
+    const chartRef = React.useRef(null);
+    const chartInstance = React.useRef(null);
+
+    useEffect(() => {
+        if (chartInstance.current) chartInstance.current.destroy();
+
+        chartInstance.current = new Chart(chartRef.current, {
+            type: 'pie',
+            data: {
+                labels: ['Income', 'Expenses'],
+                datasets: [
+                    {
+                        data: [
+                            data.income.reduce((acc, t) => acc + t.amount, 0),
+                            data.expenses.reduce((acc, t) => acc + t.amount, 0),
+                        ],
+                        backgroundColor: ['rgba(75, 192, 192, 0.5)', 'rgba(255, 99, 132, 0.5)'],
+                    },
+                ],
+            },
+        });
+
+        return () => chartInstance.current.destroy();
+    }, [data]);
+
+    return <canvas ref={chartRef}></canvas>;
+};
+
+
 
 const handleDownloadPDF = async () => {
     const authToken = localStorage.getItem('authToken');
@@ -125,7 +226,7 @@ const handleSendEmail = async () => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${authToken}`
             },
-            body: JSON.stringify({}) 
+            body: JSON.stringify({})
         });
 
         if (response.ok) {
@@ -137,147 +238,5 @@ const handleSendEmail = async () => {
         console.error('Error sending email:', error);
     }
 };
-
-const CombinedChart = ({ data }) => {
-    const chartRef = React.useRef(null);
-    const chartInstance = React.useRef(null);
-
-    useEffect(() => {
-        if (chartInstance.current) {chartInstance.current.destroy();}
-
-        const sortedIncome = data.income
-            .map(item => ({ date: new Date(item.date), amount: item.amount }))
-            .sort((a, b) => a.date - b.date);
-
-        const sortedExpenses = data.expenses
-            .map(item => ({ date: new Date(item.date), amount: item.amount }))
-            .sort((a, b) => a.date - b.date);
-
-        chartInstance.current = new Chart(chartRef.current, {
-            type: 'line',
-            data: {
-                labels: sortedIncome.map(d => d.date),
-                datasets: [
-                    {
-                        label: 'Income',
-                        data: sortedIncome.map(d => d.amount),
-                        borderColor: 'green',
-                        backgroundColor: 'rgba(144, 238, 144, 0.5)',
-                        fill: true,
-                    },
-                    {
-                        label: 'Expenses',
-                        data: sortedExpenses.map(d => d.amount),
-                        borderColor: 'red',
-                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                        fill: true,
-                    },
-                ],
-            },
-            options: {
-                responsive: false,
-                maintainAspectRatio: true,
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: (context) => `${context.dataset.label}: $${context.raw}`,
-                        },
-                    },
-                },
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {unit: 'day'},
-                        title: {display: true, text: 'Date'},
-                    },
-                    y: {
-                        title: {display: true, text: 'Amount'},
-                        ticks: {callback: (value) => `$${value}`},
-                    },
-                },
-            },
-            
-        });
-
-        return () => {if (chartInstance.current) {chartInstance.current.destroy();}};
-
-    }, [data]);
-
-    return <canvas ref={chartRef} style={{ maxWidth: '100%', height: '400px' }}></canvas>;
-};
-
-const CombinedPieChart = ({ data }) => {
-    const chartRef = React.useRef(null);
-    const chartInstance = React.useRef(null);
-
-    useEffect(() => {
-        if (chartInstance.current) {chartInstance.current.destroy();}
-
-        const incomeTotal = data.income.reduce((acc, t) => acc + parseFloat(t.amount || 0), 0);
-        const expensesTotal = data.expenses.reduce((acc, t) => acc + parseFloat(t.amount || 0), 0);
-        if (incomeTotal === 0 && expensesTotal === 0) {
-            console.error("Both incomeTotal and expensesTotal are zero.");
-            return;
-        }
-
-        chartInstance.current = new Chart(chartRef.current, {
-            type: 'pie',
-            data: {
-                labels: ['Income', 'Expenses'],
-                datasets: [
-                    {
-                        data: [incomeTotal, expensesTotal],
-                        backgroundColor: [
-                            'rgba(75, 192, 192, 0.5)',
-                            'rgba(255, 99, 132, 0.5)',
-                        ],
-                        borderColor: [
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(255, 99, 132, 1)',
-                        ],
-                        borderWidth: 1,
-                    },
-                ],
-            },
-            options: {
-                responsive: false,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'top' },
-                    title: { display: true, text: 'Income vs Expenses' },
-                },
-            },
-        });
-
-        return () => {if (chartInstance.current) {chartInstance.current.destroy();}};
-        
-    }, [data]);
-
-    return <canvas ref={chartRef} style={{ maxWidth: '100%', height: '500px' }}></canvas>;
-};
-
-// const applyTimeFilter = (transactions, filter) => {
-//     const now = new Date();
-//     return transactions.filter((transaction) => {
-//         const transactionDate = new Date(transaction.date);
-//         switch (filter) {
-//             case 'daily':
-//                 return transactionDate.toDateString() === now.toDateString();
-//             case 'weekly':
-//                 const weekAgo = new Date();
-//                 weekAgo.setDate(now.getDate() - 7);
-//                 return transactionDate >= weekAgo && transactionDate <= now;
-//             case 'monthly':
-//                 return (
-//                     transactionDate.getMonth() === now.getMonth() &&
-//                     transactionDate.getFullYear() === now.getFullYear()
-//                 );
-//             case 'yearly':
-//                 return transactionDate.getFullYear() === now.getFullYear();
-//             default:
-//                 return true;
-//         }
-//     });
-// };
 
 export default Home;
