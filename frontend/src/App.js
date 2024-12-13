@@ -10,6 +10,7 @@ import ProfilePage from './pages/ProfilePage/ProfilePage';
 import ForgotPassword from './pages/UserSession/ForgotPassword';
 import Debts from './pages/Debts/Debts';
 import History from './pages/History/History';
+import Verification from './pages/UserSession/Verification';
 import ScheduledTransactionsForm from './pages/ScheduleMovement/ScheduleTransactionForm';
 import ScheduledTransactionsList  from './pages/ScheduleMovement/ScheduledTransactionsList';
 
@@ -21,6 +22,7 @@ function App() {
                 <Route path="/login" element={<LogIn />} />
                 <Route path="/signup" element={<SignIn />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/verify-email" element={<Verification />} />
                 <Route element={<PrivateRoute />}>
                     <Route path="/home" element={<Home />} />
                     <Route path="/profile" element={<ProfilePage />} />

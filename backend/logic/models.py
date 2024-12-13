@@ -48,6 +48,7 @@ class User(models.Model):
         default='monthly',
     )
     email_schedule_start_date = models.DateField(default=now().date)
+    is_verified = models.BooleanField(default=False)
     class Meta:
         db_table = 'users'
 
@@ -112,7 +113,7 @@ class ScheduledTransaction(models.Model):
         default=Transaction.TransEnum.INCOME
     )
     categories = models.ManyToManyField('Category', related_name='scheduled_transactions')
-    schedule_date = models.DateField()  
+    schedule_date = models.DateField()
     repeat = models.CharField(
         max_length=10,
         choices=[('none', 'None'), ('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')],
