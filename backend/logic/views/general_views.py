@@ -27,6 +27,7 @@ import os
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from weasyprint import HTML
+from django.utils.timezone import localtime
 
 @api_view(['GET'])
 def filter_transactions(request, id_user):
@@ -62,6 +63,8 @@ def filter_transactions(request, id_user):
 def generate_pdf(request, id_user):
    user = User.objects.get(id_user=id_user)
    transactions = Transaction.objects.filter(id_user=user).select_related('id_user').prefetch_related('categories')
+   for transaction in transactions:
+    transaction.date = localtime(transaction.date)
    debts = Debt.objects.filter(id_user=user) 
    scheduled_transactions = ScheduledTransaction.objects.filter(user=user).prefetch_related('categories')
 
@@ -94,7 +97,7 @@ def generate_pdf(request, id_user):
 
    #Line Graph Incomes
    income_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_income_chart_{id_user}.png")
-   fig, ax = plt.subplots(figsize=(10, 6))
+   fig, ax = plt.subplots(figsize=(16, 9))
    ax.plot(income_dates, income_amounts, label='Ingresos', color='green', linewidth=2)
    ax.scatter(income_dates, income_amounts, color='black', zorder=5, label='Entries')
    ax.set_xlabel('Date')
@@ -111,7 +114,7 @@ def generate_pdf(request, id_user):
 
    #Line Graph Expenses
    expense_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expense_chart_{id_user}.png")
-   fig, ax = plt.subplots(figsize=(10, 6))
+   fig, ax = plt.subplots(figsize=(16, 9))
    ax.plot(expense_dates, expense_amounts, label='Egresos', color='red', linewidth=2)
    ax.scatter(expense_dates, expense_amounts, color='black', zorder=5, label='Entries')
    ax.set_xlabel('Date')
@@ -236,10 +239,26 @@ def send_email(request, id_user):
 def send_email_to_user(user_id):
     user = User.objects.get(id_user=user_id)
     transactions = Transaction.objects.filter(id_user=user)
-    context = {'transactions': transactions}
+
+    income_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_income_chart_{user_id}.png")
+    expense_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expense_chart_{user_id}.png")
+    expie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expie_chart_{user_id}.png")
+    inpie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_inpie_chart_{user_id}.png")
+
+    income_chart_url = f"{settings.MEDIA_URL}temp_income_chart_{user_id}.png"
+    expense_chart_url = f"{settings.MEDIA_URL}temp_expense_chart_{user_id}.png"
+    expie_chart_url = f"{settings.MEDIA_URL}temp_expie_chart_{user_id}.png"
+    inpie_chart_url = f"{settings.MEDIA_URL}temp_inpie_chart_{user_id}.png"
+
+    context = {
+        'transactions': transactions,
+        'income_chart_url': income_chart_url,
+        'expense_chart_url': expense_chart_url,
+        'inpie_chart_url': inpie_chart_url,
+        'expie_chart_url': expie_chart_url,
+    }
 
     html_content = render_to_string('pdf_template.html', context)
-
     pdf_file = BytesIO()
     HTML(string=html_content).write_pdf(target=pdf_file)
     pdf_file.seek(0)
@@ -254,8 +273,11 @@ def send_email_to_user(user_id):
     )
     email.attach(f'report_{user.id_user}.pdf', pdf_file.read(), 'application/pdf')
 
-    email.send()
-
+    try:
+        email.send()
+        print("Email sent successfully!")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
 
 @api_view(['POST'])
 def update_email_schedule(request, id_user):
