@@ -70,20 +70,24 @@ const History = () => {
             const end = new Date(endDate);
 
             if (start > end) {
-                alert("La fecha de inicio no puede ser posterior a la fecha de fin.");
+                alert("The start date cannot be later than the due date.");
                 return;
             }
         }
         if (minAmount && maxAmount) {
             if (parseFloat(minAmount) > parseFloat(maxAmount)) {
-                alert("La fecha de inicio no puede ser posterior a la fecha de fin.");
+                alert("The min Amount cannot be higher than max amount.");
                 return;
             }
         }
+
+        const formattedStartDate = startDate ? new Date(startDate).toISOString().split('T')[0] : '';
+        const formattedEndDate = endDate ? new Date(endDate).toISOString().split('T')[0] : '';
+
         const params = new URLSearchParams();
         params.append('type', 'expenses');
-        if (startDate) params.append('start_date', startDate);
-        if (endDate) params.append('end_date', endDate);
+        if (formattedStartDate) params.append('start_date', formattedStartDate);
+        if (formattedEndDate) params.append('end_date', formattedEndDate);
         if (minAmount) params.append('min_amount', minAmount);
         if (maxAmount) params.append('max_amount', maxAmount);
         if (selectedCategories.length > 0) {
@@ -116,20 +120,25 @@ const History = () => {
             const start = new Date(startDateIncomes);
             const end = new Date(endDateIncomes);
             if (start > end) {
-                alert("La fecha de inicio no puede ser posterior a la fecha de fin.");
+                alert("The start date cannot be later than the due date.");
                 return;
             }
         }
         if (minAmountIncomes && maxAmountIncomes) {
             if (parseFloat(minAmountIncomes) > parseFloat(maxAmountIncomes)) {
-                alert("La fecha de inicio no puede ser posterior a la fecha de fin.");
+                alert("The min Amount cannot be higher than max amount.");
                 return;
             }
         }
+
+        const formattedStartDateIncomes = startDateIncomes ? new Date(startDateIncomes).toISOString().split('T')[0] : '';
+        const formattedEndDateIncomes = endDateIncomes ? new Date(endDateIncomes).toISOString().split('T')[0] : '';
+
+
         const params = new URLSearchParams();
         params.append('type', 'incomes');
-        if (startDateIncomes) params.append('start_date', startDateIncomes);
-        if (endDateIncomes) params.append('end_date', endDateIncomes);
+        if (formattedStartDateIncomes) params.append('start_date', formattedStartDateIncomes);
+        if (formattedEndDateIncomes) params.append('end_date', formattedEndDateIncomes);    
         if (minAmountIncomes) params.append('min_amount', minAmountIncomes);
         if (maxAmountIncomes) params.append('max_amount', maxAmountIncomes);
         if (selectedCategoriesIncomes.length > 0) {
@@ -173,8 +182,7 @@ const History = () => {
         const day = String(date.getDate()).padStart(2, '0');
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        return `${year}/${month}/${day}, ${hours}:${minutes}:${seconds}`;
+        return `${year}/${month}/${day}, ${hours}:${minutes}`;
     };
 
     return(

@@ -1,6 +1,8 @@
 import React from 'react';
 import 'chartjs-adapter-date-fns';
 import Layout from '../../components/Layout/Layout.js';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css"; 
 import './History.css';
 
 const HistoryComponents = ({
@@ -33,16 +35,40 @@ const HistoryComponents = ({
                 <div className="dates-numbers-container">
                     <div className="dates">
                         <h3 htmlFor="start-date">Start Date</h3>
-                        <input
-                            type="date"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
+                        <DatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            showTimeSelect
+                            showMonthDropdown
+                            showYearDropdown
+                            popperPlacement="bottom-start"
+                            popperModifiers={[
+                                { name: "preventOverflow", options: { boundary: "viewport" } },
+                                { name: "flip", options: { fallbackPlacements: [] } },
+                            ]}
+                            timeFormat="HH:mm"
+                            timeIntervals={1}
+                            dateFormat="yyyy-MM-dd HH:mm"
+                            className="datepicker"
+                            onKeyDown={(e) => e.preventDefault()}
                         />
                         <h3 htmlFor="end-date">End Date</h3>
-                        <input
-                            type="date"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
+                        <DatePicker
+                            selected={endDate}
+                            onChange={(date) => setEndDate(date)}
+                            showTimeSelect
+                            showMonthDropdown
+                            showYearDropdown
+                            popperPlacement="bottom-start"
+                            popperModifiers={[
+                                { name: "preventOverflow", options: { boundary: "viewport" } },
+                                { name: "flip", options: { fallbackPlacements: [] } },
+                            ]}
+                            timeFormat="HH:mm"
+                            timeIntervals={1}
+                            dateFormat="yyyy-MM-dd HH:mm"
+                            className="datepicker"
+                            onKeyDown={(e) => e.preventDefault()}
                         />
                     </div>
                     <div className="numbers">
@@ -140,16 +166,40 @@ const HistoryComponents = ({
                 <div className="dates-numbers-container">
                     <div className="dates">
                         <h3 htmlFor="start-date">Start Date</h3>
-                        <input
-                            type="date"
-                            value={startDateIncomes}
-                            onChange={(e) => setStartDateIncomes(e.target.value)}
+                        <DatePicker
+                            selected={startDateIncomes}
+                            onChange={(date) => setStartDateIncomes(date)}
+                            showTimeSelect
+                            showMonthDropdown
+                            showYearDropdown
+                            popperPlacement="bottom-start"
+                            popperModifiers={[
+                                { name: "preventOverflow", options: { boundary: "viewport" } },
+                                { name: "flip", options: { fallbackPlacements: [] } },
+                            ]}
+                            timeFormat="HH:mm"
+                            timeIntervals={1}
+                            dateFormat="yyyy-MM-dd HH:mm"
+                            className="datepicker"
+                            onKeyDown={(e) => e.preventDefault()}
                         />
                         <h3 htmlFor="end-date">End Date</h3>
-                        <input
-                            type="date"
-                            value={endDateIncomes}
-                            onChange={(e) => setEndDateIncomes(e.target.value)}
+                        <DatePicker
+                            selected={endDateIncomes}
+                            onChange={(date) => setEndDateIncomes(date)}
+                            showTimeSelect
+                            showMonthDropdown
+                            showYearDropdown
+                            popperPlacement="bottom-start"
+                            popperModifiers={[
+                                { name: "preventOverflow", options: { boundary: "viewport" } },
+                                { name: "flip", options: { fallbackPlacements: [] } },
+                            ]}
+                            timeFormat="HH:mm"
+                            timeIntervals={1}
+                            dateFormat="yyyy-MM-dd HH:mm"
+                            className="datepicker"
+                            onKeyDown={(e) => e.preventDefault()}
                         />
                     </div>
                     <div className="numbers">
