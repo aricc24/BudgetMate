@@ -380,7 +380,7 @@ const DebtsComponents = ({
                                             name="interestN"
                                             value="true"
                                             checked={editHInterest === true}
-                                            onChange={() => setEditHInterest(true)}
+                                            onChange={() => { setEditHInterest(true)}}
                                         />
                                         Yes
                                     </label>
@@ -390,7 +390,7 @@ const DebtsComponents = ({
                                             name="interestN"
                                             value="false"
                                             checked={editHInterest === false}
-                                            onChange={() => setEditHInterest(false)}
+                                            onChange={() => { setEditHInterest(false) }}
                                         />
                                         No
                                     </label>
@@ -406,13 +406,9 @@ const DebtsComponents = ({
                                             id="interestAmount"
                                             type="number"
                                             min="0"
-                                            onKeyDown={(e) => {
-                                                if (['e', 'E', '+', '-'].includes(e.key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
-                                            value={interestAmount !== undefined ? interestAmount : 0}
-                                            onChange={(e) => setInterestAmount(e.target.value)}
+                                            onKeyDown={(e) => { if (['e', 'E', '+', '-'].includes(e.key)) { e.preventDefault(); } }}
+                                            value={editInAmount}
+                                            onChange={(e) => setEditInAmount(e.target.value)}
                                             placeholder="Enter interest amount"
                                         />
                                     </div>

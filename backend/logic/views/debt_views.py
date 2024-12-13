@@ -30,7 +30,7 @@ class DebtsCreateView(generics.CreateAPIView):
             interest = 0
             total_amount = amount
 
-        request.data['interestAmount'] = interest
+        
         request.data['totalAmount'] = total_amount
 
         serializer = self.get_serializer(data=request.data)
