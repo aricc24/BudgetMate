@@ -34,7 +34,7 @@ class ScheduledTransactionResource(resources.ModelResource):
 @admin.register(User)
 class UserAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = UserResource
-    list_display = get_list_display(User) 
+    list_display = get_list_display(User)
     search_fields = ('email', 'first_name', 'last_name_father', 'curp', 'rfc')
     list_filter = ('marital_status', 'email_schedule_frequency')
     ordering = ('id_user',)
@@ -52,6 +52,7 @@ class UserAdmin(ExportMixin, admin.ModelAdmin):
         extra_context['user_count'] = User.objects.count()
         return super().changelist_view(request, extra_context=extra_context)
 
+
 @admin.register(Transaction)
 class TransactionAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = TransactionResource
@@ -66,6 +67,7 @@ class CategoryAdmin(ExportMixin, admin.ModelAdmin):
     list_display = get_list_display(Category)
     search_fields = ('category_name',)
     list_filter = ('is_universal',)
+    search_help_text = 'Introduce un término de búsqueda para encontrar categorías.'
 
 @admin.register(Debt)
 class DebtAdmin(ExportMixin, admin.ModelAdmin):
