@@ -67,6 +67,10 @@ const Expenses = () => {
     useEffect(() => {
         fetchTransactions();
         fetchCategories();
+        const intervalId = setInterval(() => {
+            fetchTransactions();
+        }, 60000); 
+        return () => clearInterval(intervalId);
     }, [fetchTransactions]);
 
 
@@ -122,7 +126,7 @@ const Expenses = () => {
         }
     };
 
-    
+
     const handleDeleteExpense = async (transactionId) => {
         const authToken = localStorage.getItem('authToken');
         try {
