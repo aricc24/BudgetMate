@@ -1,3 +1,59 @@
+/**
+ * Income.jsx
+ *
+ * Description:
+ * This component is responsible for managing income transactions in a React application.
+ * It handles the following functionalities:
+ *  - Fetching income transactions and categories from the API.
+ *  - Adding, editing, and deleting income transactions.
+ *  - Managing categories (create, edit, delete).
+ *  - Filtering and displaying income transactions.
+ *  - Rendering income data in Line and Pie charts.
+ *
+ * Features:
+ * - Uses `useState` and `useEffect` hooks to manage state and fetch data.
+ * - Provides a clean UI for managing income transactions.
+ * - Visualizes data dynamically using `Chart.js`.
+ * - Allows CRUD operations for transactions and categories.
+ * - Filters transactions based on search terms or categories.
+ *
+ * Components Used:
+ * - IncomeComponents: Child component responsible for UI rendering.
+ * - LineChart: Displays income data as a line chart.
+ * - PieChart: Displays income breakdown as a pie chart.
+ *
+ * State Variables:
+ * - transactions: Array of income transactions.
+ * - categories: Array of categories.
+ * - chartData: Data for rendering the line chart.
+ * - amount, description, selectedDate: Inputs for adding/editing income.
+ * - selectedCategories: Selected categories for an income transaction.
+ * - isOptionsOpen, isEditOpen, etc.: States controlling modal visibility.
+ *
+ * Props Passed to IncomeComponents:
+ * - transactions, categories, chartData
+ * - State setters for inputs and categories.
+ * - Functions for CRUD operations:
+ *   - handleAddIncome
+ *   - handleEditIncome
+ *   - handleDeleteIncome
+ *   - handleAddCategory
+ *   - handleEditCategory
+ *   - handleDeleteCategory
+ * - Filtering logic: searchTerm and filteredTransactions.
+ * - adjustTime: Function to format transaction dates.
+ *
+ * Dependencies:
+ * - Chart.js: For dynamic chart rendering.
+ * - React DatePicker: For date and time input fields.
+ * - React Hooks: For state management and API calls.
+ *
+ * Notes:
+ * - Uses API endpoints for fetching, updating, and deleting transactions and categories.
+ * - The component is modular, delegating UI responsibilities to `IncomeComponents`.
+ * - Data is dynamically fetched and updated in real time.
+ */
+
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
@@ -25,7 +81,6 @@ const Income = () => {
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
-
     
     const fetchTransactions = useCallback(async () => {
         const authToken = localStorage.getItem('authToken');

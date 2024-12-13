@@ -1,3 +1,64 @@
+/**
+ * DebtsComponents.jsx
+ *
+ * Description:
+ * This component is responsible for managing and displaying debts. It provides functionalities to:
+ * - Add, edit, and delete debts.
+ * - Input debt details such as amount, description, lender, interest, and due dates.
+ * - Edit existing debt records and handle changes dynamically.
+ * - Display debts in a table format with interactive actions.
+ *
+ * Props:
+ * - debts: Array of debt objects to be displayed.
+ * - amount, setAmount: State and setter for the input field "Amount" for adding new debts.
+ * - description, setDescription: State and setter for the input field "Description".
+ * - lender, setLender: State and setter for the "Lender" field.
+ * - hasInterest, setHasInterest: State and setter for managing whether the debt has interest.
+ * - interestAmount, setInterestAmount: State and setter for the interest amount input field.
+ * - init_Date, setInitDate: State and setter for the initial date of the debt.
+ * - due_Date, setDueDate: State and setter for the due date of the debt.
+ * - selectedOption, setSelectedOption: State for managing the status dropdown (Pending, Paid, Overdue).
+ * - selectedDebtId, setSelectedDebtId: State for identifying the debt to be edited or deleted.
+ * - isOptionsOpen, setisOptionsOpen: State for controlling the visibility of the options dialog.
+ * - isEditOpen, setisEditOpen: State for controlling the edit dialog visibility.
+ * - editAmount, setEditAmount: State and setter for the amount during debt editing.
+ * - editDescription, setEditDescription: State and setter for the description during editing.
+ * - editLender, setEditLender: State and setter for the lender during editing.
+ * - editHInterest, setEditHInterest: State and setter for managing the interest toggle during editing.
+ * - editInAmount, setEditInAmount: State and setter for editing the interest amount.
+ * - adjustTime: Function to format the date into a user-readable format.
+ * - handleAddDebt: Function to handle adding a new debt record.
+ * - handleEditDebt: Function to handle updating an existing debt record.
+ * - handelDeleteDebt: Function to handle deleting a debt record.
+ *
+ * UI Components:
+ * - **Add Debt Form**: Form for entering debt details, including amount, description, interest, and dates.
+ * - **Table of Debts**: Displays debts in rows with the following fields:
+ *   - Amount
+ *   - Description
+ *   - Lender
+ *   - Interest and interest amount
+ *   - Total amount (calculated)
+ *   - Status (Pending, Paid, Overdue)
+ *   - Initial date and due date
+ * - **Dialogs**:
+ *   - Options Dialog: Allows users to delete or edit a debt.
+ *   - Edit Debt Dialog: Form to edit debt details such as amount, description, lender, interest, and status.
+ *
+ * Events:
+ * - "Add Debt": Adds a new debt to the list.
+ * - "Delete Debt": Deletes a selected debt.
+ * - "Edit Debt": Allows updating of an existing debt.
+ * - "Select Status": Dropdown to choose the debt status (Pending, Paid, Overdue).
+ * - "Has Interest": Toggles whether interest is applicable to the debt.
+ *
+ * Notes:
+ * - Uses the `react-datepicker` library for selecting initial and due dates.
+ * - Conditional rendering is used for dialogs and fields (e.g., interest fields).
+ * - Table rows allow for interaction through buttons to delete or edit debts.
+ * - Styling uses custom CSS classes defined in `Debts.css`.
+ */
+
 import React from 'react';
 import 'chartjs-adapter-date-fns';
 import DatePicker from 'react-datepicker';

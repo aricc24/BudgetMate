@@ -1,3 +1,78 @@
+/**
+ * IncomeComponents.jsx
+ *
+ * Description:
+ * This component is responsible for rendering the user interface for managing income transactions.
+ * It includes functionalities such as:
+ *  - Adding new income transactions.
+ *  - Editing existing transactions.
+ *  - Deleting transactions.
+ *  - Filtering transactions by description, category, and date.
+ *  - Viewing transaction data in a table and charts (Line Chart and Pie Chart).
+ *  - Managing categories for transactions (create, edit, and delete).
+ *
+ * Props:
+ * - transactions: Array of transaction objects to be displayed.
+ * - categories: Array of category objects for categorizing transactions.
+ * - chartData: Data used to render the LineChart component.
+ * - amount, setAmount: State and setter for the income amount input field.
+ * - description, setDescription: State and setter for the description input field.
+ * - selectedDate, setSelectedDate: State and setter for the selected date input field.
+ * - selectedCategories, setSelectedCategories: State and setter for the selected categories.
+ * - newCategory, setNewCategory: State and setter for the new category name.
+ * - isCategoryDialogOpen, setIsCategoryDialogOpen: State for controlling the category selection dialog.
+ * - isNewCategoryDialogOpen, setIsNewCategoryDialogOpen: State for controlling the new category dialog.
+ * - isOptionsOpen, setisOptionsOpen: State for toggling the transaction options menu.
+ * - selectedTransactionId, setSelectedTransactionId: State to store the ID of the currently selected transaction.
+ * - editAmount, setEditAmount: State and setter for the amount during transaction editing.
+ * - editDescription, setEditDescription: State and setter for the description during transaction editing.
+ * - isEditOpen, setisEditOpen: State to control the transaction edit dialog visibility.
+ * - isEditCategoryOpen, setIsEditCategoryOpen: State to control the category edit dialog visibility.
+ * - editCategory, setEditCategory: State for the category name during editing.
+ * - selectedCategoryId, setSelectedCategoryId: State for the currently selected category ID.
+ * - searchTerm, setSearchTerm: State and setter for the transaction search input.
+ * - handleAddIncome: Function to handle adding a new income transaction.
+ * - filteredTransactions: Array of filtered transactions based on the search term.
+ * - adjustTime: Function to format the date of a transaction.
+ * - LineChart: Component to render the line chart for transaction data.
+ * - PieChart: Component to render the pie chart for transaction data.
+ * - handleDeleteIncome: Function to handle deletion of a transaction.
+ * - handleEditIncome: Function to handle editing of a transaction.
+ * - handleCategoryChange: Function to handle category selection.
+ * - handleAddCategory: Function to handle adding a new category.
+ * - handleEditCategory: Function to handle editing an existing category.
+ * - handleDeleteCategory: Function to handle deleting a category.
+ *
+ * State Variables:
+ * - isAddIncomeDialogOpen: State for controlling the add income dialog visibility.
+ *
+ * Components:
+ * - DatePicker: External library used for selecting dates and times.
+ * - Table: Renders the transactions with actions (edit/delete).
+ * - LineChart: Displays the income over time.
+ * - PieChart: Displays income distribution by categories.
+ * - Dialogs: Modals for add, edit, and category management functionalities.
+ *
+ * Events and Functions:
+ * - handleOpenAddIncomeDialog: Opens the dialog to add a new income.
+ * - handleCloseAddIncomeDialog: Closes the add income dialog and triggers the addition of income.
+ * - onChange for inputs: Updates state values dynamically based on user input.
+ *
+ * UI Components:
+ * - Add Income Dialog: Input fields for amount, description, date, and category selection.
+ * - Table of Transactions: Displays transactions with edit and delete options.
+ * - Search Filter: Filters transactions based on description or category.
+ * - Date Picker: Allows users to select a date and time for transactions.
+ * - Charts: Visualizes transaction data using a Line Chart and Pie Chart.
+ *
+ * Notes:
+ * - React state hooks manage form inputs and dialog visibility.
+ * - Category management allows for CRUD operations on categories.
+ * - Transactions are displayed dynamically and updated based on user actions.
+ * - The component uses CSS for styling and FontAwesome for icons.
+ */
+
+
 import React, {useState} from 'react';
 import 'chartjs-adapter-date-fns';
 import DatePicker from 'react-datepicker';
@@ -108,6 +183,7 @@ const IncomeComponents = ({
                         className="mb-4 p-2 border border-gray-300 rounded"
                     />
                 </div>
+
     
                 <table border="1" className="table">
                     <thead>

@@ -1,3 +1,44 @@
+/**
+ * ProfilePage.jsx
+ *
+ * Description:
+ * This component manages the **user profile page**, enabling users to:
+ * - View their profile information.
+ * - Edit their profile details.
+ * - Save the updated information to the backend.
+ * - Cancel edits and revert to view mode.
+ *
+ * Features:
+ * - Fetch user data from the backend using `useEffect` on component mount.
+ * - Controlled input fields allow users to edit specific details.
+ * - Profile data is saved using a PATCH request to the backend.
+ * - Navigate back to the home page after saving or exiting.
+ *
+ * State Management:
+ * - **profileData**: Object containing user details (name, RFC, CURP, email, etc.).
+ * - **isEditing**: Boolean to toggle between view and edit mode.
+ * - **showPassword**: Boolean to toggle visibility of the password field.
+ *
+ * API Calls:
+ * - `POST /api/get_user/`: Fetches user data based on `authToken` stored in localStorage.
+ * - `PATCH /api/update_user/:userId/`: Updates user profile details.
+ *
+ * Props Passed to `ProfileComponents`:
+ * - **profileData**: Object containing user details.
+ * - **handleEdit**: Function to enable edit mode.
+ * - **handleChange**: Function to handle form input changes.
+ * - **isEditing**: Boolean to control the form's editable state.
+ * - **handleSave**: Function to save updated user data.
+ * - **handleCancel**: Function to cancel edits.
+ * - **handleExit**: Function to exit the profile page and navigate home.
+ * - **showPassword, setShowPassword**: States to control password visibility.
+ *
+ * Notes:
+ * - Axios is used for fetching user data with a POST request.
+ * - Fetch API is used for updating user data with a PATCH request.
+ * - User authentication relies on `authToken` stored in `localStorage`.
+ */
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
