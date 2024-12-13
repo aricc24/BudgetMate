@@ -46,7 +46,7 @@ const HistoryComponents = ({
                         />
                     </div>
                     <div className="numbers">
-                        <h3 htmlFor="start-date">Min. Amount</h3>
+                        <h3 htmlFor="Min.Amount">Min. Amount</h3>
                         <input
                             type="number"
                             min="0"
@@ -55,7 +55,7 @@ const HistoryComponents = ({
                             onChange={(e) => setMinAmount(e.target.value)}
                             placeholder="Min. Amount"
                         />
-                        <h3 htmlFor="start-date">Max. Amount</h3>
+                        <h3 htmlFor="Max.Amount">Max. Amount</h3>
                         <input
                             type="number"
                             min="0"
@@ -79,46 +79,40 @@ const HistoryComponents = ({
                     </button>
                 </div>
 
-
-
-
-
-                
-                    
-                        <div className="table-content">
-                            <table className="tableD">
-                                <thead>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Amount</th>
-                                        <th>Description</th>
-                                        <th>Date</th>
+                <div className="table-content">
+                    <table className="tableD">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {transactions.map(transaction => {
+                                return (
+                                    <tr key={transaction.id_transaction}>
+                                        <td>
+                                            {transaction.categories.map((categoryId, index) => {
+                                                const category = categories.find(c => c.id_category === categoryId);
+                                                return (
+                                                    <span key={categoryId}>
+                                                        {category ? category.category_name : 'Unknown category'}
+                                                        {index < transaction.categories.length - 1 && ", "}
+                                                    </span>
+                                                );
+                                            }) || "No category"}
+                                        </td>
+                                        <td>${transaction.mount}</td>
+                                        <td>{transaction.description || "No description"}</td>
+                                        <td>{adjustTime(transaction.date)}</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {transactions.map(transaction => {
-                                        return (
-                                            <tr key={transaction.id_transaction}>
-                                                <td>
-                                                    {transaction.categories.map((categoryId, index) => {
-                                                        const category = categories.find(c => c.id_category === categoryId);
-                                                        return (
-                                                            <span key={categoryId}>
-                                                                {category ? category.category_name : 'Unknown category'}
-                                                                {index < transaction.categories.length - 1 && ", "}
-                                                            </span>
-                                                        );
-                                                    }) || "No category"}
-                                                </td>
-                                                <td>- ${transaction.mount}</td>
-                                                <td>{transaction.description || "No description"}</td>
-                                                <td>{adjustTime(transaction.date)}</td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
                     
                 
 
