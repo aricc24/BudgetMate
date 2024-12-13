@@ -22,7 +22,7 @@
 }
 .add-debt-dialog {
     z-index: 200;
-    position: fixed;
+    position: center;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -30,12 +30,13 @@
     border-radius: 8px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
     padding: 20px;
-    max-width: 800px;
+    max-width: 500px;
     width: 90%;
     color: #1ab188;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    height: 450px;
 }
 
 .add-debt-dialog h2 {
@@ -399,102 +400,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.category-dialog {
-    z-index: 200;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    background-color: #184346;
-    border-radius: 8px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    width: 100%;
-    max-width: 400px;
-    color: #1ab188;
-}
-
-.category-dialog h3 {
-    font-size: 2.2rem;
-    color: #1ab188;
-}
-
-.category-dialog h6 {
-    color: #0c8667;
-}
-
-.category-dialog input,
-.category-dialog select {
-    margin-bottom: 15px;
-    width: calc(100% - 20px);
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #1ab188;
-    border-radius: 8px;
-    outline: none;
-    background-color: #132e2f;
-    color: #fff;
-}
-
-.category-dialog input::placeholder {
-    color: #a0b3b0;
-    font-style: italic;
-}
-
-.category-dialog input:focus,
-.category-dialog select:focus {
-    border-color: #6ed6ba;
-    box-shadow: 0 0 5px rgba(102, 230, 186, 0.8);
-}
-
-.category-dialog button {
-    padding: 10px 15px;
-    font-size: 1rem;
-    color: #fff;
-    background-color: #1ab188;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.category-dialog button:hover {
-    background-color: #6ed6ba;
-}
-
-.category-dialog select option:checked {
-    background-color: #6ed6ba;
-    color: #ffffff;
-    font-weight: bold;
-    border-radius: 5px;
-}
-
-.chart-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 20px 0;
-    padding: 20px;
-    background-color: #0f393a;
-    border: 1px solid #1ab188;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 800px;
-}
-
-.chart-container canvas {
-    max-width: 100%;
-    max-height: 300px;
-}
-
-.chart-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #1ab188;
-    margin-bottom: 10px;
-}
-
 .Buttons1 {
     padding: 8px 16px;
     font-size: 1rem;
@@ -522,8 +427,63 @@
     margin-top: -10px;
 }
 
-.Buttons3 {
-    margin-left: 10px;
-    margin-top: 20px;
-    margin-right: 10px;
+.form-group-has-interest-group input[type="radio"]:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.add-debt-dialog .button-group {
+    position: absolute;
+    bottom: 10px;
+    left: 250px;
+    transform: translateX(-50%);
+    grid-column: span 3;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 30px;
+    width: 100%;
+}
+
+.add-debt-dialog .button-group button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #1ab188;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-debt-dialog .button-group button:hover {
+    background-color: #6ed6ba;
+}
+
+.form-group-has-interest-group {
+    color: white;
+}
+
+.label2 {
+    position: relative;
+    bottom: 100px;
+    left: 200px;
+}
+.per-month {
+    display: block;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    color: #a0b3b0;
+}
+
+.input2 {
+    position: relative;
+    bottom: 150px;
+    left: 345px;
+    padding: 0%;
+}
+.add-debt-dialog select:focus,
+.add-debt-dialog input:focus {
+    border-color: #6ed6ba;
+    box-shadow: 0 0 5px rgba(102, 230, 185, 0.438);
 }

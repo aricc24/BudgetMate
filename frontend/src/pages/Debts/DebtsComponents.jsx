@@ -78,8 +78,8 @@ const DebtsComponents = ({
                                     <td>{debt.description || "No description"}</td>
                                     <td>{debt.lender || "Unknown"}</td>
                                     <td>{debt.hasInterest ? "Yes" : "No"}</td>
-                                    <td>{debt.interestAmount || "N/A"}</td>
-                                    <td>{debt.totalAmount || "N/A"}</td>
+                                    <td>{debt.interestAmount}</td>
+                                    <td>{debt.totalAmount}</td>
                                     <td>{debt.status || "Pending"}</td>
                                     <td>{adjustTime(debt.init_date)}</td>
                                     <td>{adjustTime(debt.due_date)}</td>
@@ -317,6 +317,13 @@ const DebtsComponents = ({
                                     selected={init_Date}
                                     onChange={(date) => setInitDate(date)}
                                     showTimeSelect
+                                    showMonthDropdown
+                                    showYearDropdown
+                                    popperPlacement="bottom-start"
+                                    popperModifiers={[
+                                        { name: "preventOverflow", options: { boundary: "viewport" } },
+                                        { name: "flip", options: { fallbackPlacements: [] } },
+                                    ]}
                                     timeFormat="HH:mm"
                                     timeIntervals={15}
                                     dateFormat="yyyy-MM-dd HH:mm"
@@ -331,6 +338,13 @@ const DebtsComponents = ({
                                     selected={due_Date}
                                     onChange={(date) => setDueDate(date)}
                                     showTimeSelect
+                                    showMonthDropdown
+                                    showYearDropdown
+                                    popperPlacement="bottom-start"
+                                    popperModifiers={[
+                                        { name: "preventOverflow", options: { boundary: "viewport" } },
+                                        { name: "flip", options: { fallbackPlacements: [] } },
+                                    ]}
                                     timeFormat="HH:mm"
                                     timeIntervals={15}
                                     dateFormat="yyyy-MM-dd HH:mm"
@@ -351,7 +365,7 @@ const DebtsComponents = ({
                                 </select>
                             </div>
 
-                            <div className="form-group has-interest-group">
+                            <div className="form-group-has-interest-group">
                                 <label>Has interest?</label>
                                 <div>
                                     <label>
@@ -377,8 +391,12 @@ const DebtsComponents = ({
                                 </div>
                                 {hasInterest && (
                                     <div>
-                                        <label htmlFor="interestAmount">Interest Amount (per month)</label>
+                                        <label className="label2" htmlFor="interestAmount">
+                                            Interest rate
+                                            <span className="per-month">(per month)</span>
+                                        </label>
                                         <input
+                                        className="input2"
                                             id="interestAmount"
                                             type="number"
                                             min="0"
@@ -387,7 +405,7 @@ const DebtsComponents = ({
                                                     e.preventDefault();
                                                 }
                                             }}
-                                            value={interestAmount}
+                                            value={interestAmount !== undefined ? interestAmount : 0}
                                             onChange={(e) => setInterestAmount(e.target.value)}
                                             placeholder="Enter interest amount"
                                         />
@@ -396,10 +414,10 @@ const DebtsComponents = ({
                             </div>
 
                             <div className="button-group">
-                                <button type="button" onClick={handleCloseAddDebtDialog}>
+                                <button onClick={handleCloseAddDebtDialog}>
                                     Done
                                 </button>
-                                <button type="button" onClick={() => setIsAddDebtDialogOpen(false)}>
+                                <button onClick={() => setIsAddDebtDialogOpen(false)}>
                                     Cancel
                                 </button>
                             </div>
