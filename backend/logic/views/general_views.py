@@ -19,9 +19,14 @@ from logic.serializer import TransactionSerializer
 from datetime import datetime, timezone
 from django.utils import timezone
 from django.template.loader import render_to_string
-
+from tempfile import NamedTemporaryFile
+from django.conf import settings
 from django.utils.timezone import now
 from django.utils.dateparse import parse_datetime
+import os
+from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
+from weasyprint import HTML
 
 @api_view(['GET'])
 def filter_transactions(request, id_user):
@@ -70,7 +75,7 @@ def generate_pdf(request, id_user):
    total_pending_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PENDING)
    total_overdue_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.OVERDUE)
    
-   main_balance = total_income - total_expenses #+ total_paid_debt)
+   main_balance = total_income - total_expenses 
    debt_balance = total_pending_debt + total_overdue_debt
    suggested_balance = main_balance - (total_pending_debt + total_overdue_debt)
    
@@ -83,9 +88,12 @@ def generate_pdf(request, id_user):
    income_amounts = [t.mount for t in income_data]
    expense_dates = [t.date for t in expense_data]
    expense_amounts = [t.mount for t in expense_data]
+   
+   temp_images = []
 
 
    #Line Graph Incomes
+   income_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_income_chart_{id_user}.png")
    fig, ax = plt.subplots(figsize=(10, 6))
    ax.plot(income_dates, income_amounts, label='Ingresos', color='green', linewidth=2)
    ax.scatter(income_dates, income_amounts, color='black', zorder=5, label='Entries')
@@ -97,13 +105,12 @@ def generate_pdf(request, id_user):
    ax.tick_params(axis='x', rotation=45)
    ax.legend()
    ax.grid(visible=True, linestyle='--', alpha=0.6)
-   income_line_chart_image = BytesIO()
-   fig.tight_layout()
-   fig.savefig(income_line_chart_image, format='png')
-   income_line_chart_image.seek(0)
-   income_line_chart_base64 = base64.b64encode(income_line_chart_image.read()).decode('utf-8')
+   fig.savefig(income_temp_file, format='png')
+   plt.close(fig)
+   income_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(income_temp_file))
 
    #Line Graph Expenses
+   expense_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expense_chart_{id_user}.png")
    fig, ax = plt.subplots(figsize=(10, 6))
    ax.plot(expense_dates, expense_amounts, label='Egresos', color='red', linewidth=2)
    ax.scatter(expense_dates, expense_amounts, color='black', zorder=5, label='Entries')
@@ -115,13 +122,12 @@ def generate_pdf(request, id_user):
    ax.tick_params(axis='x', rotation=45)
    ax.legend()
    ax.grid(visible=True, linestyle='--', alpha=0.6)
-   expense_line_chart_image = BytesIO()
-   fig.tight_layout()
-   fig.savefig(expense_line_chart_image, format='png')
-   expense_line_chart_image.seek(0)
-   expense_line_chart_base64 = base64.b64encode(expense_line_chart_image.read()).decode('utf-8')
+   fig.savefig(expense_temp_file, format='png')
+   plt.close(fig)
+   expense_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(expense_temp_file))
 
    #Category Graph Incomes
+   inpie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_inpie_chart_{id_user}.png")
    income_categories = income_data.values('categories__category_name').annotate(total=Sum('mount'))
    category_names = [cat['categories__category_name'] for cat in income_categories]
    category_totals = [cat['total'] for cat in income_categories]
@@ -129,12 +135,13 @@ def generate_pdf(request, id_user):
    fig, ax = plt.subplots(figsize=(8, 8))
    ax.pie(category_totals, labels=category_names, autopct='%1.1f%%', colors=income_colors)
    ax.set_title('Income Distribution by Category')
-   income_pie_chart_image = BytesIO()
-   fig.savefig(income_pie_chart_image, format='png')
-   income_pie_chart_image.seek(0)
-   income_pie_chart_base64 = base64.b64encode(income_pie_chart_image.read()).decode('utf-8')
+   fig.savefig(inpie_temp_file, format='png')
+   plt.close(fig)
+   inpie_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(inpie_temp_file))
+
 
    #Category Graph Expenses
+   expie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expie_chart_{id_user}.png")
    expense_categories = expense_data.values('categories__category_name').annotate(total=Sum('mount'))
    category_names_expense = [cat['categories__category_name'] for cat in expense_categories]
    category_totals_expense = [cat['total'] for cat in expense_categories]
@@ -142,19 +149,20 @@ def generate_pdf(request, id_user):
    fig, ax = plt.subplots(figsize=(8, 8))
    ax.pie(category_totals_expense, labels=category_names_expense, autopct='%1.1f%%', colors=expense_colors)
    ax.set_title('Expenses Distribution by Category')
-   expense_pie_chart_image = BytesIO()
-   fig.savefig(expense_pie_chart_image, format='png')
-   expense_pie_chart_image.seek(0)
-   expense_pie_chart_base64 = base64.b64encode(expense_pie_chart_image.read()).decode('utf-8')
+   fig.savefig(expie_temp_file, format='png')
+   plt.close(fig)
+   expie_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(expie_temp_file))
+
 
    context = {
        'transactions': transactions,
        'debts': debts,
        'scheduled_transactions': scheduled_transactions,
-       'income_line_chart_base64': income_line_chart_base64,
-       'expense_line_chart_base64': expense_line_chart_base64,
-       'income_pie_chart_base64': income_pie_chart_base64,
-       'expense_pie_chart_base64': expense_pie_chart_base64,
+       'income_chart_url': income_chart_url,
+       'expense_chart_url': expense_chart_url,
+       'inpie_chart_url': inpie_chart_url,
+       'expie_chart_url': expie_chart_url,
+       'MEDIA_URL': settings.MEDIA_URL,
        'main_balance_message': main_balance_message,
        'debt_balance_message': debt_balance_message,
        'suggested_balance_message': suggested_balance_message,
@@ -167,12 +175,12 @@ def generate_pdf(request, id_user):
    }
 
 
+   html_content = render_to_string('pdf_template.html', context)
+   pdf = HTML(string=html_content, base_url=request.build_absolute_uri('/')).write_pdf()
    response = HttpResponse(content_type='application/pdf')
    response['Content-Disposition'] = f'attachment; filename="report_{id_user}.pdf"'
-   from weasyprint import HTML
-   html = render(request, 'pdf_template.html', context)
-   pdf = HTML(string=html.content.decode('utf-8')).write_pdf()
-
+   for temp_image in temp_images:
+       os.remove(temp_image)
 
    response.write(pdf)
    return response
@@ -182,18 +190,30 @@ def generate_pdf(request, id_user):
 def send_email(request, id_user):
     user = User.objects.get(id_user=id_user)
     transactions = Transaction.objects.filter(id_user=user)
-    context = {'transactions': transactions,}
+
+    income_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_income_chart_{id_user}.png")
+    income_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(income_temp_file))
+    expense_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expense_chart_{id_user}.png")
+    expense_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(expense_temp_file))
+    expie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expie_chart_{id_user}.png")
+    expie_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(expie_temp_file))
+    inpie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_inpie_chart_{id_user}.png")
+    inpie_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(inpie_temp_file))
+
+    context = {
+        'transactions': transactions,
+        'income_chart_url': income_chart_url,
+        'expense_chart_url': expense_chart_url,
+        'inpie_chart_url': inpie_chart_url,  
+        'expie_chart_url': expie_chart_url, 
+    }
+
     html_content = render(request, 'pdf_template.html', context).content.decode('utf-8')
 
-    with open(f'temp_html_{id_user}.html', 'w') as f:
-        f.write(html_content)
-
-    if 'data:image/png;base64,' not in html_content:
-        return HttpResponse("Error: Las imágenes base64 no están en el HTML generado.")
-
     pdf_file = BytesIO()
-    HTML(string=html_content).write_pdf(target=pdf_file)
+    HTML(string=html_content, base_url=request.build_absolute_uri('/')).write_pdf(target=pdf_file)
     pdf_file.seek(0)
+
     subject = "Your Financial Report"
     message = "Hi, attached is your financial report. Thank you for using our service!"
     email = EmailMessage(
@@ -209,6 +229,8 @@ def send_email(request, id_user):
         return HttpResponse("Email sent successfully!")
     except Exception as e:
         return HttpResponse(f"Failed to send email: {e}")
+    finally:
+        pass
     
 
 def send_email_to_user(user_id):

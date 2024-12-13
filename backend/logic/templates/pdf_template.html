@@ -141,17 +141,18 @@
     </table>
     
 
-   <h2>Income line graph</h2>
-   <img src="data:image/png;base64,{{ income_line_chart_base64 }}" alt="Incomes Graph">
-
-   <h2>Expenses line graph</h2>
-   <img src="data:image/png;base64,{{ expense_line_chart_base64 }}" alt="Expenses Graph">
-
-   <h2>Income distribution by category</h2>
-   <img src="data:image/png;base64,{{ income_pie_chart_base64 }}" alt="Income Distribution">
-
-   <h2>Expenses distribution by category</h2>
-   <img src="data:image/png;base64,{{ expense_pie_chart_base64 }}" alt="Expenses distribution">
+    <h2>Income line graph</h2>
+    <img src="{{ income_chart_url }}" alt="Income Chart">
+    
+    <h2>Expenses line graph</h2>
+    <img src="{{ expense_chart_url }}" alt="Income Chart">
+    
+    <h2>Income distribution by category</h2>
+    <img src="{{ inpie_chart_url }}" alt="Income Chart">
+    
+    <h2>Expenses distribution by category</h2>
+    <img src="{{ expie_chart_url }}" alt="Income Chart">
+    
 
    <h2>Financial Balances</h2>
 <div style="margin: 20px auto; padding: 20px; max-width: 400px; border: 1px dashed #000; border-radius: 8px; background-color: #fff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); font-family: 'Courier New', Courier, monospace;">
