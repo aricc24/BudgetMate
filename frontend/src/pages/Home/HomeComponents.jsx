@@ -41,7 +41,7 @@ const HomeComponents = ({
 
                  <div className="filter-container">
                     <label>Show data by: </label>
-                    <select value={selectedFrequency} onChange={(e) => selectedFrequency(e.target.value)}>
+                    <select value={selectedFrequency} onChange={(e) => setSelectedFrequency(e.target.value)}>
                         <option value="all">All</option>
                         <option value="daily">Daily</option>
                         <option value="weekly">Weekly</option>
