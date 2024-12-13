@@ -30,9 +30,7 @@ const HistoryComponents = ({
             <div className="history-page">
                 <label>History</label>
                 <h3 htmlFor="start-date">Expenses</h3>
-
                 <div className="dates-numbers-container">
-
                     <div className="dates">
                         <h3 htmlFor="start-date">Start Date</h3>
                         <input
@@ -47,8 +45,6 @@ const HistoryComponents = ({
                             onChange={(e) => setEndDate(e.target.value)}
                         />
                     </div>
-                    
-
                     <div className="numbers">
                         <h3 htmlFor="start-date">Min. Amount</h3>
                         <input
@@ -69,55 +65,67 @@ const HistoryComponents = ({
                             placeholder="Max. Amount"
                         />
                     </div>
-
-
-                    
                     <button
                         className="select-category-button"
                         onClick={() => setIsCategoryDialogOpen(true)}
                     >
                         Select Categories
                     </button>
-                    <button onClick={handleFilter}>Filter</button>
+                    <button 
+                        className ="filter-button"
+                        onClick={handleFilter}
+                    >
+                        Filter
+                    </button>
                 </div>
 
+
+
+
+
                 <div className="content-container">
-                    <div className="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Amount</th>
-                                    <th>Description</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {transactions.map(transaction => {
-                                    console.log(transaction);
-                                    return (
-                                        <tr key={transaction.id_transaction}>
-                                            <td>
-                                                {transaction.categories.map((categoryId, index) => {
-                                                    const category = categories.find(c => c.id_category === categoryId);
-                                                    return (
-                                                        <span key={categoryId}>
-                                                            {category ? category.category_name : 'Unknown category'}
-                                                            {index < transaction.categories.length - 1 && ", "}
-                                                        </span>
-                                                    );
-                                                }) || "No category"}
-                                            </td>
-                                            <td>- ${transaction.mount}</td>
-                                            <td>{transaction.description || "No description"}</td>
-                                            <td>{adjustTime(transaction.date)}</td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <div className="table-container">
+        <div className="table-content">
+            <table className="tableD">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {transactions.map(transaction => {
+                        return (
+                            <tr key={transaction.id_transaction}>
+                                <td>
+                                    {transaction.categories.map((categoryId, index) => {
+                                        const category = categories.find(c => c.id_category === categoryId);
+                                        return (
+                                            <span key={categoryId}>
+                                                {category ? category.category_name : 'Unknown category'}
+                                                {index < transaction.categories.length - 1 && ", "}
+                                            </span>
+                                        );
+                                    }) || "No category"}
+                                </td>
+                                <td>- ${transaction.mount}</td>
+                                <td>{transaction.description || "No description"}</td>
+                                <td>{adjustTime(transaction.date)}</td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+               
+
+
+
                 {isCategoryDialogOpen && (
                     <dialog className="category-dialog" open>
                         <h3>Select Categories</h3>
@@ -137,6 +145,10 @@ const HistoryComponents = ({
                     </dialog>
                 )}
             </div>
+
+
+
+            
             <div className="expenses-page">
                 <h1 className="type-title">Incomes</h1>
                 <div className="add-expense-form">
