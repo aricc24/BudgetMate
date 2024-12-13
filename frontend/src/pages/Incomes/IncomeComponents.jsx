@@ -85,7 +85,7 @@ const IncomeComponents = ({
                         </thead>
                         <tbody>
                             {filteredTransactions.length > 0 ? (
-                                filteredTransactions.map(transaction => (
+                                filteredTransactions.slice().reverse().map(transaction => (
                                     <tr key={transaction.id_transaction}>
                                         <td>
                                             {transaction.categories.length > 0 ? (
