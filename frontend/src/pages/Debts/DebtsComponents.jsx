@@ -92,6 +92,9 @@ const DebtsComponents = ({
                                                 setEditHInterest(debt.hasInterest);
                                                 setEditInAmount(debt.interestAmount);
                                                 setSelectedDebtId(debt.id_debt);
+                                                setInitDate(new Date(debt.init_date));
+                                                setDueDate(new Date(debt.due_date));
+                                                setSelectedOption(debt.status);
                                                 setisEditOpen(true);
                                             }}
                                         >
@@ -159,7 +162,6 @@ const DebtsComponents = ({
                             <div className="form-group">
                                 <label htmlFor="initDatePicker">Init Date</label>
                                 <DatePicker
-                                    id="initDatePicker"
                                     selected={init_Date}
                                     onChange={(date) => setInitDate(date)}
                                     showTimeSelect
@@ -180,7 +182,6 @@ const DebtsComponents = ({
                             <div className="form-group">
                                 <label htmlFor="dueDatePicker">Due Date</label>
                                 <DatePicker
-                                    id="dueDatePicker"
                                     selected={due_Date}
                                     onChange={(date) => setDueDate(date)}
                                     showTimeSelect
