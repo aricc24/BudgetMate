@@ -17,7 +17,6 @@ const DebtsComponents = ({
     due_Date, setDueDate,
     selectedOption, setSelectedOption,
     selectedDebtId, setSelectedDebtId,
-    isOptionsOpen, setisOptionsOpen,
     isEditOpen, setisEditOpen,
     editAmount, setEditAmount,
     editDescription, setEditDescription,
@@ -112,159 +111,6 @@ const DebtsComponents = ({
                         </tbody>
                     </table>
                 </div>
-
-
-                
-
-
-
-
-
-                
-                {isOptionsOpen && (
-                    <dialog className='' open>
-                        <button
-                            className='delete-button'
-                            onClick={() => {
-                                handelDeleteDebt(selectedDebtId)
-                                setisOptionsOpen(false);
-                            }}
-                        >
-                            Delete
-                        </button>
-                        <button
-                            className='edited-button'
-                            onClick={() => {
-                                setisOptionsOpen(false);
-                                setisEditOpen(true);
-                            }}
-                        >
-                            Edit
-                        </button>
-                        <button
-                            onClick={() => setisOptionsOpen(false)}
-                        > 
-                            Cancel
-                        </button>
-                    </dialog>
-                )}
-
-                {isEditOpen && (
-                    <dialog className='' open>
-                        <input
-                        type="number"
-                        min="0"
-                        onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
-                        value={editAmount}
-                        onChange={(e) => setEditAmount(e.target.value)}
-                        placeholder="New amount"
-                        />
-
-                        <input
-                            type="text"
-                            value={editDescription}
-                            onChange={(e) => setEditDescription(e.target.value)}
-                            placeholder="New description"
-                        />
-
-                        <input
-                            type="text"
-                            value={editLender}
-                            onChange={(e) => setEditLender(e.target.value)}
-                            placeholder="New Lender"
-                        />
-
-                        <div className="interestn-question">
-                        <label>Has interest?</label>
-                        <div>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="interestN"
-                                    value="true"
-                                    checked={editHInterest === true}
-                                    onChange={() => setEditHInterest(true)}
-                                />
-                                Yes
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="interestN"
-                                    value="false"
-                                    checked={editHInterest === false}
-                                    onChange={() => setEditHInterest(false)}
-                                />
-                                No
-                            </label>
-                        </div>
-
-                        </div>
-                        <input
-                            type="number"
-                            min="0"
-                            onKeyDown={(e) => {if (['e', 'E', '+', '-'].includes(e.key)) {e.preventDefault();}}}
-                            value={editInAmount}
-                            onChange={(e) => setEditInAmount(e.target.value)}
-                            placeholder="Interest Amount"
-                            disabled={!editHInterest}
-                        />
-
-                        <label htmlFor="initDatePicker">Init date:</label>
-                        <DatePicker
-                            id="initDatePicker"
-                            selected={init_Date}
-                            onChange={(date) => setInitDate(date)}
-                            showTimeSelect
-                            timeFormat="HH:mm"
-                            timeIntervals={15}
-                            dateFormat="yyyy-MM-dd HH:mm"
-                            className="datepicker"
-                            onKeyDown={(e) => e.preventDefault()}
-                        />
-
-                        <label htmlFor="dueDatePicker">Due date:</label>
-                        <DatePicker
-                            id="dueDatePicker"
-                            selected={due_Date}
-                            onChange={(date) => setDueDate(date)}
-                            showTimeSelect
-                            timeFormat="HH:mm"
-                            timeIntervals={15}
-                            dateFormat="yyyy-MM-dd HH:mm"
-                            className="datepicker"
-                            onKeyDown={(e) => e.preventDefault()}
-                        />
-        
-                        <div>
-                            <label htmlFor="optionsDropdown">Status:</label>
-                            <select
-                                id="optionsDropdown"
-                                value={selectedOption}
-                                onChange={(e) => setSelectedOption(e.target.value)}
-                            >
-                                <option value="Pending">Pending</option>
-                                <option value="Paid">Paid</option>
-                                <option value="Overdue">Overdue</option>
-                            </select>
-                        </div>
-
-                        <button
-                            className='edited-button'
-                            onClick={() => {
-                                handleEditDebt(selectedDebtId)
-                                setisEditOpen(false);
-                            }}
-                        >
-                            Accept
-                        </button>
-                        <button
-                            onClick={() => setisEditOpen(false)}
-                        > 
-                            Cancel
-                        </button>
-                    </dialog>
-                )}
             </div>
 
             {isAddDebtDialogOpen && (
@@ -396,7 +242,7 @@ const DebtsComponents = ({
                                             <span className="per-month">(per month)</span>
                                         </label>
                                         <input
-                                        className="input2"
+                                            className="input2"
                                             id="interestAmount"
                                             type="number"
                                             min="0"
@@ -418,6 +264,175 @@ const DebtsComponents = ({
                                     Done
                                 </button>
                                 <button onClick={() => setIsAddDebtDialogOpen(false)}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </dialog>
+                </>
+            )}
+
+            {isEditOpen && (
+                <>
+                    <div className="overlay"></div>
+                    <dialog className="add-debt-dialog" open>
+                        <h2>Edit Debt</h2>
+                        <form>
+                            <div className="form-group">
+                                <label htmlFor="amount">Amount</label>
+                                <input
+                                    id="amount"
+                                    type="number"
+                                    min="0"
+                                    value={editAmount}
+                                    onChange={(e) => setEditAmount(parseFloat(e.target.value))}
+                                    placeholder="New amount"
+                                    onKeyDown={(e) => {
+                                        if (['e', 'E', '+', '-'].includes(e.key)) {
+                                            e.preventDefault();
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="description">Description</label>
+                                <input
+                                    id="description"
+                                    type="text"
+                                    value={editDescription}
+                                    onChange={(e) => setEditDescription(e.target.value)}
+                                    placeholder="New description"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="lender">Lender</label>
+                                <input
+                                    id="lender"
+                                    type="text"
+                                    value={editLender}
+                                    onChange={(e) => setEditLender(e.target.value)}
+                                    placeholder="New Lender"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="initDatePicker">Init Date</label>
+                                <DatePicker
+                                    id="initDatePicker"
+                                    selected={init_Date}
+                                    onChange={(date) => setInitDate(date)}
+                                    showTimeSelect
+                                    showMonthDropdown
+                                    showYearDropdown
+                                    popperPlacement="bottom-start"
+                                    popperModifiers={[
+                                        { name: "preventOverflow", options: { boundary: "viewport" } },
+                                        { name: "flip", options: { fallbackPlacements: [] } },
+                                    ]}
+                                    timeFormat="HH:mm"
+                                    timeIntervals={15}
+                                    dateFormat="yyyy-MM-dd HH:mm"
+                                    className="datepicker"
+                                    onKeyDown={(e) => e.preventDefault()}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="dueDatePicker">Due Date</label>
+                                <DatePicker
+                                    id="dueDatePicker"
+                                    selected={due_Date}
+                                    onChange={(date) => setDueDate(date)}
+                                    showTimeSelect
+                                    showMonthDropdown
+                                    showYearDropdown
+                                    popperPlacement="bottom-start"
+                                    popperModifiers={[
+                                        { name: "preventOverflow", options: { boundary: "viewport" } },
+                                        { name: "flip", options: { fallbackPlacements: [] } },
+                                    ]}
+                                    timeFormat="HH:mm"
+                                    timeIntervals={15}
+                                    dateFormat="yyyy-MM-dd HH:mm"
+                                    className="datepicker"
+                                    onKeyDown={(e) => e.preventDefault()}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="status">Status</label>
+                                <select
+                                    id="status"
+                                    value={selectedOption}
+                                    onChange={(e) => setSelectedOption(e.target.value)}
+                                >
+                                    <option value="Pending">Pending</option>
+                                    <option value="Paid">Paid</option>
+                                    <option value="Overdue">Overdue</option>
+                                </select>
+                            </div>
+
+                            <div className="form-group-has-interest-group">
+                                <label>Has interest?</label>
+                                <div>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="interestN"
+                                            value="true"
+                                            checked={editHInterest === true}
+                                            onChange={() => setEditHInterest(true)}
+                                        />
+                                        Yes
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="interestN"
+                                            value="false"
+                                            checked={editHInterest === false}
+                                            onChange={() => setEditHInterest(false)}
+                                        />
+                                        No
+                                    </label>
+                                </div>
+                                {editHInterest && (
+                                    <div>
+                                        <label className="label2" htmlFor="interestAmount">
+                                            Interest rate
+                                            <span className="per-month">(per month)</span>
+                                        </label>
+                                        <input
+                                            className="input2"
+                                            id="interestAmount"
+                                            type="number"
+                                            min="0"
+                                            onKeyDown={(e) => {
+                                                if (['e', 'E', '+', '-'].includes(e.key)) {
+                                                    e.preventDefault();
+                                                }
+                                            }}
+                                            value={interestAmount !== undefined ? interestAmount : 0}
+                                            onChange={(e) => setInterestAmount(e.target.value)}
+                                            placeholder="Enter interest amount"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="button-group">
+                                <button
+                                    className="Buttons2"
+                                    onClick={() => {
+                                        handleEditDebt(selectedDebtId);
+                                        setisEditOpen(false);
+                                    }}
+                                >
+                                    Done
+                                </button>
+                                <button
+                                    className="Buttons2"
+                                    onClick={() => setisEditOpen(false)}
+                                >
                                     Cancel
                                 </button>
                             </div>

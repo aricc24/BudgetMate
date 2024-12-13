@@ -13,7 +13,6 @@ const Debts = () => {
     const [due_Date, setDueDate] = useState(new Date());
     const [selectedOption, setSelectedOption] = useState('');
     const [selectedDebtId, setSelectedDebtId] = useState(null);
-    const [isOptionsOpen, setisOptionsOpen] = useState(false);
     const [isEditOpen, setisEditOpen] = useState(false);
     const [editAmount, setEditAmount] = useState(0);
     const [editDescription, setEditDescription] = useState('');
@@ -158,8 +157,8 @@ const Debts = () => {
             lender: editLender || currentDebt.lender,
             hasInterest: editHInterest,
             interestAmount: editHInterest ? parseFloat(editInAmount || 0) : 0.0,
-            init_date: init_Date.toISOString(),
-            due_date: due_Date.toISOString(),
+            init_date: init_Date ? init_Date.toISOString() : currentDebt.init_date,
+            due_date: due_Date ? due_Date.toISOString() : currentDebt.due_date,
             status: (() => {
                 switch (selectedOption) {
                     case 'Pending':
@@ -228,8 +227,6 @@ const Debts = () => {
             setSelectedOption={setSelectedOption}
             selectedDebtId={selectedDebtId}
             setSelectedDebtId={setSelectedDebtId}
-            isOptionsOpen={isOptionsOpen}
-            setisOptionsOpen={setisOptionsOpen}
             isEditOpen={isEditOpen}
             setisEditOpen={setisEditOpen}
             editAmount={editAmount}
