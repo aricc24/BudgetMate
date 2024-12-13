@@ -127,7 +127,7 @@ const Expenses = () => {
         return `${year}/${month}/${day}, ${hours}:${minutes}:${seconds}`;
     };
 
-    const handelDeleteExpense = async (transactionId) => {
+    const handleDeleteExpense = async (transactionId) => {
         const authToken = localStorage.getItem('authToken');
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/delete_transaction/${transactionId}/`, {
@@ -367,7 +367,7 @@ const Expenses = () => {
             adjustTime={adjustTime}
             LineChart={LineChart}
             PieChart={PieChart}
-            handelDeleteExpense={handelDeleteExpense}
+            handleDeleteExpense={handleDeleteExpense}
             handleEditExpense={handleEditExpense}
             handleCategoryChange={handleCategoryChange}
             handleAddCategory={handleAddCategory}
