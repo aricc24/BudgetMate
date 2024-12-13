@@ -283,7 +283,7 @@ const IncomeComponents = ({
             {isCategoryDialogOpen && (
                 <>
                     <div className="overlay"></div> 
-                    <dialog open>
+                    <dialog className="category-dialog" open>
                         <h3>Select Categories</h3>
                         <h6>Hold ctrl or left click to select multiple categories</h6>
                         <select
@@ -296,42 +296,52 @@ const IncomeComponents = ({
                             ))}
                         </select>
                         <button
-                            onClick={() => setIsNewCategoryDialogOpen(true)}
+                            className="Buttons2"
+                            onClick={() => {
+                                setIsNewCategoryDialogOpen(true);
+                                setIsCategoryDialogOpen(false);
+                            }}
                         >
                             +
-                        </button>
-                        
-                            <button 
-                                onClick={() => {
-                                    if (selectedCategories.length === 1) {
-                                        handleDeleteCategory(selectedCategories[0]);
-                                        setIsCategoryDialogOpen(false);
-                                    } else {
-                                        alert('Please select a single category to delete.');
-                                    }
-                                }}
-                            >
-                                Delete Category
-                            </button>
-                            <button 
-                                onClick={() => {
-                                    const selectedCategory = categories.find(c => c.id_category === selectedCategoryId);
-                                    setEditCategory(selectedCategory ? selectedCategory.category_name : '');
+                        </button>                    
+                        <button 
+                            className="Buttons2"
+                            onClick={() => {
+                                if (selectedCategories.length === 1) {
+                                    handleDeleteCategory(selectedCategories[0]);
                                     setIsCategoryDialogOpen(false);
-                                    setIsEditCategoryOpen(true);
-                                }}
-                            >
-                                Edit category
-                            </button>
-                            <button onClick={() => setIsCategoryDialogOpen(false)}>Done</button>
-                            <button onClick={() => setIsCategoryDialogOpen(false)}>Cancel</button>
-                        
+                                } else {
+                                    alert('Please select a single category to delete.');
+                                }
+                            }}
+                        >
+                            Delete Category
+                        </button>
+                        <button
+                            className="Buttons2"
+                            onClick={() => {
+                                const selectedCategory = categories.find(c => c.id_category === selectedCategoryId);
+                                setEditCategory(selectedCategory ? selectedCategory.category_name : '');
+                                setIsCategoryDialogOpen(false);
+                                setIsEditCategoryOpen(true);
+                            }}
+                        >
+                            Edit category
+                        </button>
+                        <button
+                            className="Buttons2"
+                            onClick={() => setSelectedCategories([])}
+                        >
+                            Deselect All
+                        </button>
+                        <button className="Buttons3" onClick={() => setIsCategoryDialogOpen(false)}>Done</button>
+                        <button className="Buttons3" onClick={() => setIsCategoryDialogOpen(false)}>Cancel</button>
                     </dialog>
                 </>
             )}
 
             {isNewCategoryDialogOpen && (
-                <dialog open>
+                <dialog className="category-dialog" open>
                     <h3>Add New Category</h3>
                     <input
                         type="text"
@@ -340,51 +350,53 @@ const IncomeComponents = ({
                         placeholder="Category Name"
                     />
                     
-                        <button onClick={handleAddCategory}>Add</button>
-                        <button onClick={() => setIsNewCategoryDialogOpen(false)}>Cancel</button>
+                        <button className="Buttons3" onClick={handleAddCategory}>Add</button>
+                        <button className="Buttons3" onClick={() => setIsNewCategoryDialogOpen(false)}>Cancel</button>
                     
                 </dialog>
             )}
 
-                {isEditCategoryOpen && (
-                    <dialog  open>
-                        <h3>Edit Category</h3>
-                        <select
-                            value={selectedCategoryId}
-                            onChange={(e) => {
-                                const selectedId = e.target.value;
-                                setSelectedCategoryId(selectedId);
-                                const selectedCategory = categories.find(cat => cat.id_category === parseInt(selectedId));
-                                setEditCategory(selectedCategory.category_name);
-                            }}
-                        >
-                            {categories.map((category) => (
-                                <option key={category.id_category} value={category.id_category}>
-                                    {category.category_name}
-                                </option>
-                            ))}
-                        </select>
-                        <input
-                            type="text"
-                            value={editCategory}
-                            onChange={(e) => setEditCategory(e.target.value)}
-                            placeholder="New name"
-                        />
-                        <button
-                            onClick={() => {
-                                handleEditCategory(parseInt(selectedCategoryId));
-                                setIsEditCategoryOpen(false);
-                            }}
-                        >
-                            Accept
-                        </button>
-                        <button
-                            onClick={() => setIsEditCategoryOpen(false)}
-                        > 
-                            Cancel
-                        </button>
-                    </dialog>
-                )}
+            {isEditCategoryOpen && (
+                <dialog className="category-dialog" open>
+                    <h3>Edit Category</h3>
+                    <select
+                        value={selectedCategoryId}
+                        onChange={(e) => {
+                            const selectedId = e.target.value;
+                            setSelectedCategoryId(selectedId);
+                            const selectedCategory = categories.find(cat => cat.id_category === parseInt(selectedId));
+                            setEditCategory(selectedCategory.category_name);
+                        }}
+                    >
+                        {categories.map((category) => (
+                            <option key={category.id_category} value={category.id_category}>
+                                {category.category_name}
+                            </option>
+                        ))}
+                    </select>
+                    <input
+                        type="text"
+                        value={editCategory}
+                        onChange={(e) => setEditCategory(e.target.value)}
+                        placeholder="New name"
+                    />
+                    <button
+                        className="Buttons3"
+                        onClick={() => {
+                            handleEditCategory(parseInt(selectedCategoryId));
+                            setIsEditCategoryOpen(false);
+                        }}
+                    >
+                        Accept
+                    </button>
+                    <button
+                        className="Buttons3"
+                        onClick={() => setIsEditCategoryOpen(false)}
+                    > 
+                        Cancel
+                    </button>
+                </dialog>
+            )}
         </Layout>
     );    
 };

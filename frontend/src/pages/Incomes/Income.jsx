@@ -112,6 +112,7 @@ const Income = () => {
                 setSelectedDate(new Date());
             } else {
                 console.error('Failed to add transaction');
+                alert('Please fill in the amount field.');
             }
         } catch (error) {
             console.error('Error adding transaction:', error);
@@ -149,7 +150,7 @@ const Income = () => {
             mount: editAmount ? parseFloat(editAmount) : currentTransaction.mount,
             description: editDescription || currentTransaction.description,
             type: 0,
-            categories: selectedCategories.length > 0 ? selectedCategories : currentTransaction.categories,
+            categories: selectedCategories,
             date: selectedDate ? selectedDate.toISOString() : currentTransaction.date,
         };
 
@@ -186,6 +187,16 @@ const Income = () => {
         if (!newCategory.trim()) return;
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
+
+        const categoryExists = categories.some(
+            (category) =>
+                category.category_name.toLowerCase() === newCategory.trim().toLowerCase()
+        );
+    
+        if (categoryExists) {
+            alert('This category already exists.');
+            return;
+        }        
 
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/create_category/`, {
@@ -258,6 +269,7 @@ const Income = () => {
             } else {
                 const errorData = await response.json();
                 console.error(errorData.error);
+                alert('Cannot edit default categories.');
             }
         } catch (error) {
             console.error('Error updating category:', error);
