@@ -169,10 +169,17 @@ const IncomeComponents = ({
                                 onChange={(e) => setDescription(e.target.value)} 
                                 placeholder="Description" 
                             /> 
-                            <DatePicker 
+                            <DatePicker
                                 selected={selectedDate} 
                                 onChange={date => setSelectedDate(date)} 
-                                showTimeSelect 
+                                showTimeSelect
+                                showMonthDropdown
+                                showYearDropdown
+                                popperPlacement="bottom-start"
+                                popperModifiers={[
+                                    {name: "preventOverflow", options: {boundary: "viewport",},},
+                                    {name: "flip", options: { fallbackPlacements: [],},},
+                                ]}
                                 timeFormat="HH:mm" 
                                 timeIntervals={15} 
                                 dateFormat="yyyy-MM-dd HH:mm" 
