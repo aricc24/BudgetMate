@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-import React, {useState, useEffect} from 'react';
-=======
 /**
  * DebtsComponents.jsx
  *
@@ -62,8 +59,7 @@ import React, {useState, useEffect} from 'react';
  * - Styling uses custom CSS classes defined in `Debts.css`.
  */
 
-import React from 'react';
->>>>>>> origin/feature/frontend-documentation
+import React, {useState, useEffect} from 'react';
 import 'chartjs-adapter-date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -187,7 +183,7 @@ const DebtsComponents = ({
                     <dialog className="add-debt-dialog" open>
                         <h2>Add Debt</h2>
                         <form>
-                            <div className="form-group">
+                            <div className="fm-group">
                                 <label htmlFor="amount">Amount</label>
                                 <input
                                     id="amount"
@@ -203,7 +199,7 @@ const DebtsComponents = ({
                                     placeholder="Enter the amount"
                                 />
                             </div>
-                            <div className="form-group">
+                            <div className="fm-group">
                                 <label htmlFor="description">Description</label>
                                 <input
                                     id="description"
@@ -213,7 +209,7 @@ const DebtsComponents = ({
                                     placeholder="Enter a description"
                                 />
                             </div>
-                            <div className="form-group">
+                            <div className="fm-group">
                                 <label htmlFor="lender">Lender</label>
                                 <input
                                     id="lender"
@@ -224,7 +220,7 @@ const DebtsComponents = ({
                                 />
                             </div>
 
-                            <div className="form-group">
+                            <div className="fm-group">
                                 <label htmlFor="initDatePicker">Init Date</label>
                                 <DatePicker
                                     selected={init_Date}
@@ -244,7 +240,7 @@ const DebtsComponents = ({
                                     onKeyDown={(e) => e.preventDefault()}
                                 />
                             </div>
-                            <div className="form-group">
+                            <div className="fm-group">
                                 <label htmlFor="dueDatePicker">Due Date</label>
                                 <DatePicker
                                     selected={due_Date}
@@ -264,7 +260,7 @@ const DebtsComponents = ({
                                     onKeyDown={(e) => e.preventDefault()}
                                 />
                             </div>
-                            <div className="form-group">
+                            <div className="fm-group">
                                 <label htmlFor="status">Status</label>
                                 <select
                                     id="status"
@@ -277,7 +273,7 @@ const DebtsComponents = ({
                                 </select>
                             </div>
 
-                            <div className="form-group-has-interest-group">
+                            <div className="fm-group-has-interest-group">
                                 <label>Has interest?</label>
                                 <div>
                                     <label>
@@ -303,12 +299,12 @@ const DebtsComponents = ({
                                 </div>
                                 {hasInterest && (
                                     <div>
-                                        <label className="label2" htmlFor="interestAmount">
+                                        <label className="lab2" htmlFor="interestAmount">
                                             Interest rate
                                             <span className="per-month">(per month)</span>
                                         </label>
                                         <input
-                                            className="input2"
+                                            className="inut2"
                                             id="interestAmount"
                                             type="number"
                                             min="0"
@@ -344,7 +340,7 @@ const DebtsComponents = ({
                     <dialog className="add-debt-dialog" open>
                         <h2>Edit Debt</h2>
                         <form>
-                            <div className="form-group">
+                            <div className="fm-group">
                                 <label htmlFor="amount">Amount</label>
                                 <input
                                     id="amount"
@@ -360,7 +356,7 @@ const DebtsComponents = ({
                                     }}
                                 />
                             </div>
-                            <div className="form-group">
+                            <div className="fm-group">
                                 <label htmlFor="description">Description</label>
                                 <input
                                     id="description"
@@ -370,7 +366,7 @@ const DebtsComponents = ({
                                     placeholder="New description"
                                 />
                             </div>
-                            <div className="form-group">
+                            <div className="fm-group">
                                 <label htmlFor="lender">Lender</label>
                                 <input
                                     id="lender"
@@ -381,7 +377,7 @@ const DebtsComponents = ({
                                 />
                             </div>
 
-                            <div className="form-group">
+                            <div className="fm-group">
                                 <label htmlFor="initDatePicker">Init Date</label>
                                 <DatePicker
                                     id="initDatePicker"
@@ -402,7 +398,7 @@ const DebtsComponents = ({
                                     onKeyDown={(e) => e.preventDefault()}
                                 />
                             </div>
-                            <div className="form-group">
+                            <div className="fm-group">
                                 <label htmlFor="dueDatePicker">Due Date</label>
                                 <DatePicker
                                     id="dueDatePicker"
@@ -424,7 +420,7 @@ const DebtsComponents = ({
                                 />
                             </div>
 
-                            <div className="form-group">
+                            <div className="fm-group">
                                 <label htmlFor="status">Status</label>
                                 <select
                                     id="status"
@@ -437,7 +433,7 @@ const DebtsComponents = ({
                                 </select>
                             </div>
 
-                            <div className="form-group-has-interest-group">
+                            <div className="fm-group-has-interest-group">
                                 <label>Has interest?</label>
                                 <div>
                                     <label>
@@ -463,12 +459,12 @@ const DebtsComponents = ({
                                 </div>
                                 {editHInterest && (
                                     <div>
-                                        <label className="label2" htmlFor="interestAmount">
+                                        <label className="lab2" htmlFor="interestAmount">
                                             Interest rate
                                             <span className="per-month">(per month)</span>
                                         </label>
                                         <input
-                                            className="input2"
+                                            className="inut2"
                                             id="interestAmount"
                                             type="number"
                                             min="0"

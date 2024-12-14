@@ -47,7 +47,7 @@
     justify-content: flex-start;
     gap: 13px;
     height: 5%;
-    width: 10%;
+    width: 15%;
 }
 
 .dates h3, .numbers h3 {
@@ -116,19 +116,19 @@
 .select-category-button {
     position: relative;
     bottom: 15px;
-    left: 100px;
+    left: 160px;
 }
 
 .clear-fields-button {
     position: relative;
     bottom: -30px;
-    left: -400px;
+    left: -300px;
 }
 
 .filter-button {
     position: relative;
     bottom: 60px;
-    left: -140px;
+    left: -60px;
 }
 
 
@@ -324,7 +324,7 @@
 
 .tableD th, .tableD td {
     padding: 12px 16px;
-    border: none;
+    border: 1px solid #1ab188;
 }
 
 .tableD th {

@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-import React, {useState, useEffect} from 'react';
-=======
 /**
  * ExpensesComponents.jsx
  *
@@ -72,8 +69,7 @@ import React, {useState, useEffect} from 'react';
  */
 
 
-import React from 'react';
->>>>>>> origin/feature/frontend-documentation
+import React, {useState, useEffect} from 'react';
 import 'chartjs-adapter-date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';

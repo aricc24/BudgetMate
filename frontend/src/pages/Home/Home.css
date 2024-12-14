@@ -150,33 +150,38 @@
     background-color: #6ed6ba;
   }
   
-  .charts-container {
+  .chartsH {
     display: flex;
-    justify-content: column;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
     margin-top: 40px;
   }
-  
-  .chart-blockP {
-    width: 100%;
-    border-radius: 8px;
-    padding: 20px;
-    position: relative;
-    bottom: 300px;
-    left: 100px;
-    width: 400px;
-    height: 600px;
+
+  .chart-block {
+      width: 80%;
+      margin-bottom: 40px;
+      background-color: none;
+      border-radius: 8px;
+      padding: 20px;
   }
 
-  /*.chart-blockL {
+  .chart-blockL {
     width: 100%;
-    border-radius: 8px;
-    padding: 20px;
     position: relative;
-    bottom: 300px;
-  }*/
+    bottom: 250px;
+    background-color: #0d2628;
+  }
 
+  .chart-blockP {
+    width: 50%;
+    position: relative;
+    bottom: 250px;
+    background-color: none;
+  }
 
-  .chart-block h4 {
+  .chart-blockL h4 {
     font-size: 1.5rem;
     font-weight: bold;
     color: #1ab188;

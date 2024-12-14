@@ -83,9 +83,9 @@ const AuthForm = ({
                     <div className="right-section">
                         <form className="form-container " onSubmit={handleSubmit}>
                             <h1 className="title">{title}</h1>
-                            <div className="form-group">
+                            <div className="form-grou">
                                 <label htmlFor="email">Email</label>
-                                <div className="input-container">
+                                <div className="inpu-container">
                                     <i className="fas fa-envelope icon"></i>
                                     <input
                                         type="email"
@@ -96,9 +96,9 @@ const AuthForm = ({
                                     />
                                 </div>
                             </div>
-                            <div className="form-group">
+                            <div className="form-grou">
                                 <label htmlFor="password">Password</label>
-                                <div className="input-container">
+                                <div className="inpu-container">
                                     <i className="fas fa-key icon"></i>
                                     <input
                                         type={showPassword ? 'text' : 'password'}
@@ -119,11 +119,6 @@ const AuthForm = ({
                             <p className="message">
                                 {linkMessage} <Link to={linkPath} className="link-button">{linkText}</Link>
                             </p>
-                            {extraLinks.map((link, index) => (
-                                <p className="message" key={index}>
-                                    {link.text} <Link to={link.path} className="link-button">{link.linkText}</Link>
-                                </p>
-                            ))}
                         </form>
                     </div>
                 </div>    

@@ -202,7 +202,7 @@ const ScheduledTransactionsForm = ({
                 className={index % 2 === 0 ? 'tr' : 'tr-alt'}
               >
                 <td className="td">{transaction.amount}</td>
-                <td className="td">{transaction.description}</td>
+                <td className="td">{transaction.description || "No description"}</td>
                 <td className="td">
                   {transaction.type === 0 ? 'Income' : 'Expense'}
                 </td>

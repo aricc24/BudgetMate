@@ -83,17 +83,15 @@ const HomeComponents = ({
         <Layout>
             <div className="home">
                 <h2>Home</h2>
-                <button 
-                    onClick={handleDownloadPDF} 
-                    className="buttonH"
-                >
+                
+                {/* Download PDF Button */}
+                <button onClick={handleDownloadPDF} className="buttonH">
                     Download PDF
                 </button>
+                
+                {/* Email Schedule Section */}
                 <label>Schedule PDF Send by Email</label>
-                <button 
-                    onClick={handleSendEmail} 
-                    className="buttonS"
-                >
+                <button onClick={handleSendEmail} className="buttonS">
                     Send PDF by Email Now
                 </button>
                 <div className="or-container">
@@ -102,8 +100,8 @@ const HomeComponents = ({
 
                 <div className="email-schedule">
                     <label>Frequency:</label>
-                    <select 
-                        value={selectedFrequencyForEmail} 
+                    <select
+                        value={selectedFrequencyForEmail}
                         onChange={(e) => setSelectedFrequencyForEmail(e.target.value)}
                     >
                         <option value="daily">Daily</option>
@@ -117,16 +115,16 @@ const HomeComponents = ({
                         value={selectedStartDateForEmail}
                         onChange={(e) => setSelectedStartDateForEmail(e.target.value)}
                     />
-                    <button onClick={handleUpdateEmailSchedule}>
-                        Update Schedule
-                    </button>
+                    <button onClick={handleUpdateEmailSchedule}>Update Schedule</button>
                 </div>
 
                 <h3>Financial Overview</h3>
+
+                {/* Filter Section */}
                 <div className="filter-container">
                     <label>Show data by: </label>
-                    <select 
-                        value={selectedFrequencyForFilter} 
+                    <select
+                        value={selectedFrequencyForFilter}
                         onChange={(e) => setSelectedFrequencyForFilter(e.target.value)}
                     >
                         <option value="all">All</option>
@@ -142,12 +140,14 @@ const HomeComponents = ({
                     />
                 </div>
 
-                <div className="charts-container">
-                    <div className="chart-block">
+                {/* Chart Display Section */}
+                <div className="chartsH">
+                    <div className="chart-block chart-blockL">
                         <h4>Combined Line Chart</h4>
                         {chartData && <CombinedChart data={chartData} />}
                     </div>
-                    <div className="chart-blockP">
+
+                    <div className="chart-block chart-blockP">
                         <h4>Combined Pie Chart</h4>
                         {chartData && (
                             <CombinedPieChart

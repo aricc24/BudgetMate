@@ -470,13 +470,13 @@ const LineChart = ({ data }) => {
                     {
                         label: 'Income',
                         data: sortedData.map(d => d.amount),
-                        borderColor: '#1ab188', // línea principal
-                        backgroundColor: 'rgba(26, 177, 136, 0.2)', // area bajo la línea
+                        borderColor: '#1ab188',
+                        backgroundColor: 'rgba(26, 177, 136, 0.2)',
                         fill: true,
                         tension: 0.4,
                         pointRadius: 10,
-                        pointBackgroundColor: '#1ab188', // puntos
-                        pointBorderColor: '#184346', // bordes de los puntos
+                        pointBackgroundColor: '#1ab188',
+                        pointBorderColor: '#184346',
                         pointHoverRadius: 7,
                     }
                 ]
@@ -496,8 +496,8 @@ const LineChart = ({ data }) => {
                         type: 'time',
                         time: { unit: 'day',stepSize: 1 },
                         title: { display: true, text: 'Date', color: '#1ab188' },
-                        ticks: { color: '#1ab188' }, //marcas del eje 
-                        grid: { color: '#184346' }, // líneas de la cuadrícula
+                        ticks: { color: '#1ab188' }, 
+                        grid: { color: '#184346' }, 
                     },
                     y: {
                         title: { display: true, text: 'Amount', color: '#1ab188' },
@@ -569,7 +569,7 @@ const PieChart = ({ data, categories}) => {
                     legend: {
                         position: 'top',
                         labels: {
-                            color: '#1ab188', // etiquetas
+                            color: '#1ab188',
                         },
                     },
                     title: {

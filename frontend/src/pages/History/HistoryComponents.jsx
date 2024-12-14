@@ -190,15 +190,18 @@ const HistoryComponents = ({
                                 return (
                                     <tr key={transaction.id_transaction}>
                                         <td>
-                                            {transaction.categories.map((categoryId, index) => {
-                                                const category = categories.find(c => c.id_category === categoryId);
-                                                return (
-                                                    <span key={categoryId}>
-                                                        {category ? category.category_name : 'Unknown category'}
-                                                        {index < transaction.categories.length - 1 && ", "}
-                                                    </span>
-                                                );
-                                            }) || "No category"}
+                                            {transaction.categories.length > 0
+                                                ? transaction.categories.map((categoryId, index) => {
+                                                    const category = categories.find(c => c.id_category === categoryId);
+                                                    return (
+                                                        <span key={categoryId}>
+                                                            {category ? category.category_name : 'Unknown category'}
+                                                            {index < transaction.categories.length - 1 && ", "}
+                                                        </span>
+                                                    );
+                                                })
+                                                : "Uncategorized"
+                                            }
                                         </td>
                                         <td>${transaction.mount}</td>
                                         <td>{transaction.description || "No description"}</td>
@@ -326,16 +329,19 @@ const HistoryComponents = ({
                             {incomes.map(income => {
                                 return (
                                     <tr key={income.id_transaction}>
-                                        <td>
-                                            {income.categories.map((categoryId, index) => {
-                                                const category = categories.find(c => c.id_category === categoryId);
-                                                return (
-                                                    <span key={categoryId}>
-                                                        {category ? category.category_name : 'Unknown category'}
-                                                        {index < income.categories.length - 1 && ", "}
-                                                    </span>
-                                                );
-                                            }) || "No category"}
+                                       <td>
+                                            {income.categories.length > 0
+                                                ? income.categories.map((categoryId, index) => {
+                                                    const category = categories.find(c => c.id_category === categoryId);
+                                                    return (
+                                                        <span key={categoryId}>
+                                                            {category ? category.category_name : 'Unknown category'}
+                                                            {index < income.categories.length - 1 && ", "}
+                                                        </span>
+                                                    );
+                                                })
+                                                : "Uncategorized"
+                                            }
                                         </td>
                                         <td>- ${income.mount}</td>
                                         <td>{income.description || "No description"}</td>

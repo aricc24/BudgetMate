@@ -1,4 +1,3 @@
-import React, { useEffect, useState, useCallback } from 'react';
 /**
  * Expenses.jsx
  *
@@ -70,10 +69,7 @@ import React, { useEffect, useState, useCallback } from 'react';
  * - State updates trigger re-rendering to reflect changes dynamically.
  * - Charts are destroyed and re-rendered when the data changes.
  */
-
-
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import ExpensesComponents from './ExpensesComponents.jsx'
