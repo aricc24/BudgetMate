@@ -8,13 +8,21 @@ const HomeComponents = ({
     chartData,
     CombinedChart,
     CombinedPieChart,
-    handleDownloadPDF, 
+    handleDownloadPDF,
     handleSendEmail,
     selectedFrequency,
     setSelectedFrequency,
     selectedStartDate,
     setSelectedStartDate,
-    handleUpdateEmailSchedule, 
+    handleUpdateEmailSchedule,
+    selectedFrequencyForEmail,
+    selectedFrequencyForFilter,
+    setSelectedFrequencyForEmail,
+    setSelectedFrequencyForFilter,
+    selectedStartDateForEmail,
+    setSelectedStartDateForEmail,
+    selectedStartDateForFilter,
+    setSelectedStartDateForFilter,
 }) => {
     return (
         <Layout>
@@ -36,9 +44,13 @@ const HomeComponents = ({
                 <div className="or-container">
                     <span>or</span>
                 </div>
+
                 <div className="email-schedule">
                     <label>Frequency:</label>
-                    <select value={selectedFrequency} onChange={(e) => setSelectedFrequency(e.target.value)}>
+                    <select 
+                        value={selectedFrequencyForEmail} 
+                        onChange={(e) => setSelectedFrequencyForEmail(e.target.value)}
+                    >
                         <option value="daily">Daily</option>
                         <option value="weekly">Weekly</option>
                         <option value="monthly">Monthly</option>
@@ -47,15 +59,21 @@ const HomeComponents = ({
                     <label>Start Date:</label>
                     <input
                         type="date"
-                        value={selectedStartDate}
-                        onChange={(e) => setSelectedStartDate(e.target.value)}
+                        value={selectedStartDateForEmail}
+                        onChange={(e) => setSelectedStartDateForEmail(e.target.value)}
                     />
-                    <button onClick={handleUpdateEmailSchedule}>Update Schedule</button>
+                    <button onClick={handleUpdateEmailSchedule}>
+                        Update Schedule
+                    </button>
                 </div>
+
                 <h3>Financial Overview</h3>
                 <div className="filter-container">
-                    <label>Show data by:</label>
-                    <select value={selectedFrequency} onChange={(e) => setSelectedFrequency(e.target.value)}>
+                    <label>Show data by: </label>
+                    <select 
+                        value={selectedFrequencyForFilter} 
+                        onChange={(e) => setSelectedFrequencyForFilter(e.target.value)}
+                    >
                         <option value="all">All</option>
                         <option value="daily">Daily</option>
                         <option value="weekly">Weekly</option>
@@ -64,13 +82,13 @@ const HomeComponents = ({
                     </select>
                     <input
                         type="date"
-                        value={selectedStartDate}
-                        onChange={(e) => setSelectedStartDate(e.target.value)}
+                        value={selectedStartDateForFilter}
+                        onChange={(e) => setSelectedStartDateForFilter(e.target.value)}
                     />
                 </div>
 
                 <div className="charts-container">
-                    <div className="chart-blockL">
+                    <div className="chart-block">
                         <h4>Combined Line Chart</h4>
                         {chartData && <CombinedChart data={chartData} />}
                     </div>

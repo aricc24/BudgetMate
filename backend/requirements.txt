@@ -1,9 +1,11 @@
+Django>=4.2,<4.3
 django-cors-headers
 djangorestframework
-django
 xhtml2pdf
 matplotlib
 weasyprint
 celery==5.2.7
-django-celery-beat==2.2.1
+openpyxl>=3.0.0
+django-celery-beat>=2.4.0
 redis==5.0.0
+django-import-export

@@ -7,37 +7,38 @@ const Home = () => {
     const navigate = useNavigate();
     const [chartData, setChartData] = useState(null);
     const [filter, setFilter] = useState('all');
-    const [selectedFrequency, setSelectedFrequency] = useState('monthly');
-    const [selectedStartDate, setSelectedStartDate] = useState('');
+    const [selectedFrequencyForFilter, setSelectedFrequencyForFilter] = useState('monthly'); 
+    const [selectedFrequencyForEmail, setSelectedFrequencyForEmail] = useState('monthly');
+    const [selectedStartDateForFilter, setSelectedStartDateForFilter] = useState('');
+    const [selectedStartDateForEmail, setSelectedStartDateForEmail] = useState('');
 
     const filterDataByDateRange = (data, startDate, frequency) => {
-    if (!startDate) return data;
-
-    const start = new Date(startDate);
-
-    return data.filter((item) => {
-        const transactionDate = new Date(item.date);
-
-        switch (frequency) {
-            case 'daily':
-                return transactionDate.toISOString().split('T')[0] === start.toISOString().split('T')[0];
-            case 'weekly':
-                const weekLater = new Date(start);
-                weekLater.setDate(start.getDate() + 7);
-                return transactionDate >= start && transactionDate <= weekLater;
-            case 'monthly':
-                return (
-                    transactionDate.getMonth() === start.getMonth() &&
-                    transactionDate.getFullYear() === start.getFullYear()
-                );
-            case 'yearly':
-                return transactionDate.getFullYear() === start.getFullYear();
-            default:
-                return true;
-        }
-    });
-};
-
+        if (!startDate || frequency === 'all') return data;
+    
+        const start = new Date(startDate);
+    
+        return data.filter((item) => {
+            const transactionDate = new Date(item.date);
+    
+            switch (frequency) {
+                case 'daily':
+                    return transactionDate.toISOString().split('T')[0] === start.toISOString().split('T')[0];
+                case 'weekly':
+                    const weekLater = new Date(start);
+                    weekLater.setDate(start.getDate() + 7);
+                    return transactionDate >= start && transactionDate <= weekLater;
+                case 'monthly':
+                    return (
+                        transactionDate.getMonth() === start.getMonth() &&
+                        transactionDate.getFullYear() === start.getFullYear()
+                    );
+                case 'yearly':
+                    return transactionDate.getFullYear() === start.getFullYear();
+                default:
+                    return true;
+            }
+        });
+    };
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -56,7 +57,7 @@ const Home = () => {
                 if (response.ok) {
                     const data = await response.json();
 
-                    const filteredData = filterDataByDateRange(data, selectedStartDate, selectedFrequency);
+                    const filteredData = filterDataByDateRange(data, selectedStartDateForFilter, selectedFrequencyForFilter);
 
                     const incomeData = filteredData
                         .filter(t => t.type === 0)
@@ -75,26 +76,26 @@ const Home = () => {
         };
 
         fetchTransactions();
-    }, [navigate, selectedStartDate, selectedFrequency]);
+    }, [navigate, selectedStartDateForFilter, selectedFrequencyForFilter]); 
 
     const handleUpdateEmailSchedule = async () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
-        const frequency = selectedFrequency; 
-        let startDate = selectedStartDate; 
-    
+        const frequency = selectedFrequencyForEmail; 
+        let startDate = selectedStartDateForEmail;
+
         if (!authToken || !userId) {
             alert('User is not authenticated.');
             return;
         }
-    
+
         if (!startDate) {
             alert('Please select a start date.');
             return;
         }
 
         startDate = `${startDate}T00:00:00`;
-    
+
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/update_email_schedule/${userId}/`, {
                 method: 'POST',
@@ -104,7 +105,7 @@ const Home = () => {
                 },
                 body: JSON.stringify({ frequency, start_date: startDate }),
             });
-    
+
             if (response.ok) {
                 const data = await response.json();
                 alert(`Email schedule updated successfully. Start Date: ${data.data.start_date}`);
@@ -117,7 +118,6 @@ const Home = () => {
             alert('An error occurred while updating the schedule.');
         }
     };
-    
 
     return (
         <HomeComponents
@@ -128,11 +128,15 @@ const Home = () => {
             chartData={chartData}
             handleDownloadPDF={handleDownloadPDF}
             handleSendEmail={handleSendEmail}
-            selectedFrequency={selectedFrequency}
-            setSelectedFrequency={setSelectedFrequency}
-            selectedStartDate={selectedStartDate}
-            setSelectedStartDate={setSelectedStartDate}
+            selectedFrequencyForFilter={selectedFrequencyForFilter} 
+            setSelectedFrequencyForFilter={setSelectedFrequencyForFilter} 
             handleUpdateEmailSchedule={handleUpdateEmailSchedule}
+            selectedFrequencyForEmail={selectedFrequencyForEmail} 
+            setSelectedFrequencyForEmail={setSelectedFrequencyForEmail} 
+            selectedStartDateForFilter={selectedStartDateForFilter} 
+            setSelectedStartDateForFilter={setSelectedStartDateForFilter}
+            selectedStartDateForEmail={selectedStartDateForEmail}
+            setSelectedStartDateForEmail={setSelectedStartDateForEmail}        
         />
     );
 };
@@ -147,7 +151,14 @@ const CombinedChart = ({ data }) => {
         chartInstance.current = new Chart(chartRef.current, {
             type: 'line',
             data: {
-                labels: data.income.map(d => d.date),
+                labels: data.income.map(d => {
+                    const date = new Date(d.date);
+                    const day = date.getUTCDate().toString().padStart(2, '0'); 
+                    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); 
+                    const year = date.getUTCFullYear(); 
+                    return `${day}/${month}/${year}`;
+                }),
+                         
                 datasets: [
                     {
                         label: 'Income',
@@ -202,8 +213,6 @@ const CombinedPieChart = ({ data }) => {
     return <canvas ref={chartRef}></canvas>;
 };
 
-
-
 const handleDownloadPDF = async () => {
     const authToken = localStorage.getItem('authToken');
     const userId = localStorage.getItem('userId');
@@ -254,3 +263,4 @@ const handleSendEmail = async () => {
 };
 
 export default Home;
+

@@ -47,8 +47,8 @@ class User(models.Model):
         ],
         default='monthly',
     )
-    email_schedule_start_date = models.DateTimeField(default=now) # ojooo
-    # my_date_field = models.DateField(default=datetime.now().date())
+    email_schedule_start_date = models.DateTimeField(default=now) 
+
     class Meta:
         db_table = 'users'
 

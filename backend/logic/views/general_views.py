@@ -194,6 +194,25 @@ def generate_pdf(request, id_user):
 def send_email(request, id_user):
     user = User.objects.get(id_user=id_user)
     transactions = Transaction.objects.filter(id_user=user)
+    debts = Debt.objects.filter(id_user=user) 
+    scheduled_transactions = ScheduledTransaction.objects.filter(user=user).prefetch_related('categories')
+
+    income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
+    expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
+    total_income = sum(t.mount for t in income_data)
+    total_expenses = sum(t.mount for t in expense_data)
+    
+    total_paid_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PAID)
+    total_pending_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PENDING)
+    total_overdue_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.OVERDUE)
+    
+    main_balance = total_income - total_expenses 
+    debt_balance = total_pending_debt + total_overdue_debt
+    suggested_balance = main_balance - (total_pending_debt + total_overdue_debt)
+    
+    main_balance_message = ( f"${main_balance:.2f}")
+    debt_balance_message = f"${debt_balance:.2f}"
+    suggested_balance_message = f"${suggested_balance:.2f}"
 
     income_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_income_chart_{id_user}.png")
     income_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(income_temp_file))
@@ -206,10 +225,20 @@ def send_email(request, id_user):
 
     context = {
         'transactions': transactions,
+        'debts': debts,
+        'scheduled_transactions': scheduled_transactions,
         'income_chart_url': income_chart_url,
         'expense_chart_url': expense_chart_url,
         'inpie_chart_url': inpie_chart_url,  
         'expie_chart_url': expie_chart_url, 
+        'main_balance_message': main_balance_message,
+        'debt_balance_message': debt_balance_message,
+        'suggested_balance_message': suggested_balance_message,
+        'total_income' : total_income, 
+        'total_expenses' : total_expenses, 
+        'total_paid_debt': total_paid_debt, 
+        'total_pending_debt': total_pending_debt, 
+        'total_overdue_debt': total_overdue_debt,
     }
 
     html_content = render(request, 'pdf_template.html', context).content.decode('utf-8')
@@ -224,7 +253,7 @@ def send_email(request, id_user):
         subject,
         message,
         to=[user.email],
-        from_email='ariadnamich10@gmail.com'
+        from_email='budgetmatesys@gmail.com'
     )
     email.attach(f'report_{id_user}.pdf', pdf_file.read(), 'application/pdf')
 
@@ -240,6 +269,25 @@ def send_email(request, id_user):
 def send_email_to_user(user_id):
     user = User.objects.get(id_user=user_id)
     transactions = Transaction.objects.filter(id_user=user)
+    debts = Debt.objects.filter(id_user=user) 
+    scheduled_transactions = ScheduledTransaction.objects.filter(user=user).prefetch_related('categories')
+
+    income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
+    expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
+    total_income = sum(t.mount for t in income_data)
+    total_expenses = sum(t.mount for t in expense_data)
+    
+    total_paid_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PAID)
+    total_pending_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PENDING)
+    total_overdue_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.OVERDUE)
+    
+    main_balance = total_income - total_expenses 
+    debt_balance = total_pending_debt + total_overdue_debt
+    suggested_balance = main_balance - (total_pending_debt + total_overdue_debt)
+    
+    main_balance_message = ( f"${main_balance:.2f}")
+    debt_balance_message = f"${debt_balance:.2f}"
+    suggested_balance_message = f"${suggested_balance:.2f}"
 
     income_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_income_chart_{user_id}.png")
     expense_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expense_chart_{user_id}.png")
@@ -253,10 +301,20 @@ def send_email_to_user(user_id):
 
     context = {
         'transactions': transactions,
+        'debts': debts,
+        'scheduled_transactions': scheduled_transactions,
         'income_chart_url': income_chart_url,
         'expense_chart_url': expense_chart_url,
         'inpie_chart_url': inpie_chart_url,
         'expie_chart_url': expie_chart_url,
+        'main_balance_message': main_balance_message,
+        'debt_balance_message': debt_balance_message,
+        'suggested_balance_message': suggested_balance_message,
+        'total_income' : total_income, 
+        'total_expenses' : total_expenses, 
+        'total_paid_debt': total_paid_debt, 
+        'total_pending_debt': total_pending_debt, 
+        'total_overdue_debt': total_overdue_debt,
     }
 
     html_content = render_to_string('pdf_template.html', context)
@@ -270,7 +328,7 @@ def send_email_to_user(user_id):
         subject,
         message,
         to=[user.email],
-        from_email='ariadnamich10@gmail.com'
+        from_email='budgetmatesys@gmail.com'
     )
     email.attach(f'report_{user.id_user}.pdf', pdf_file.read(), 'application/pdf')
 
