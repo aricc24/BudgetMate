@@ -25,18 +25,17 @@ const Home = () => {
                     return transactionDate.toISOString().split('T')[0] === start.toISOString().split('T')[0];
                 case 'weekly':
                     const weekLater = new Date(start);
-                    weekLater.setDate(start.getDate() + 6); 
+                    weekLater.setDate(start.getDate() + 7);
                     return transactionDate >= start && transactionDate <= weekLater;
                 case 'monthly':
-                    const monthLater = new Date(start);
-                    monthLater.setMonth(start.getMonth() + 1);
-                    return transactionDate >= start && transactionDate < monthLater;
+                    return (
+                        transactionDate.getMonth() === start.getMonth() &&
+                        transactionDate.getFullYear() === start.getFullYear()
+                    );
                 case 'yearly':
-                    const yearLater = new Date(start);
-                    yearLater.setFullYear(start.getFullYear() + 1);
-                    return transactionDate >= start && transactionDate < yearLater;
+                    return transactionDate.getFullYear() === start.getFullYear();
                 default:
-                    return false;
+                    return true;
             }
         });
     };
@@ -152,7 +151,14 @@ const CombinedChart = ({ data }) => {
         chartInstance.current = new Chart(chartRef.current, {
             type: 'line',
             data: {
-                labels: data.income.map(d => d.date),
+                labels: data.income.map(d => {
+                    const date = new Date(d.date);
+                    const day = date.getUTCDate().toString().padStart(2, '0'); 
+                    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); 
+                    const year = date.getUTCFullYear(); 
+                    return `${day}/${month}/${year}`;
+                }),
+                         
                 datasets: [
                     {
                         label: 'Income',
