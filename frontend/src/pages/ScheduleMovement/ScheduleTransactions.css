@@ -114,8 +114,11 @@
 
 .table-container {
   margin-top: 30px;
-  width: 100%;
+  width: 90%;
   overflow-x: auto;
+  position: relative;
+  bottom: 290px;
+  left: 70px;
 }
 
 .table {
@@ -162,21 +165,36 @@
   color: #6ed6ba;
 }
 
-.table .button.delete {
+.table .delete {
   background: none;
   border: none;
   color: #e74c3c;
   cursor: pointer;
   display: flex;
   transition: color 0.3s;
+  position: relative;
+  bottom: -5px;
 }
 
-.table .button.delete:hover {
+.table .delete:hover {
   color: #ff6b6b;
 }
 
 .table td .button {
   margin-left: 10px;
+}
+
+.table .edit {
+  background: none;
+  border: none;
+  color: #1ab188;
+  cursor: pointer;
+  display: flex;
+  transition: color 0.3s;
+}
+
+.table .edit:hover {
+  color: #6ed6ba;
 }
 
 .tr, .tr-alt {

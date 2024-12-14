@@ -118,7 +118,7 @@ const ScheduledTransactionsForm = ({
         {editingTransactionId ? (
           <button
             type="button"
-            className="button"
+            className="save-button"
             onClick={handleEditScheduledTransaction}
           >
             Save Changes
@@ -144,11 +144,8 @@ const ScheduledTransactionsForm = ({
               <th className="th">Date</th>
               <th className="th">Periodicity</th>
               <th className="th">Categories</th>
-              <th
-                className="th"
-                style={{ textAlign: 'center', width: '50px' }}
-              >
-                +
+              <th className="opt">
+                <i className="fas fa-cog" title="Options"></i>
               </th>
             </tr>
           </thead>
@@ -166,13 +163,15 @@ const ScheduledTransactionsForm = ({
                 <td className="td">{transaction.schedule_date}</td>
                 <td className="td">{transaction.repeat}</td>
                 <td className="td">
-                  {transaction.categories_details
-                    .map((cat) => cat.category_name)
-                    .join(', ')}
+                  {transaction.categories_details.length > 0
+                    ? transaction.categories_details
+                        .map((cat) => cat.category_name)
+                        .join(', ')
+                    : "Uncategorized"}
                 </td>
                 <td className="td">
                   <button
-                    className="button"
+                    className="edit"
                     onClick={() => {
                       setFormData({
                         amount: transaction.amount,
@@ -187,21 +186,17 @@ const ScheduledTransactionsForm = ({
                       setEditingTransactionId(transaction.id_transaction);
                     }}
                   >
-                    Edit
+                    <i className="fas fa-pencil-alt" title="Edit"></i>
                   </button>
                   <button
-                    className="button"
-                    style={{
-                      backgroundColor: '#e74c3c',
-                      border: '1px solid #e74c3c',
-                    }}
+                    className="delete"
                     onClick={() =>
                       handleDeleteScheduledTransaction(
                         transaction.id_transaction
                       )
                     }
                   >
-                    Delete
+                    <i className="fas fa-trash" title="Delete"></i>
                   </button>
                 </td>
               </tr>
