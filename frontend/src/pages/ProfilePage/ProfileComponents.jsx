@@ -85,7 +85,7 @@ const ProfileComponents = ({
                                 className={!isEditing ? 'greyed' : ''}
                             />
                             <label htmlFor="email">Email</label>
-                            <div className="input-container">
+                            <div className="int-container">
                                 <i className="fas fa-envelope icon"></i>
                                 <input
                                     name="email"
@@ -98,7 +98,7 @@ const ProfileComponents = ({
                                 />
                             </div>
                             <label htmlFor="password">Password</label>
-                            <div className="input-container">
+                            <div className="int-container">
                                 <i className="fas fa-key icon"></i>
                                 <input
                                     name="password"
