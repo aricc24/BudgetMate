@@ -253,7 +253,7 @@ def send_email(request, id_user):
         subject,
         message,
         to=[user.email],
-        from_email='ariadnamich10@gmail.com'
+        from_email='budgetmatesys@gmail.com'
     )
     email.attach(f'report_{id_user}.pdf', pdf_file.read(), 'application/pdf')
 
@@ -328,7 +328,7 @@ def send_email_to_user(user_id):
         subject,
         message,
         to=[user.email],
-        from_email='ariadnamich10@gmail.com'
+        from_email='budgetmatesys@gmail.com'
     )
     email.attach(f'report_{user.id_user}.pdf', pdf_file.read(), 'application/pdf')
 
