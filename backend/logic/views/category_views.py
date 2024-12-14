@@ -6,7 +6,7 @@ from logic.serializer import CategorySerializer
 
 @api_view(['GET'])
 def get_categories_by_user(request, id_user):
-     """
+    """
     Retrieve all categories associated with a user, including universal categories.
 
     Args:

@@ -87,103 +87,103 @@ def generate_pdf(request, id_user):
     Returns:
         - HttpResponse: A PDF file containing the generated report as an attachment.
     """
-   user = User.objects.get(id_user=id_user)
-   transactions = Transaction.objects.filter(id_user=user).select_related('id_user').prefetch_related('categories')
-   for transaction in transactions:
-    transaction.date = localtime(transaction.date)
-   debts = Debt.objects.filter(id_user=user)
-   scheduled_transactions = ScheduledTransaction.objects.filter(user=user).prefetch_related('categories')
+    user = User.objects.get(id_user=id_user)
+    transactions = Transaction.objects.filter(id_user=user).select_related('id_user').prefetch_related('categories')
+    for transaction in transactions:
+        transaction.date = localtime(transaction.date)
+    debts = Debt.objects.filter(id_user=user)
+    scheduled_transactions = ScheduledTransaction.objects.filter(user=user).prefetch_related('categories')
 
-   income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
-   expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
+    income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
+    expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
 
-   total_income = sum(t.mount for t in income_data)
-   total_expenses = sum(t.mount for t in expense_data)
+    total_income = sum(t.mount for t in income_data)
+    total_expenses = sum(t.mount for t in expense_data)
 
-   total_paid_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PAID)
-   total_pending_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PENDING)
-   total_overdue_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.OVERDUE)
+    total_paid_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PAID)
+    total_pending_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PENDING)
+    total_overdue_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.OVERDUE)
 
-   main_balance = total_income - total_expenses
-   debt_balance = total_pending_debt + total_overdue_debt
-   suggested_balance = main_balance - (total_pending_debt + total_overdue_debt)
+    main_balance = total_income - total_expenses
+    debt_balance = total_pending_debt + total_overdue_debt
+    suggested_balance = main_balance - (total_pending_debt + total_overdue_debt)
 
-   main_balance_message = ( f"${main_balance:.2f}")
-   debt_balance_message = f"${debt_balance:.2f}"
-   suggested_balance_message = f"${suggested_balance:.2f}"
-
-
-   income_dates = [t.date for t in income_data]
-   income_amounts = [t.mount for t in income_data]
-   expense_dates = [t.date for t in expense_data]
-   expense_amounts = [t.mount for t in expense_data]
-
-   temp_images = []
+    main_balance_message = ( f"${main_balance:.2f}")
+    debt_balance_message = f"${debt_balance:.2f}"
+    suggested_balance_message = f"${suggested_balance:.2f}"
 
 
-   #Line Graph Incomes
-   income_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_income_chart_{id_user}.png")
-   fig, ax = plt.subplots(figsize=(16, 9))
-   ax.plot(income_dates, income_amounts, label='Ingresos', color='green', linewidth=2)
-   ax.scatter(income_dates, income_amounts, color='black', zorder=5, label='Entries')
-   ax.set_xlabel('Date')
-   ax.set_ylabel('Amount ($)')
-   ax.set_title('Income over Time')
-   ax.xaxis.set_major_locator(AutoDateLocator())
-   ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
-   ax.tick_params(axis='x', rotation=45)
-   ax.legend()
-   ax.grid(visible=True, linestyle='--', alpha=0.6)
-   fig.savefig(income_temp_file, format='png')
-   plt.close(fig)
-   income_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(income_temp_file))
+    income_dates = [t.date for t in income_data]
+    income_amounts = [t.mount for t in income_data]
+    expense_dates = [t.date for t in expense_data]
+    expense_amounts = [t.mount for t in expense_data]
 
-   #Line Graph Expenses
-   expense_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expense_chart_{id_user}.png")
-   fig, ax = plt.subplots(figsize=(16, 9))
-   ax.plot(expense_dates, expense_amounts, label='Egresos', color='red', linewidth=2)
-   ax.scatter(expense_dates, expense_amounts, color='black', zorder=5, label='Entries')
-   ax.set_xlabel('Date')
-   ax.set_ylabel('Amount ($)')
-   ax.set_title('Expenses over Time')
-   ax.xaxis.set_major_locator(AutoDateLocator())
-   ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
-   ax.tick_params(axis='x', rotation=45)
-   ax.legend()
-   ax.grid(visible=True, linestyle='--', alpha=0.6)
-   fig.savefig(expense_temp_file, format='png')
-   plt.close(fig)
-   expense_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(expense_temp_file))
-
-   #Category Graph Incomes
-   inpie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_inpie_chart_{id_user}.png")
-   income_categories = income_data.values('categories__category_name').annotate(total=Sum('mount'))
-   category_names = [cat['categories__category_name'] for cat in income_categories]
-   category_totals = [cat['total'] for cat in income_categories]
-   income_colors = [to_hex((random.random(), random.random(), random.random())) for _ in category_names]
-   fig, ax = plt.subplots(figsize=(8, 8))
-   ax.pie(category_totals, labels=category_names, autopct='%1.1f%%', colors=income_colors)
-   ax.set_title('Income Distribution by Category')
-   fig.savefig(inpie_temp_file, format='png')
-   plt.close(fig)
-   inpie_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(inpie_temp_file))
+    temp_images = []
 
 
-   #Category Graph Expenses
-   expie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expie_chart_{id_user}.png")
-   expense_categories = expense_data.values('categories__category_name').annotate(total=Sum('mount'))
-   category_names_expense = [cat['categories__category_name'] for cat in expense_categories]
-   category_totals_expense = [cat['total'] for cat in expense_categories]
-   expense_colors = [to_hex((random.random(), random.random(), random.random())) for _ in category_names_expense]
-   fig, ax = plt.subplots(figsize=(8, 8))
-   ax.pie(category_totals_expense, labels=category_names_expense, autopct='%1.1f%%', colors=expense_colors)
-   ax.set_title('Expenses Distribution by Category')
-   fig.savefig(expie_temp_file, format='png')
-   plt.close(fig)
-   expie_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(expie_temp_file))
+    #Line Graph Incomes
+    income_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_income_chart_{id_user}.png")
+    fig, ax = plt.subplots(figsize=(16, 9))
+    ax.plot(income_dates, income_amounts, label='Ingresos', color='green', linewidth=2)
+    ax.scatter(income_dates, income_amounts, color='black', zorder=5, label='Entries')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Amount ($)')
+    ax.set_title('Income over Time')
+    ax.xaxis.set_major_locator(AutoDateLocator())
+    ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
+    ax.tick_params(axis='x', rotation=45)
+    ax.legend()
+    ax.grid(visible=True, linestyle='--', alpha=0.6)
+    fig.savefig(income_temp_file, format='png')
+    plt.close(fig)
+    income_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(income_temp_file))
+
+    #Line Graph Expenses
+    expense_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expense_chart_{id_user}.png")
+    fig, ax = plt.subplots(figsize=(16, 9))
+    ax.plot(expense_dates, expense_amounts, label='Egresos', color='red', linewidth=2)
+    ax.scatter(expense_dates, expense_amounts, color='black', zorder=5, label='Entries')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Amount ($)')
+    ax.set_title('Expenses over Time')
+    ax.xaxis.set_major_locator(AutoDateLocator())
+    ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
+    ax.tick_params(axis='x', rotation=45)
+    ax.legend()
+    ax.grid(visible=True, linestyle='--', alpha=0.6)
+    fig.savefig(expense_temp_file, format='png')
+    plt.close(fig)
+    expense_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(expense_temp_file))
+
+    #Category Graph Incomes
+    inpie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_inpie_chart_{id_user}.png")
+    income_categories = income_data.values('categories__category_name').annotate(total=Sum('mount'))
+    category_names = [cat['categories__category_name'] for cat in income_categories]
+    category_totals = [cat['total'] for cat in income_categories]
+    income_colors = [to_hex((random.random(), random.random(), random.random())) for _ in category_names]
+    fig, ax = plt.subplots(figsize=(8, 8))
+    ax.pie(category_totals, labels=category_names, autopct='%1.1f%%', colors=income_colors)
+    ax.set_title('Income Distribution by Category')
+    fig.savefig(inpie_temp_file, format='png')
+    plt.close(fig)
+    inpie_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(inpie_temp_file))
 
 
-   context = {
+    #Category Graph Expenses
+    expie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expie_chart_{id_user}.png")
+    expense_categories = expense_data.values('categories__category_name').annotate(total=Sum('mount'))
+    category_names_expense = [cat['categories__category_name'] for cat in expense_categories]
+    category_totals_expense = [cat['total'] for cat in expense_categories]
+    expense_colors = [to_hex((random.random(), random.random(), random.random())) for _ in category_names_expense]
+    fig, ax = plt.subplots(figsize=(8, 8))
+    ax.pie(category_totals_expense, labels=category_names_expense, autopct='%1.1f%%', colors=expense_colors)
+    ax.set_title('Expenses Distribution by Category')
+    fig.savefig(expie_temp_file, format='png')
+    plt.close(fig)
+    expie_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(expie_temp_file))
+
+
+    context = {
        'transactions': transactions,
        'debts': debts,
        'scheduled_transactions': scheduled_transactions,
@@ -201,18 +201,18 @@ def generate_pdf(request, id_user):
        'total_pending_debt': total_pending_debt,
        'total_overdue_debt': total_overdue_debt,
 
-   }
+    }
 
 
-   html_content = render_to_string('pdf_template.html', context)
-   pdf = HTML(string=html_content, base_url=request.build_absolute_uri('/')).write_pdf()
-   response = HttpResponse(content_type='application/pdf')
-   response['Content-Disposition'] = f'attachment; filename="report_{id_user}.pdf"'
-   for temp_image in temp_images:
+    html_content = render_to_string('pdf_template.html', context)
+    pdf = HTML(string=html_content, base_url=request.build_absolute_uri('/')).write_pdf()
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="report_{id_user}.pdf"'
+    for temp_image in temp_images:
        os.remove(temp_image)
 
-   response.write(pdf)
-   return response
+    response.write(pdf)
+    return response
 
 
 @api_view(['POST'])

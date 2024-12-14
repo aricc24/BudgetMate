@@ -172,20 +172,11 @@ const Income = () => {
             });
             if (response.ok) {
                 const savedTransaction = await response.json();
-<<<<<<< HEAD
                 const updatedTransactions = transactions.map(transaction =>
                     transaction.id_transaction === transactionId ? savedTransaction : transaction
                 );
                 setTransactions(updatedTransactions);
                 updateChartData(updatedTransactions);
-=======
-                setTransactions(prevTransactions =>
-                    prevTransactions.map(transaction =>
-                        transaction.id_transaction === transactionId ? savedTransaction : transaction
-                    )
-                );
-                updateChartData([...transactions, savedTransaction]);
->>>>>>> feature/verification
                 setEditAmount('');
                 setEditDescription('');
                 setSelectedCategories([]);
@@ -292,7 +283,6 @@ const Income = () => {
         }
     };
 
-<<<<<<< HEAD
     const handleDeleteCategory = async (categoryId) => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
@@ -330,8 +320,6 @@ const Income = () => {
         }
     };
 
-=======
->>>>>>> feature/verification
     const filteredTransactions = transactions.filter(transaction => {
         const descriptionMatch = transaction.description
             .toLowerCase()
