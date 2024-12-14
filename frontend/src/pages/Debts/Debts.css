@@ -27,6 +27,7 @@
     top: 50%;
     transform: translate(-50%, -50%);
     background-color: #184346;
+    border: none;
     border-radius: 8px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
     padding: 20px;
@@ -427,10 +428,17 @@
     margin-top: -10px;
 }
 
-.form-group-has-interest-group input[type="radio"]:focus {
+.fm-group-has-interest-group input[type="radio"]:focus {
     outline: none;
     box-shadow: none;
+
 }
+
+.fm-group {
+    color: white;
+    border: none;
+}
+
 
 .add-debt-dialog .button-group {
     position: absolute;
@@ -460,13 +468,13 @@
     background-color: #6ed6ba;
 }
 
-.form-group-has-interest-group {
+.fm-group-has-interest-group {
     color: white;
 }
 
-.label2 {
+.lab2 {
     position: relative;
-    bottom: 100px;
+    bottom: 90px;
     left: 200px;
 }
 .per-month {
@@ -476,12 +484,13 @@
     color: #a0b3b0;
 }
 
-.input2 {
+.inut2 {
     position: relative;
-    bottom: 150px;
+    bottom: 130px;
     left: 345px;
     padding: 0%;
 }
+
 .add-debt-dialog select:focus,
 .add-debt-dialog input:focus {
     border-color: #6ed6ba;
