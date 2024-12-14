@@ -21,6 +21,16 @@
     bottom: 100px;
   }
   
+  .home h3 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: #1ab188;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    bottom: 190px;
+  }
+
   .home label {
     font-size: 1.2rem;
     font-weight: 600;
@@ -37,24 +47,32 @@
     width: 50%;
     margin-bottom: 20px;
     margin-top: 10px; 
+    position: relative;
+    bottom: 220px;
   }
   
   .filter-container label {
     font-size: 1rem;
     color: #1ab188;
     margin-bottom: 5px;
+    position: relative;
+    bottom: 0px;
   }
   
   .filter-container select,
   .filter-container input {
-    padding: 10px;
+    padding: 3px;
     font-size: 1rem;
     border: 1px solid #1ab188;
     border-radius: 8px;
     outline: none;
     background-color: #132e2f;
     color: #fff;
-    margin-top: 10px;
+    margin-top: 5px;
+    width: 200px;
+    height: 25px;
+    position: relative;
+    left: 200px;
   }
   
   .filter-container select:focus,
@@ -134,18 +152,30 @@
   
   .charts-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: column;
     margin-top: 40px;
   }
   
-  .chart-block {
-    width: 48%;
-    background-color: #0d2628;
+  .chart-blockP {
+    width: 100%;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+    bottom: 300px;
+    left: 100px;
+    width: 400px;
+    height: 600px;
   }
-  
+
+  .chart-blockL {
+    width: 100%;
+    border-radius: 8px;
+    padding: 20px;
+    position: relative;
+    bottom: 300px;
+  }
+
+
   .chart-block h4 {
     font-size: 1.5rem;
     font-weight: bold;

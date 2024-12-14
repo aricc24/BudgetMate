@@ -52,7 +52,7 @@ const HomeComponents = ({
                     />
                     <button onClick={handleUpdateEmailSchedule}>Update Schedule</button>
                 </div>
-
+                <h3>Financial Overview</h3>
                 <div className="filter-container">
                     <label>Show data by:</label>
                     <select value={selectedFrequency} onChange={(e) => setSelectedFrequency(e.target.value)}>
@@ -70,11 +70,11 @@ const HomeComponents = ({
                 </div>
 
                 <div className="charts-container">
-                    <div className="chart-block">
+                    <div className="chart-blockL">
                         <h4>Combined Line Chart</h4>
                         {chartData && <CombinedChart data={chartData} />}
                     </div>
-                    <div className="chart-block">
+                    <div className="chart-blockP">
                         <h4>Combined Pie Chart</h4>
                         {chartData && (
                             <CombinedPieChart
