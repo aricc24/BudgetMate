@@ -13,15 +13,41 @@ from django.http import HttpResponseRedirect
 import traceback
 
 class CustomRefreshToken(RefreshToken):
+    """
+    Custom Refresh Token that includes the user ID in the payload.
+
+    This class extends the default `RefreshToken` class and adds the user ID
+    to the payload when generating a new refresh token.
+
+    Attributes:
+        - user_id: The ID of the user for whom the token is being created.
+    """
     def __init__(self, user):
         super().__init__()
         self.payload['user_id'] = user.id_user
 
 class UserView(generics.ListCreateAPIView):
+    """
+    API view to list and create users.
+
+    This view handles both the listing and creation of new users. Upon user creation,
+    a set of default categories are created and assigned to the user, and a verification
+    email is sent to the user.
+
+    Methods:
+        POST: Create a new user and send a verification email.
+        GET: List all users (can be extended if needed).
+    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def perform_create(self, serializer):
+        """
+        Overridden method to perform custom logic during user creation.
+
+        This method is used to create default categories and send a verification
+        email to the user once the user has been created.
+        """
         with transaction.atomic():
             user = serializer.save()
             default_categories = [
@@ -51,6 +77,20 @@ class UserView(generics.ListCreateAPIView):
 
 @api_view(['POST'])
 def login_view(request):
+    """
+    API view for user login.
+
+    This view checks the provided email and password, verifies that the user
+    exists, and checks if the user has been verified. If the credentials are
+    correct, the user is logged in.
+
+    Parameters:
+        - email: The email address of the user trying to log in.
+        - password: The password of the user.
+
+    Returns:
+        - Response: A message indicating the login result.
+    """
     email = request.data.get('email')
     password = request.data.get('password')
     if not email or not password:
@@ -72,6 +112,17 @@ def login_view(request):
 
 @api_view(['POST'])
 def get_user_info(request):
+    """
+    API view to get user information.
+
+    This view retrieves the user details for a specific user identified by `id_user`.
+
+    Parameters:
+        - id_user: The user ID whose information is being retrieved.
+
+    Returns:
+        - Response: The user data or an error message if the user is not found.
+    """
     id_user = request.data.get('id')
     if not id_user:
         return Response({"error": "ID de usuario no proporcionado"}, status=400)
@@ -85,12 +136,35 @@ def get_user_info(request):
     return Response(serializer.data)
 
 class UserUpdateView(generics.RetrieveUpdateAPIView):
+    """
+    API view to retrieve and update user data.
+
+    This view allows users to retrieve and update their information, identified
+    by `id_user`.
+
+    Methods:
+        GET: Retrieve user details.
+        PATCH: Update user information.
+    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'id_user'
 
 @api_view(['GET'])
 def verify_email(request):
+    """
+    API view to verify the user's email.
+
+    This view handles the verification of a user's email by verifying the token
+    provided in the request. Upon successful verification, the user's `is_verified`
+    field is updated.
+
+    Parameters:
+        - token: The token sent to the user's email.
+
+    Returns:
+        - Response: A redirect to the frontend with a success or error status.
+    """
     token = request.GET.get('token')
     if not token:
         return JsonResponse({'error': 'There is no token.'}, status=400)

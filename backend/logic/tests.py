@@ -7,7 +7,15 @@ from logic.serializer import TransactionSerializer, DebtsSerializer
 from datetime import date, timedelta
 
 class APITest(TestCase):
+    """
+    This class contains automated tests to verify the correct functionality of the API views
+    for handling users, transactions, categories, and debts.
+    """
     def setUp(self):
+        """
+        This method runs before each individual test. It sets up the testing environment by creating
+        a user, categories, and the necessary URLs for the tests.
+        """
         self.client = APIClient()
         self.user = User.objects.create(
             email="testuser@gmail.com",
@@ -28,6 +36,9 @@ class APITest(TestCase):
 
 
     def test_login(self):
+        """
+        Verifies that the login works correctly with correct credentials and fails with incorrect credentials.
+        """
         data = {"email": "testuser@gmail.com","password": "123password"}
         response = self.client.post(self.login_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -38,12 +49,18 @@ class APITest(TestCase):
         self.assertIn("Sorry, invalid data", response.data["message"])
 
     def test_get_user(self):
+        """
+        Verifies that the user's information is correct when retrieved.
+        """
         data = {"id": self.user.id_user}
         response = self.client.post(self.user_info_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["email"], "testuser@gmail.com")
 
     def test_create_transaction(self):
+        """
+        Verifies that a transaction can be created correctly.
+        """
         data = {
             "id_user": self.user.id_user,
             "mount": 100.0,
@@ -57,6 +74,9 @@ class APITest(TestCase):
         self.assertEqual(response.data["description"], "This is a transaction test")
 
     def test_update_transaction(self):
+        """
+        Verifies that a transaction can be updated correctly.
+        """
         transaction = Transaction.objects.create(
             id_user=self.user,
             mount=100.14,
@@ -79,6 +99,9 @@ class APITest(TestCase):
         self.assertEqual(response.data["description"], "Updated transaction description")
 
     def test_get_transactions_by_user(self):
+        """
+        Verifies that the transactions for a user can be retrieved.
+        """
         Transaction.objects.create(
             id_user=self.user,
             mount=50.0,
@@ -100,6 +123,9 @@ class APITest(TestCase):
         self.assertEqual(len(response.data), 2)
 
     def test_update_category(self):
+        """
+        Verifies that a category can be updated correctly.
+        """
         update_url = reverse('category-update', kwargs={'id_user': self.user.id_user, 'id_category': self.category.id_category})
         data = { "category_name": "Updated Category"}
         response = self.client.patch(update_url, data, format='json')
@@ -108,6 +134,9 @@ class APITest(TestCase):
         self.assertEqual(self.category.category_name, "Updated Category")
 
     def test_update_globalCategory(self):
+        """
+        Verifies that a global category cannot be modified.
+        """
         user = User.objects.create(email="user@user.com",password="password12365",)
         global_category = Category.objects.create(category_name="housing", is_universal=True)
         user.categories.add(global_category)
@@ -118,6 +147,9 @@ class APITest(TestCase):
         self.assertEqual(response.data["error"], "Cannot modify global categories.")
 
     def test_Ucategory_of_Auser(self):
+        """
+        Verifies that a user cannot modify categories associated with other users.
+        """
         user1 = User.objects.create(email="user1@example.com",password="password123",)
 
         user2 = User.objects.create(email="user2@example.com",password="password123",)
@@ -130,6 +162,9 @@ class APITest(TestCase):
         self.assertEqual(response.data["error"], "Category is not associated with this user.")
 
     def test_create_debt(self):
+        """
+        Verifies that a new debt can be created successfully with the correct data.
+        """
         data = {
             "id_user": self.user.id_user,
             "mount": 10.0,
@@ -151,6 +186,9 @@ class APITest(TestCase):
         print(data)
 
     def test_get_debts_by_user(self):
+        """
+        Verifies that the debts for a user can be retrieved and matched with the database entries.
+        """
         Debt.objects.create(
             id_user=self.user,
             mount=5.0,
@@ -182,6 +220,9 @@ class APITest(TestCase):
         self.assertEqual(len(response.data), 2)
 
     def test_update_debt(self):
+        """
+        Verifies that a debt can be updated with new data and reflects the changes in the response.
+        """
         debt = Debt.objects.create(
             id_user=self.user,
             mount=1000.0,
@@ -210,6 +251,10 @@ class APITest(TestCase):
         self.assertEqual(response.data["description"], "Updated debt description")
 
     def test_create_new_category_if_associated_with_another_user(self):
+        """
+        Verifies that if a category is shared between users, it can be updated for one user
+        without affecting the other user’s data.
+        """
         user1 = User.objects.create(email="user1@example.com", password="password123")
         user2 = User.objects.create(email="user2@example.com", password="password123")
         shared_category = Category.objects.create(category_name="Together", is_universal=False)
@@ -228,6 +273,9 @@ class APITest(TestCase):
         self.assertTrue(user1.categories.filter(category_name="Together").exists())
 
     def test_edit_category_if_only_user_associated(self):
+        """
+        Verifies that a category can be updated if it is associated with only one user.
+        """
         user = User.objects.create(email="user@example.com", password="password123")
         single_user_category = Category.objects.create(category_name="Personal Category", is_universal=False)
         user.categories.add(single_user_category)
@@ -241,6 +289,9 @@ class APITest(TestCase):
         self.assertTrue(user.categories.filter(category_name="Updated Personal Category").exists())
 
     def test_cannot_edit_global_category(self):
+        """
+        Verifies that a global category cannot be edited by any user.
+        """
         user = User.objects.create(email="user@example.com", password="password123")
         global_category = Category.objects.create(category_name="Global Category", is_universal=True)
         user.categories.add(global_category)

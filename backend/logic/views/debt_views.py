@@ -10,10 +10,25 @@ from logic.views.category_views import  create_or_associate_category_logic
 from logic.models import Category
 
 class DebtsCreateView(generics.CreateAPIView):
+    """
+    API view to create a new debt entry.
+
+    This view calculates interest and total amount based on the input data, such as
+    principal amount, interest rate, and date range, before saving the debt object.
+    """
     queryset = Debt.objects.all()
     serializer_class = DebtsSerializer
 
     def create(self, request, *args, **kwargs):
+        """
+        Handle POST requests to create a new debt.
+
+        Args:
+            request: The HTTP request object containing debt data.
+
+        Returns:
+            Response: JSON response containing the created debt or validation error.
+        """
         print("Received Data:", request.data)
 
         amount = float(request.data.get('amount', 0))
@@ -57,6 +72,17 @@ class DebtsCreateView(generics.CreateAPIView):
 
 @api_view(['PATCH'])
 def update_user_debt(request, id_user, id_debt):
+    """
+    Update an existing debt entry for a user.
+
+    Args:
+        request: The HTTP request object containing updated debt data.
+        id_user (int): ID of the user owning the debt.
+        id_debt (int): ID of the debt to update.
+
+    Returns:
+        Response: JSON response indicating success or error.
+    """
     try:
         debt = Debt.objects.get(id_debt=id_debt, id_user=id_user)
     except Debt.DoesNotExist:
@@ -114,12 +140,32 @@ def update_user_debt(request, id_user, id_debt):
 
 @api_view(['GET'])
 def get_debts_by_user(request, id_user):
+    """
+    Retrieve all debts associated with a specific user.
+
+    Args:
+        request: The HTTP request object.
+        id_user (int): ID of the user whose debts are to be retrieved.
+
+    Returns:
+        Response: Serialized list of debts for the user.
+    """
     debts = Debt.objects.filter(id_user=id_user)
     serializer = DebtsSerializer(debts, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['DELETE'])
 def delete_debt(request, id_debt):
+    """
+    Delete a specific debt entry.
+
+    Args:
+        request: The HTTP request object.
+        id_debt (int): ID of the debt to delete.
+
+    Returns:
+        Response: Success or error message.
+    """
     try:
         debt = Debt.objects.get(id_debt=id_debt)
 

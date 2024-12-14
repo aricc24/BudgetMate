@@ -32,6 +32,21 @@ from django.utils.timezone import localtime
 
 @api_view(['GET'])
 def filter_transactions(request, id_user):
+    """
+    Filters transactions for a specific user based on various query parameters like date range,
+    categories, minimum and maximum amount, and transaction type (income or expense).
+
+    Parameters:
+        - start_date (optional): Start date for filtering transactions.
+        - end_date (optional): End date for filtering transactions.
+        - categories (optional): List of categories to filter transactions.
+        - min_amount (optional): Minimum amount for filtering transactions.
+        - max_amount (optional): Maximum amount for filtering transactions.
+        - type (optional): Type of transaction (`incomes` or `expenses`).
+
+    Returns:
+        - Response: A list of filtered transactions, serialized using the `TransactionSerializer`.
+    """
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
     categories = request.GET.getlist('categories')
@@ -40,7 +55,7 @@ def filter_transactions(request, id_user):
     transaction_type = request.GET.get('type')
 
     transactions = Transaction.objects.filter(id_user=id_user)
-    
+
     if transaction_type == 'expenses':
         transactions = transactions.filter(type=Transaction.TransEnum.EXPENSE)
     elif transaction_type == 'incomes':
@@ -62,27 +77,38 @@ def filter_transactions(request, id_user):
 
 @api_view(['GET'])
 def generate_pdf(request, id_user):
+    """
+    Generates a PDF report for a specific user containing their financial data such as income,
+    expenses, debts, and scheduled transactions. It also includes visual charts for income and
+    expense trends, as well as distribution by category.
+
+    Parameters:
+        - id_user: The ID of the user for whom the report is being generated.
+
+    Returns:
+        - HttpResponse: A PDF file containing the generated report as an attachment.
+    """
    user = User.objects.get(id_user=id_user)
    transactions = Transaction.objects.filter(id_user=user).select_related('id_user').prefetch_related('categories')
    for transaction in transactions:
-    transaction.date = localtime(transaction.date)   
-   debts = Debt.objects.filter(id_user=user) 
+    transaction.date = localtime(transaction.date)
+   debts = Debt.objects.filter(id_user=user)
    scheduled_transactions = ScheduledTransaction.objects.filter(user=user).prefetch_related('categories')
 
    income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
    expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
-   
+
    total_income = sum(t.mount for t in income_data)
    total_expenses = sum(t.mount for t in expense_data)
-   
+
    total_paid_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PAID)
    total_pending_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PENDING)
    total_overdue_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.OVERDUE)
-   
-   main_balance = total_income - total_expenses 
+
+   main_balance = total_income - total_expenses
    debt_balance = total_pending_debt + total_overdue_debt
    suggested_balance = main_balance - (total_pending_debt + total_overdue_debt)
-   
+
    main_balance_message = ( f"${main_balance:.2f}")
    debt_balance_message = f"${debt_balance:.2f}"
    suggested_balance_message = f"${suggested_balance:.2f}"
@@ -92,7 +118,7 @@ def generate_pdf(request, id_user):
    income_amounts = [t.mount for t in income_data]
    expense_dates = [t.date for t in expense_data]
    expense_amounts = [t.mount for t in expense_data]
-   
+
    temp_images = []
 
 
@@ -170,10 +196,10 @@ def generate_pdf(request, id_user):
        'main_balance_message': main_balance_message,
        'debt_balance_message': debt_balance_message,
        'suggested_balance_message': suggested_balance_message,
-       'total_income' : total_income, 
-       'total_expenses' : total_expenses, 
-       'total_paid_debt': total_paid_debt, 
-       'total_pending_debt': total_pending_debt, 
+       'total_income' : total_income,
+       'total_expenses' : total_expenses,
+       'total_paid_debt': total_paid_debt,
+       'total_pending_debt': total_pending_debt,
        'total_overdue_debt': total_overdue_debt,
 
    }
@@ -192,6 +218,15 @@ def generate_pdf(request, id_user):
 
 @api_view(['POST'])
 def send_email(request, id_user):
+    """
+    Sends an email with the financial report as a PDF attachment to a specific user.
+
+    Parameters:
+        - id_user: The ID of the user to whom the email should be sent.
+
+    Returns:
+        - HttpResponse: Success message if the email is sent successfully, or error message if failed.
+    """
     user = User.objects.get(id_user=id_user)
     transactions = Transaction.objects.filter(id_user=user)
 
@@ -208,8 +243,8 @@ def send_email(request, id_user):
         'transactions': transactions,
         'income_chart_url': income_chart_url,
         'expense_chart_url': expense_chart_url,
-        'inpie_chart_url': inpie_chart_url,  
-        'expie_chart_url': expie_chart_url, 
+        'inpie_chart_url': inpie_chart_url,
+        'expie_chart_url': expie_chart_url,
     }
 
     html_content = render(request, 'pdf_template.html', context).content.decode('utf-8')
@@ -235,9 +270,22 @@ def send_email(request, id_user):
         return HttpResponse(f"Failed to send email: {e}")
     finally:
         pass
-    
+
 
 def send_email_to_user(user_id):
+    """
+    Sends a financial report email to the user with the specified user ID.
+
+    This function generates a financial report in PDF format, attaches it to an email,
+    and sends the email to the user. The report includes visual charts for income and
+    expense trends, as well as category distribution.
+
+    Parameters:
+        - user_id: The ID of the user to whom the email should be sent.
+
+    Returns:
+        - None: The function does not return a value. It sends an email to the user.
+    """
     user = User.objects.get(id_user=user_id)
     transactions = Transaction.objects.filter(id_user=user)
 
@@ -282,13 +330,29 @@ def send_email_to_user(user_id):
 
 @api_view(['POST'])
 def update_email_schedule(request, id_user):
+    """
+    Updates the email schedule for sending financial reports to a specific user.
+
+    This endpoint allows the user to set how frequently they want to receive their
+    financial reports (daily, weekly, monthly, or yearly). The schedule start date
+    is also updated.
+
+    Parameters:
+        - request.data: Contains the frequency of email delivery and the start date
+                        for the schedule in ISO 8601 format.
+        - id_user: The ID of the user whose email schedule is being updated.
+
+    Returns:
+        - Response: The updated email schedule data, or an error message if the request
+                    is invalid.
+    """
     try:
         user = User.objects.get(id_user=id_user)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    frequency = request.data.get('frequency', 'monthly')  
-    start_date = request.data.get('start_date', now().isoformat())  
+    frequency = request.data.get('frequency', 'monthly')
+    start_date = request.data.get('start_date', now().isoformat())
 
     try:
         start_date = parse_datetime(start_date)
@@ -312,4 +376,3 @@ def update_email_schedule(request, id_user):
             'start_date': user.email_schedule_start_date.isoformat(),
         }
     }, status=status.HTTP_200_OK)
-

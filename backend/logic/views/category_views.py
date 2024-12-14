@@ -6,12 +6,16 @@ from logic.serializer import CategorySerializer
 
 @api_view(['GET'])
 def get_categories_by_user(request, id_user):
-    """
-    API view to create a new debt entry.
+     """
+    Retrieve all categories associated with a user, including universal categories.
 
-    This view calculates interest and total amount based on the input data, such as
-    principal amount, interest rate, and date range, before saving the debt object.
-    """ 
+    Args:
+        request: The HTTP request object.
+        id_user (int): ID of the user whose categories are to be retrieved.
+
+    Returns:
+        Response: Serialized list of categories or error message if the user is not found.
+    """
     try:
         user = User.objects.get(id_user=id_user)
     except User.DoesNotExist:
@@ -22,6 +26,16 @@ def get_categories_by_user(request, id_user):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 def create_or_associate_category_logic(category_name, user):
+    """
+    Logic to create or associate a category with a user.
+
+    Args:
+        category_name (str): The name of the category to create or associate.
+        user (User): The user to associate the category with.
+
+    Returns:
+        dict: Contains the category object and a flag indicating if it was created.
+    """
     category, created = Category.objects.get_or_create(
         category_name=category_name,
         defaults={'is_universal': False}
@@ -32,6 +46,15 @@ def create_or_associate_category_logic(category_name, user):
 
 @api_view(['POST'])
 def create_or_associate_category(request):
+    """
+    Create a new category or associate an existing one with a user.
+
+    Args:
+        request: The HTTP request containing `category_name` and `id_user`.
+
+    Returns:
+        Response: Success message with category details or error message.
+    """
     category_name = request.data.get('category_name')
     id_user = request.data.get('id_user')
     user = User.objects.get(id_user=id_user)
@@ -52,6 +75,17 @@ def create_or_associate_category(request):
 
 @api_view(['PATCH'])
 def update_user_category(request, id_user, id_category):
+    """
+    Update a user-specific category's name or handle merging with an existing category.
+
+    Args:
+        request: The HTTP request containing the new `category_name`.
+        id_user (int): ID of the user editing the category.
+        id_category (int): ID of the category to update.
+
+    Returns:
+        Response: Success or error message depending on the update logic.
+    """
     user = User.objects.get(id_user=id_user)
     category = Category.objects.get(id_category=id_category)
     new_category_name = request.data.get('category_name')
