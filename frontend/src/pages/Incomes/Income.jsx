@@ -80,11 +80,7 @@ const Income = () => {
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
-<<<<<<< HEAD
-
-=======
     
->>>>>>> origin/feature/frontend-documentation
     const fetchTransactions = useCallback(async () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');

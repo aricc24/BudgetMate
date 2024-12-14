@@ -76,7 +76,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 
 import React, { useEffect, useState } from 'react';
->>>>>>> origin/feature/frontend-documentation
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import ExpensesComponents from './ExpensesComponents.jsx'
