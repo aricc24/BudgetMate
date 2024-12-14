@@ -92,6 +92,7 @@ const ScheduledTransactionsForm = ({ transactionId, onSave }) => {
       } else {
         const errorData = await response.json();
         console.error('Error saving scheduled transaction', errorData);
+        alert('Please fill in the amount field and choose a date.');
       }
     } catch (error) {
       console.error('Error saving scheduled transaction:', error);
