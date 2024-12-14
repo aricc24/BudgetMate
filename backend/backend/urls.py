@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/users/', UserView.as_view(), name="user-list"),
     path('api/login/', login_view, name="user-log"),
     path('api/get_user/', get_user_info, name="user-info"),
+    path('verify-email/', verify_email, name='verify_email'),
     path('api/update_user/<int:id_user>/', UserUpdateView.as_view(), name="user-update"),
     path('api/transactions/', TransactionCreateView.as_view(), name="transactions-list"),
     path('api/delete_transaction/<int:transaction_id>/', delete_transaction, name='delete_transaction'),
@@ -52,6 +53,6 @@ urlpatterns = [
     path('api/delete_scheduled_transaction/<int:transaction_id>/', delete_scheduled_transaction, name='delete_scheduled_transaction'),
     path('api/update_scheduled_transaction/<int:transaction_id>/', update_scheduled_transaction, name='update_scheduled_transaction'),
     path('api/update_email_schedule/<int:id_user>/', update_email_schedule, name='update_email_schedule'),
-    
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

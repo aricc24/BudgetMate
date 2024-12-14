@@ -1,4 +1,5 @@
 django-cors-headers
+djangorestframework-simplejwt
 djangorestframework
 django
 xhtml2pdf

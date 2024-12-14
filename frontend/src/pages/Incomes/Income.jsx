@@ -64,17 +64,17 @@ const Income = () => {
             console.error("Error fetching user categories:", error);
         }
     };
-    
+
     useEffect(() => {
         fetchTransactions();
         fetchCategories();
         const intervalId = setInterval(() => {
             fetchTransactions();
-        }, 60000); 
+        }, 60000);
         return () => clearInterval(intervalId);
     }, [fetchTransactions]);
 
-    
+
     const updateChartData = (transactions) => {
         const filteredData = transactions.map(transaction => ({
             date: new Date(transaction.date),
@@ -144,13 +144,13 @@ const Income = () => {
             console.error('Error deleting transaction:', error);
             alert('An error occurred while trying to delete the income.');
         }
-    }; 
+    };
 
     const handleEditIncome = async (transactionId) => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
-    
+
         const currentTransaction = transactions.find(t => t.id_transaction === transactionId);
         const updatedTransaction = {
             id_user: userId,
@@ -160,7 +160,7 @@ const Income = () => {
             categories: selectedCategories,
             date: selectedDate ? selectedDate.toISOString() : currentTransaction.date,
         };
-    
+
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/update_transaction/${userId}/${transactionId}/`, {
                 method: 'PATCH',
@@ -172,11 +172,20 @@ const Income = () => {
             });
             if (response.ok) {
                 const savedTransaction = await response.json();
+<<<<<<< HEAD
                 const updatedTransactions = transactions.map(transaction =>
                     transaction.id_transaction === transactionId ? savedTransaction : transaction
                 );
                 setTransactions(updatedTransactions);
                 updateChartData(updatedTransactions);
+=======
+                setTransactions(prevTransactions =>
+                    prevTransactions.map(transaction =>
+                        transaction.id_transaction === transactionId ? savedTransaction : transaction
+                    )
+                );
+                updateChartData([...transactions, savedTransaction]);
+>>>>>>> feature/verification
                 setEditAmount('');
                 setEditDescription('');
                 setSelectedCategories([]);
@@ -188,7 +197,7 @@ const Income = () => {
             console.error('Error updating transaction:', error);
         }
     };
-    
+
 
     const handleAddCategory = async () => {
         if (!newCategory.trim()) return;
@@ -199,11 +208,11 @@ const Income = () => {
             (category) =>
                 category.category_name.toLowerCase() === newCategory.trim().toLowerCase()
         );
-    
+
         if (categoryExists) {
             alert('This category already exists.');
             return;
-        }        
+        }
 
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/create_category/`, {
@@ -244,7 +253,7 @@ const Income = () => {
         const updateCategory = {
             category_name: editCategory || currentCategory.category_name,
         };
-    
+
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/update_category/${userId}/${categoryId}/`, {
                 method: 'PATCH',
@@ -254,7 +263,7 @@ const Income = () => {
                 },
                 body: JSON.stringify(updateCategory),
             });
-    
+
             if (response.ok) {
                 const result = await response.json();
                 const updatedCategoryName = result.category_name;
@@ -283,11 +292,12 @@ const Income = () => {
         }
     };
 
+<<<<<<< HEAD
     const handleDeleteCategory = async (categoryId) => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
-    
+
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/delete_category/${userId}/${categoryId}/`, {
                 method: 'DELETE',
@@ -295,7 +305,7 @@ const Income = () => {
                     'Authorization': `Bearer ${authToken}`,
                 },
             });
-    
+
             if (response.ok) {
                 setCategories((prevCategories) =>
                     prevCategories.filter((category) => category.id_category !== categoryId)
@@ -318,8 +328,10 @@ const Income = () => {
             console.error('Error deleting category:', error);
             alert('An error occurred while trying to delete the category.');
         }
-    };    
-    
+    };
+
+=======
+>>>>>>> feature/verification
     const filteredTransactions = transactions.filter(transaction => {
         const descriptionMatch = transaction.description
             .toLowerCase()
@@ -440,7 +452,7 @@ const LineChart = ({ data }) => {
                         type: 'time',
                         time: { unit: 'day',stepSize: 1 },
                         title: { display: true, text: 'Date', color: '#1ab188' },
-                        ticks: { color: '#1ab188' }, //marcas del eje 
+                        ticks: { color: '#1ab188' }, //marcas del eje
                         grid: { color: '#184346' }, // líneas de la cuadrícula
                     },
                     y: {
