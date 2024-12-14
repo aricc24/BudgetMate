@@ -23,7 +23,7 @@ const Verification = () => {
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
             <h1>Account verification</h1>
             <p>{renderMessage()}</p>
-            <button onClick={() => navigate('/login')}>
+            <button className="button" onClick={() => navigate('/login')}>
                 Return to Login
             </button>
         </div>

@@ -67,7 +67,7 @@ class User(models.Model):
         default='monthly',
     )
     email_schedule_start_date = models.DateTimeField(default=now) # ojooo
-    # my_date_field = models.DateField(default=datetime.now().date())
+    is_verified = models.BooleanField(default=False)
     class Meta:
         db_table = 'users'
 
