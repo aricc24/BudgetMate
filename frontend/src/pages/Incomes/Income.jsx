@@ -111,6 +111,8 @@ const Income = () => {
                 setSelectedDate(new Date());
             } else {
                 console.error('Failed to add transaction');
+                const errorContent = await response.text();
+                console.error('Failed to add transaction:', errorContent);
             }
         } catch (error) {
             console.error('Error adding transaction:', error);
@@ -149,7 +151,7 @@ const Income = () => {
             console.error('Error deleting transaction:', error);
             alert('An error occurred while trying to delete the transaction.');
         }
-    }; 
+    };
 
     const handleEditIncome = async (transactionId) => {
         const authToken = localStorage.getItem('authToken');
@@ -180,7 +182,7 @@ const Income = () => {
                     prevTransactions.map(transaction =>
                         transaction.id_transaction === transactionId ? savedTransaction : transaction
                     )
-                );                
+                );
                 updateChartData([...transactions, savedTransaction]);
                 setEditAmount('');
                 setEditDescription('');
@@ -238,7 +240,7 @@ const Income = () => {
         const updateCategory = {
             category_name: editCategory || currentCategory.category_name,
         };
-    
+
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/update_category/${userId}/${categoryId}/`, {
                 method: 'PATCH',
@@ -248,7 +250,7 @@ const Income = () => {
                 },
                 body: JSON.stringify(updateCategory),
             });
-    
+
             if (response.ok) {
                 const result = await response.json();
                 const updatedCategoryName = result.category_name;
@@ -274,7 +276,7 @@ const Income = () => {
             console.error('Error updating category:', error);
         }
     };
-    
+
     const filteredTransactions = transactions.filter(transaction => {
         const descriptionMatch = transaction.description
             .toLowerCase()
