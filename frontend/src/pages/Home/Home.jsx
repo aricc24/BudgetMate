@@ -1,3 +1,59 @@
+/**
+ * Home.jsx
+ *
+ * Description:
+ * This component is responsible for managing the main dashboard view of the application.
+ * It fetches transaction data, filters it based on date ranges and frequency (daily, weekly, monthly, yearly),
+ * and visualizes the data using line and pie charts.
+ *
+ * Functionalities:
+ * - Fetches transactions from the API.
+ * - Filters data based on date and frequency.
+ * - Displays transaction data (Income and Expenses) dynamically in charts.
+ * - Exports data to PDF.
+ * - Sends data via email.
+ * - Updates email schedules for automatic reporting.
+ *
+ * Features:
+ * - **Dynamic Data Visualization**: Uses `Chart.js` to render both Line and Pie charts.
+ * - **Filtering**: Allows filtering data by date range and frequency.
+ * - **PDF Export**: Provides a button to export data to a PDF.
+ * - **Email Functionality**: Sends the report via email.
+ * - **Email Scheduling**: Allows users to set up automatic email reports.
+ *
+ * Components:
+ * - HomeComponents: Child component that renders the UI (buttons, filters, and charts).
+ * - CombinedChart: Displays the income and expense data as a line chart.
+ * - CombinedPieChart: Displays the total income and expenses as a pie chart.
+ *
+ * State Variables:
+ * - `chartData`: Object containing filtered income and expense data.
+ * - `filter`: Selected frequency filter for data display (e.g., daily, weekly, etc.).
+ * - `selectedFrequency`: Current email scheduling frequency.
+ * - `selectedStartDate`: Start date used for filtering transactions.
+ *
+ * Functions:
+ * - `filterDataByDateRange`: Filters transaction data based on the selected frequency and start date.
+ * - `handleUpdateEmailSchedule`: Updates the email reporting schedule via API.
+ * - `handleDownloadPDF`: Generates and downloads a PDF report of transactions.
+ * - `handleSendEmail`: Sends the current report to the user via email.
+ *
+ * Dependencies:
+ * - Chart.js: Used to render dynamic charts.
+ * - React Router: For navigation.
+ *
+ * API Endpoints:
+ * - `/api/get_transactions/:userId/`: Fetches user transaction data.
+ * - `/api/update_email_schedule/:userId/`: Updates the user's email reporting schedule.
+ * - `/api/generate_pdf/:userId/`: Generates a PDF report.
+ * - `/api/send_email/:userId/`: Sends the report via email.
+ *
+ * Notes:
+ * - The component is responsible for fetching and managing transaction data.
+ * - The `HomeComponents` child component handles rendering of the UI.
+ */
+
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import HomeComponents from './HomeComponents';

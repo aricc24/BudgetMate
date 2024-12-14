@@ -1,3 +1,50 @@
+/**
+ * HistoryComponents.jsx
+ *
+ * Description:
+ * This component is responsible for displaying and filtering both **expenses** and **incomes**.
+ * It includes:
+ * - Input fields for filtering transactions based on:
+ *    - Start Date, End Date
+ *    - Minimum Amount, Maximum Amount
+ *    - Selected Categories
+ * - Tables for displaying expenses and incomes in a readable format.
+ * - Category selection dialogs for multi-category filtering.
+ *
+ * Props:
+ * - **isCategoryDialogOpen, setIsCategoryDialogOpen**: Controls the visibility of the category filter dialog for expenses.
+ * - **transactions**: Array of expense transactions to display in the table.
+ * - **categories**: Array of available categories for filtering.
+ * - **startDate, endDate**: States and setters for filtering expenses by date range.
+ * - **minAmount, maxAmount**: States and setters for filtering expenses by amount.
+ * - **selectedCategories**: State for selected categories for expense filtering.
+ * - **isCategoryIncomeDialogOpen, setIsCategoryIncomeDialogOpen**: Controls the visibility of the category filter dialog for incomes.
+ * - **incomes**: Array of income transactions to display in the table.
+ * - **startDateIncomes, endDateIncomes**: States and setters for filtering incomes by date range.
+ * - **minAmountIncomes, maxAmountIncomes**: States and setters for filtering incomes by amount.
+ * - **selectedCategoriesIncomes**: State for selected categories for income filtering.
+ * - **handleFilter**: Function to handle filtering expense transactions.
+ * - **handleCategoryChange**: Function to update selected expense categories.
+ * - **handleIncomeFilter**: Function to handle filtering income transactions.
+ * - **handleIncomeCategoryChange**: Function to update selected income categories.
+ * - **adjustTime**: Function to format the UTC date into a readable format.
+ *
+ * UI Components:
+ * - **Expenses Section**:
+ *   - Inputs: Start Date, End Date, Min Amount, Max Amount.
+ *   - Category Dialog: Allows users to select multiple categories for filtering.
+ *   - Table: Displays filtered expense transactions.
+ * - **Incomes Section**:
+ *   - Inputs: Start Date, End Date, Min Amount, Max Amount.
+ *   - Category Dialog: Allows users to select multiple categories for filtering.
+ *   - Table: Displays filtered income transactions.
+ *
+ * Notes:
+ * - Uses `dialog` for category selection with a multi-select dropdown.
+ * - Prevents invalid input such as non-numeric values or invalid dates.
+ * - Conditional rendering ensures tables are updated dynamically.
+ */
+
 import React from 'react';
 import 'chartjs-adapter-date-fns';
 import Layout from '../../components/Layout/Layout.js';

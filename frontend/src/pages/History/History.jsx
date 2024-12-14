@@ -1,3 +1,65 @@
+/**
+ * History.jsx
+ *
+ * Description:
+ * This component serves as a container for managing transaction history, including:
+ * - Filtering expense and income transactions based on dates, amounts, and categories.
+ * - Fetching data from the backend for transactions and categories.
+ * - Managing user input for filters such as date range, minimum and maximum amounts, and selected categories.
+ * - Passing all state variables, handlers, and data to the `HistoryComponents` child component for rendering.
+ *
+ * State Management:
+ * - **transactions**: Array of fetched expense transactions.
+ * - **incomes**: Array of fetched income transactions.
+ * - **categories**: Array of transaction categories.
+ * - **startDate, endDate**: State for the start and end date filters for expenses.
+ * - **minAmount, maxAmount**: State for minimum and maximum amount filters for expenses.
+ * - **selectedCategories**: State for selected categories to filter expenses.
+ * - **startDateIncomes, endDateIncomes**: State for the start and end date filters for incomes.
+ * - **minAmountIncomes, maxAmountIncomes**: State for minimum and maximum amount filters for incomes.
+ * - **selectedCategoriesIncomes**: State for selected categories to filter incomes.
+ * - **isCategoryDialogOpen**: State to control the category dialog visibility for expenses.
+ * - **isCategoryIncomeDialogOpen**: State to control the category dialog visibility for incomes.
+ *
+ * Key Functions:
+ * - **fetchTransactions**: Fetches all transactions (expenses and incomes) from the backend.
+ * - **fetchCategories**: Fetches the available categories for filtering.
+ * - **handleFilter**: Filters expense transactions based on user-selected criteria.
+ * - **handleIncomeFilter**: Filters income transactions based on user-selected criteria.
+ * - **handleCategoryChange**: Updates the state when categories are selected for filtering expenses.
+ * - **handleIncomeCategoryChange**: Updates the state when categories are selected for filtering incomes.
+ * - **adjustTime**: Formats UTC date strings into a human-readable format.
+ *
+ * Filtering Logic:
+ * - Validates date ranges to ensure the start date is not after the end date.
+ * - Ensures the minimum amount is not greater than the maximum amount.
+ * - Sends filtered parameters to the backend API, such as:
+ *    - start_date, end_date
+ *    - min_amount, max_amount
+ *    - selected categories.
+ *
+ * API Endpoints:
+ * - GET `/api/get_transactions/:userId/`: Fetches all transactions for a user.
+ * - GET `/api/get_categories/:userId/`: Fetches all categories for a user.
+ * - GET `/api/filter_transactions/:userId/`: Filters transactions based on query parameters.
+ *
+ * Props Passed to `HistoryComponents`:
+ * - **transactions, incomes**: Filtered lists of expense and income transactions.
+ * - **categories**: List of all available categories.
+ * - **startDate, endDate, minAmount, maxAmount**: States and setters for expense filters.
+ * - **startDateIncomes, endDateIncomes, minAmountIncomes, maxAmountIncomes**: States and setters for income filters.
+ * - **selectedCategories, selectedCategoriesIncomes**: States for managing selected categories.
+ * - **handleFilter**: Handler function for filtering expenses.
+ * - **handleIncomeFilter**: Handler function for filtering incomes.
+ * - **adjustTime**: Utility function for formatting date strings.
+ *
+ * Notes:
+ * - Validates user input to prevent invalid filter criteria.
+ * - Uses `useEffect` to fetch transactions and categories on component mount.
+ * - State management ensures input fields dynamically update the component.
+ */
+
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import HistoryComponents from './HistoryComponents';

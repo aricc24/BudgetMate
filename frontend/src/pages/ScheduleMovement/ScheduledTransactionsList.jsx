@@ -1,3 +1,46 @@
+/**
+ * ScheduledTransactionsList.jsx
+ *
+ * Description:
+ * This functional component fetches and displays a list of **scheduled transactions** for a user.
+ * It also provides functionality to delete specific scheduled transactions.
+ *
+ * Features:
+ * - Fetches scheduled transactions for a specific user using their `userId` and `authToken` from `localStorage`.
+ * - Displays the list of scheduled transactions, including details like:
+ *   - Amount (`mount`)
+ *   - Description (`description`)
+ *   - Date (`date`)
+ *   - Periodicity (`periodicity`)
+ * - Allows the user to delete a scheduled transaction.
+ * - Updates the list of transactions dynamically after a transaction is deleted.
+ *
+ * State:
+ * - `transactions`: Array of scheduled transactions fetched from the backend.
+ *
+ * Behavior:
+ * - Fetches the list of scheduled transactions on **component mount** using the `useEffect` hook.
+ * - Deletion of transactions updates the list by filtering out the deleted item from state.
+ *
+ * API Endpoints:
+ * - GET `/api/scheduled-transactions/{userId}/`: Fetch all scheduled transactions for a user.
+ * - DELETE `/api/scheduled-transactions/{transactionId}/`: Delete a specific scheduled transaction.
+ *
+ * Props:
+ * - None.
+ *
+ * Hooks:
+ * - `useEffect`: Fetches scheduled transactions when the component is mounted.
+ * - `useState`: Manages the state of the transactions list.
+ *
+ * Input:
+ * - Fetches `userId` and `authToken` from `localStorage` for authenticated requests.
+ *
+ * Events:
+ * - `handleDeleteTransaction(transactionId)`: Deletes a transaction and updates the state.
+ *
+ */
+
 import React, { useState, useEffect } from 'react';
 
 const ScheduledTransactionsList = () => {

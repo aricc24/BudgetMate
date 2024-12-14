@@ -1,4 +1,82 @@
+<<<<<<< HEAD
 import React, { useEffect, useState, useCallback } from 'react';
+=======
+/**
+ * Expenses.jsx
+ *
+ * Description:
+ * This React component manages expense transactions for a financial tracking application. It allows users to:
+ * - Fetch, add, edit, and delete expense transactions.
+ * - Create, edit, and delete categories for transactions.
+ * - Visualize expense data using Line and Pie charts.
+ * - Filter transactions dynamically by description or category.
+ *
+ * Features:
+ * 1. **Expense Management**:
+ *    - Add new expense transactions.
+ *    - Edit existing transactions.
+ *    - Delete transactions.
+ *
+ * 2. **Category Management**:
+ *    - Create, edit, and delete categories for better organization of expenses.
+ *
+ * 3. **Chart Visualization**:
+ *    - Line Chart: Displays expense trends over time.
+ *    - Pie Chart: Shows a breakdown of expenses by category.
+ *
+ * 4. **Filtering**:
+ *    - Filter transactions based on descriptions or categories using a search input.
+ *
+ * Hooks Used:
+ * - `useState`: Manages component states such as transactions, categories, chart data, etc.
+ * - `useEffect`: Fetches transactions and categories when the component mounts.
+ * - `useNavigate`: Redirects users to login if not authenticated.
+ *
+ * Components:
+ * - **LineChart**: Visualizes expense trends over time.
+ * - **PieChart**: Shows expense breakdown by categories.
+ * - **ExpensesComponents**: A child component responsible for the UI rendering.
+ *
+ * Props Passed to `ExpensesComponents`:
+ * - `transactions`, `categories`, `chartData`: Core data for display.
+ * - `setters`: Functions to update states (amount, description, date, etc.).
+ * - Event handlers for adding, editing, and deleting transactions and categories.
+ *
+ * Key Functions:
+ * - `fetchTransactions`: Fetches user-specific expense transactions from the API.
+ * - `fetchCategories`: Retrieves categories for organizing expenses.
+ * - `handleAddExpense`: Adds a new expense transaction.
+ * - `handelDeleteExpense`: Deletes a specific transaction.
+ * - `handleEditExpense`: Updates an existing transaction.
+ * - `handleAddCategory`: Creates a new category.
+ * - `handleEditCategory`: Updates a category name.
+ * - `handleDeleteCategory`: Deletes a category.
+ * - `adjustTime`: Formats the transaction date for display.
+ *
+ * Charts:
+ * - `LineChart`: Line graph using Chart.js to visualize expense trends.
+ * - `PieChart`: Pie chart to display expense distribution across categories.
+ *
+ * API Endpoints:
+ * - `GET /api/get_transactions/<userId>`: Fetch all user transactions.
+ * - `GET /api/get_categories/<userId>`: Retrieve user categories.
+ * - `POST /api/transactions/`: Add a new transaction.
+ * - `PATCH /api/update_transaction/<userId>/<transactionId>`: Update a transaction.
+ * - `DELETE /api/delete_transaction/<transactionId>`: Delete a transaction.
+ * - `POST /api/create_category/`: Add a new category.
+ * - `PATCH /api/update_category/<userId>/<categoryId>`: Edit a category.
+ * - `DELETE /api/delete_category/<userId>/<categoryId>`: Delete a category.
+ *
+ * Notes:
+ * - Transactions are filtered based on descriptions and categories entered in the search input.
+ * - State updates trigger re-rendering to reflect changes dynamically.
+ * - Charts are destroyed and re-rendered when the data changes.
+ */
+
+
+
+import React, { useEffect, useState } from 'react';
+>>>>>>> origin/feature/frontend-documentation
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import ExpensesComponents from './ExpensesComponents.jsx'
@@ -7,7 +85,6 @@ const Expenses = () => {
     const [transactions, setTransactions] = useState([]);
     const [categories, setCategories] = useState([]);
     const [chartData, setChartData] = useState(null);
-    // const [filter, setFilter] = useState('monthly');
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
     const [selectedDate, setSelectedDate] = useState(new Date());

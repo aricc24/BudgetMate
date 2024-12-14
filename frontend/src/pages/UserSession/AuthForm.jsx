@@ -1,3 +1,53 @@
+/**
+ * AuthForm.jsx
+ *
+ * Description:
+ * This React functional component renders a reusable authentication form for login and registration.
+ * It includes input fields for email and password, with features like password visibility toggling
+ * and dynamic links for navigation between authentication-related pages.
+ *
+ * Functionalities:
+ * - **Email Input**: Controlled input field to capture the user's email.
+ * - **Password Input**: Controlled input field to capture the user's password, with an option to toggle password visibility.
+ * - **Dynamic Title and Submit Button**: Allows reusability for both login and registration forms.
+ * - **Message Display**: Optionally displays feedback messages (e.g., errors, notifications).
+ * - **Dynamic Links**: Renders links to navigate to other authentication-related pages.
+ * - **Additional Links**: Supports multiple auxiliary links, such as "Forgot Password" or "Create Account".
+ *
+ * Props:
+ * - `title` (string): The title of the form (e.g., "Login", "Register").
+ * - `email` (string): State for the email input value.
+ * - `setEmail` (function): Function to update the email state.
+ * - `password` (string): State for the password input value.
+ * - `setPassword` (function): Function to update the password state.
+ * - `showPassword` (boolean): State to control password visibility.
+ * - `setShowPassword` (function): Function to toggle password visibility.
+ * - `message` (string): Optional message to display (e.g., error or success feedback).
+ * - `handleSubmit` (function): Function to handle form submission.
+ * - `linkMessage` (string): Text to display before the main link.
+ * - `linkPath` (string): URL path for the main link.
+ * - `linkText` (string): Text for the main link.
+ * - `extraLinks` (array): Array of objects containing additional links. Each object has:
+ *      - `text`: Text before the link.
+ *      - `path`: URL path for the link.
+ *      - `linkText`: Text for the link.
+ * - `submitButtonText` (string): Text for the submit button (e.g., "Login", "Register").
+ *
+ *
+ * Components:
+ * - **Email Input**: Styled input field with an envelope icon.
+ * - **Password Input**: Includes a toggleable visibility option with an eye icon.
+ * - **Submit Button**: Dynamic text depending on the form purpose.
+ * - **Links**: Main navigation link and additional optional links.
+ *
+ * Notes:
+ * - The component uses FontAwesome for icons and CSS for styling.
+ * - Prevents invalid form submissions using the `required` attribute on inputs.
+ * - Password visibility toggling is implemented using a state-driven `fa-eye`/`fa-eye-slash` icon.
+ */
+
+
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';

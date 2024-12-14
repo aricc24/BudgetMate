@@ -1,3 +1,54 @@
+/**
+ * Debts.jsx
+ *
+ * Description:
+ * This component serves as the container for managing debt-related functionalities, including:
+ * - Fetching debts from the backend.
+ * - Adding, editing, and deleting debts.
+ * - Handling state changes for input fields, options, and dialogs.
+ * - Passing all necessary props and functions to the `DebtsComponents` child component for rendering.
+ *
+ * State Management:
+ * - **debts**: Stores all fetched debts from the backend.
+ * - **amount**: Input state for debt amount.
+ * - **description**: Input state for the debt description.
+ * - **lender**: Input state for the lender.
+ * - **hasInterest**: Boolean to determine if interest is applicable to the debt.
+ * - **interestAmount**: Input state for the interest amount (if applicable).
+ * - **init_Date**: Input state for the debt start date.
+ * - **due_Date**: Input state for the debt due date.
+ * - **selectedOption**: State for the status of the debt (Pending, Paid, Overdue).
+ * - **selectedDebtId**: State for identifying a specific debt during edit or delete operations.
+ * - **isOptionsOpen**: State to control visibility of the options dialog.
+ * - **isEditOpen**: State to control visibility of the edit dialog.
+ * - **editAmount, editDescription, editLender, editHInterest, editInAmount**: States for editing debt properties.
+ *
+ * Key Functions:
+ * - **fetchDebts**: Fetches all debts from the backend based on the logged-in user's ID.
+ * - **handleAddDebt**: Adds a new debt by sending a POST request to the backend and updates the state.
+ * - **adjustTime**: Formats UTC date strings into a human-readable format.
+ * - **handelDeleteDebt**: Deletes a debt record based on its ID by sending a DELETE request.
+ * - **handleEditDebt**: Updates an existing debt record with new data via a PATCH request.
+ *
+ * Events and Lifecycle:
+ * - **useEffect**: Automatically fetches debts on component mount.
+ *
+ * Props Passed to `DebtsComponents`:
+ * - **debts**: Array of debts to display.
+ * - **amount, description, lender, interest settings**: States and setters for input fields.
+ * - **init_Date, due_Date, selectedOption**: States for date and status options.
+ * - **selectedDebtId**: State for tracking the selected debt.
+ * - **handleAddDebt**: Function to handle adding a debt.
+ * - **handleEditDebt**: Function to handle editing an existing debt.
+ * - **handelDeleteDebt**: Function to handle deleting a debt.
+ * - **adjustTime**: Utility function for formatting dates.
+ *
+ * Notes:
+ * - Data is fetched using `fetch` with an authorization token.
+ * - State reset occurs after adding or editing debts.
+ * - Conditional rendering is used for managing dialogs and user actions.
+ */
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DebtsComponents from './DebtsComponents';

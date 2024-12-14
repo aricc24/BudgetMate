@@ -1,3 +1,49 @@
+/**
+ * ScheduledTransactionsForm.jsx
+ *
+ * Description:
+ * This React component renders a form to manage scheduled transactions (both incomes and expenses)
+ * and displays them in a table. It supports CRUD operations: adding, editing, and deleting scheduled transactions.
+ *
+ * Functionalities:
+ * - **Add Transaction**: Create new scheduled transactions with details like amount, description, type, date, periodicity, and categories.
+ * - **Edit Transaction**: Pre-populate form fields to allow editing of existing transactions.
+ * - **Delete Transaction**: Remove a transaction from the list.
+ * - **Categorization**: Select multiple categories for a transaction.
+ * - **Periodicity**: Set the repeat interval for a transaction (daily, weekly, monthly, yearly).
+ *
+ * Props:
+ * - `categories`: Array of category objects used to populate the category dropdown.
+ * - `scheduledTransactions`: Array of scheduled transaction objects to be displayed in the table.
+ * - `editingTransactionId`: ID of the transaction being edited. It determines if the form is in "edit mode".
+ * - `setEditingTransactionId`: Function to set the ID of the transaction being edited.
+ * - `handleChange`: Function to handle changes in form input fields.
+ * - `handleSubmit`: Function to handle adding a new transaction.
+ * - `handleEditScheduledTransaction`: Function to handle saving edits to an existing transaction.
+ * - `handleDeleteScheduledTransaction`: Function to delete a transaction.
+ * - `formData`: Object containing the form input values.
+ * - `setFormData`: Function to update the form input values.
+ *
+ * Form Fields:
+ * - `Amount`: Numeric input for transaction amount.
+ * - `Description`: Text input for transaction description.
+ * - `Type`: Dropdown to select transaction type (Income/Expense).
+ * - `Date`: Date-time picker for scheduling the transaction.
+ * - `Periodicity`: Dropdown to select the repeat interval (Daily, Weekly, Monthly, Yearly).
+ * - `Categories`: Multi-select dropdown to assign categories.
+ *
+ * Table:
+ * - Displays the list of scheduled transactions.
+ * - Includes options to **Edit** and **Delete** each transaction.
+ * - Highlights alternating rows for better readability.
+ *
+ * Usage:
+ * This component is part of the scheduled transactions management feature. It works with parent components
+ * that handle the logic for API calls, state management, and passing data as props.
+ */
+
+
+
 import React from 'react';
 import Layout from '../../components/Layout/Layout';
 import './ScheduleTransactions.css';

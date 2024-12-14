@@ -1,4 +1,79 @@
+<<<<<<< HEAD
 import React, {useState, useEffect} from 'react';
+=======
+/**
+ * ExpensesComponents.jsx
+ *
+ * Description:
+ * This React component is responsible for rendering the user interface for managing expense transactions.
+ * It provides functionalities to:
+ * - Add, edit, and delete expenses.
+ * - Manage categories (create, edit, delete).
+ * - Search expenses by description or categories.
+ * - Display expenses in a table, line chart, and pie chart formats.
+ *
+ * Props:
+ * - transactions: Array of transaction objects to display.
+ * - categories: Array of category objects.
+ * - chartData: Data for rendering charts.
+ * - amount, setAmount: State and setter for the input field "Amount".
+ * - description, setDescription: State and setter for the input field "Description".
+ * - selectedDate, setSelectedDate: State and setter for the selected transaction date.
+ * - selectedCategories: Array of selected categories.
+ * - newCategory, setNewCategory: State and setter for the new category name input.
+ * - isCategoryDialogOpen, setIsCategoryDialogOpen: State for managing the category selection dialog.
+ * - isNewCategoryDialogOpen, setIsNewCategoryDialogOpen: State for controlling the new category dialog.
+ * - isOptionsOpen, setisOptionsOpen: State for showing the options dialog.
+ * - selectedTransactionId, setSelectedTransactionId: State for tracking the transaction to edit or delete.
+ * - editAmount, setEditAmount: State for editing the transaction amount.
+ * - editDescription, setEditDescription: State for editing the transaction description.
+ * - isEditOpen, setisEditOpen: State to control visibility of the edit transaction dialog.
+ * - isEditCategoryOpen, setIsEditCategoryOpen: State to manage the edit category dialog.
+ * - editCategory, setEditCategory: State for updating category name.
+ * - selectedCategoryId, setSelectedCategoryId: State for the currently selected category ID.
+ * - searchTerm, setSearchTerm: State and setter for filtering transactions based on search input.
+ * - handleAddExpense: Function to handle adding a new expense transaction.
+ * - filteredTransactions: Filtered transactions based on search criteria.
+ * - adjustTime: Function to format the transaction date into a user-friendly format.
+ * - LineChart: Component to display expense trends in a line chart.
+ * - PieChart: Component to show expense distribution by categories in a pie chart.
+ * - handelDeleteExpense: Function to handle deletion of an expense transaction.
+ * - handleEditExpense: Function to handle editing an existing expense transaction.
+ * - handleCategoryChange: Function to manage category selection changes.
+ * - handleAddCategory: Function to add a new category.
+ * - handleEditCategory: Function to edit an existing category.
+ * - handleDeleteCategory: Function to delete a category.
+ *
+ * UI Components:
+ * - **Add Expense Form**: Allows users to input new expenses.
+ * - **Table**: Displays filtered transactions with "Edit" and "Delete" options.
+ * - **Charts**:
+ *   - Line Chart: Visualizes expense trends over time.
+ *   - Pie Chart: Displays expense breakdown by categories.
+ * - **Dialogs**:
+ *   - Options Dialog: Provides options to edit or delete transactions.
+ *   - Edit Transaction Dialog: Enables users to edit amount, description, and date.
+ *   - Category Management Dialogs: Add, edit, and delete categories.
+ *
+ * Events:
+ * - "Add Expense": Adds a new transaction to the list.
+ * - "Delete Transaction": Deletes a transaction after confirmation.
+ * - "Edit Transaction": Opens a dialog to edit transaction details.
+ * - "Search": Filters transactions dynamically by description or category.
+ *
+ * State Management:
+ * - Controlled inputs for form fields (amount, description, date, and category).
+ * - Dialog visibility is managed through boolean states (isCategoryDialogOpen, isEditOpen, etc.).
+ *
+ * Notes:
+ * - `DatePicker`: External library used for selecting dates and times.
+ * - Conditional rendering is used to display dialogs and charts dynamically.
+ * - Styling uses custom CSS classes (refer to `Expenses.css`).
+ */
+
+
+import React from 'react';
+>>>>>>> origin/feature/frontend-documentation
 import 'chartjs-adapter-date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';

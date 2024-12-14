@@ -1,3 +1,58 @@
+/**
+ * ScheduledTransactionsForm.jsx
+ *
+ * Description:
+ * This component manages a form for creating, updating, and deleting **scheduled transactions** for a user.
+ * It interacts with a backend API to persist the data and dynamically updates the transaction list displayed.
+ *
+ * Features:
+ * - Fetches a list of scheduled transactions for a specific user.
+ * - Fetches categories to associate with the transactions.
+ * - Adds new scheduled transactions.
+ * - Edits existing scheduled transactions.
+ * - Deletes scheduled transactions.
+ * - Dynamically updates the list of transactions displayed in the UI.
+ *
+ * State:
+ * - `formData`: Contains the form inputs for adding/updating a transaction.
+ * - `categories`: List of available categories fetched from the backend.
+ * - `scheduledTransactions`: List of existing scheduled transactions for the user.
+ * - `editingTransactionId`: Tracks the transaction ID being edited.
+ *
+ * Behavior:
+ * - Fetches data on component mount:
+ *   - List of categories (for category selection).
+ *   - List of scheduled transactions.
+ * - Handles form input changes and submission for creating/updating transactions.
+ * - Deletes a transaction from the list and backend on user action.
+ *
+ * API Endpoints:
+ * - GET `/api/get_categories/{userId}/`: Fetch user-specific categories.
+ * - GET `/api/scheduled-transactions/user/{userId}/`: Fetch all scheduled transactions for the user.
+ * - POST `/api/scheduled-transactions/`: Add a new scheduled transaction.
+ * - PATCH `/api/update_scheduled_transaction/{transactionId}/`: Update an existing transaction.
+ * - DELETE `/api/delete_scheduled_transaction/{transactionId}/`: Delete a specific transaction.
+ *
+ * Props:
+ * - `transactionId`: (Optional) Transaction ID for pre-populating the form during editing.
+ * - `onSave`: Callback function to trigger after saving a transaction.
+ *
+ * Hooks:
+ * - `useState`: Manages component state (transactions, form inputs, categories).
+ * - `useEffect`: Fetches data on mount.
+ * - `useCallback`: Optimizes the fetch function for scheduled transactions.
+ *
+ * Input:
+ * - Fetches `userId` and `authToken` from `localStorage` for authenticated requests.
+ *
+ * Events:
+ * - `handleChange`: Updates form state on input change.
+ * - `handleSubmit`: Saves a new scheduled transaction.
+ * - `handleEditScheduledTransaction`: Updates an existing scheduled transaction.
+ * - `handleDeleteScheduledTransaction`: Deletes a specific scheduled transaction.
+ *
+ */
+
 import { useState, useEffect, useCallback } from 'react';
 import ScheduleComponents from './ScheduleComponents.jsx'
 
