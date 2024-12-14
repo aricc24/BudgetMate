@@ -29,6 +29,7 @@
     transform: translate(-50%, -50%);
     background-color: #184346;
     border-radius: 8px;
+    border: none;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
     padding: 20px;
     width: 100%;
@@ -406,15 +407,17 @@
 .category-dialog {
     z-index: 200;
     position: fixed;
-    left: 50%;
-    top: 50%;
+    left: 57%;
+    top: 20%;
     background-color: #184346;
+    border: none;
     border-radius: 8px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
     padding: 20px;
-    width: 100%;
+    width: 350px;
     max-width: 400px;
     color: #1ab188;
+    align-items: center;
 }
 
 .category-dialog h3 {
@@ -530,4 +533,19 @@
     margin-left: 10px;
     margin-top: 20px;
     margin-right: 10px;
+}
+
+.ButtonsI {
+    margin-left: 10px;
+    margin-top: -10px;
+    position: relative;
+    left: -12px;
+}
+
+.ButtonsI-1 {
+    margin-left: 10px;
+    margin-top: -10px;
+    position: relative;
+    bottom: -15px;
+    left: 15px;
 }

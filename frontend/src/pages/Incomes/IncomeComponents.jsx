@@ -296,7 +296,7 @@ const IncomeComponents = ({
                             ))}
                         </select>
                         <button
-                            className="Buttons2"
+                            className="ButtonsI"
                             onClick={() => {
                                 setIsNewCategoryDialogOpen(true);
                                 setIsCategoryDialogOpen(false);
@@ -305,7 +305,7 @@ const IncomeComponents = ({
                             +
                         </button>                    
                         <button 
-                            className="Buttons2"
+                            className="ButtonsI"
                             onClick={() => {
                                 if (selectedCategories.length === 1) {
                                     handleDeleteCategory(selectedCategories[0]);
@@ -318,7 +318,7 @@ const IncomeComponents = ({
                             Delete Category
                         </button>
                         <button
-                            className="Buttons2"
+                            className="ButtonsI"
                             onClick={() => {
                                 const selectedCategory = categories.find(c => c.id_category === selectedCategoryId);
                                 setEditCategory(selectedCategory ? selectedCategory.category_name : '');
@@ -329,13 +329,13 @@ const IncomeComponents = ({
                             Edit category
                         </button>
                         <button
-                            className="Buttons2"
+                            className="ButtonsI-1"
                             onClick={() => setSelectedCategories([])}
                         >
                             Deselect All
                         </button>
-                        <button className="Buttons3" onClick={() => setIsCategoryDialogOpen(false)}>Done</button>
-                        <button className="Buttons3" onClick={() => setIsCategoryDialogOpen(false)}>Cancel</button>
+                        <button className="ButtonsI-1" onClick={() => setIsCategoryDialogOpen(false)}>Done</button>
+                        <button className="ButtonsI-1" onClick={() => setIsCategoryDialogOpen(false)}>Cancel</button>
                     </dialog>
                 </>
             )}
