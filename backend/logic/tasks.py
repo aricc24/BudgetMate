@@ -8,7 +8,16 @@ from logic.views.general_views import send_email_to_user
 
 @shared_task
 def process_scheduled_transactions():
-    current_time = now().date()  
+    """
+    Processes scheduled transactions, creating new transactions based on the schedule and frequency.
+
+    This task looks for all scheduled transactions that need to be processed and creates corresponding transactions for the users. After a transaction is created, the schedule date
+    is updated based on the repeat frequency (daily, weekly, monthly, or yearly). If the repeat frequency is 'none',
+    the scheduled transaction is deleted.
+
+    This task is scheduled to run periodically to ensure that transactions are processed according to their schedule.
+    """
+    current_time = now().date()
     scheduled_transactions = ScheduledTransaction.objects.filter(schedule_date__lte=current_time)
 
     for scheduled in scheduled_transactions:
@@ -39,6 +48,13 @@ def process_scheduled_transactions():
 
 @shared_task
 def send_scheduled_emails():
+    """
+    Sends scheduled emails to all users based on their email schedule frequency.
+
+    This task checks the email schedule frequency for each user (daily, weekly, monthly, or yearly) and sends an email
+    if the current date matches their scheduled send date. After sending the email, the user's `email_schedule_start_date`
+    is updated to the next scheduled send date based on their frequency.
+    """
     users = User.objects.all()
     today = now().date()
 
@@ -58,5 +74,5 @@ def send_scheduled_emails():
         elif frequency == 'yearly' and next_send_date <= today:
             send_email_to_user(user.id_user)
             user.email_schedule_start_date = today + relativedelta(years=1)
-        
+
         user.save()

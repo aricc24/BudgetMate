@@ -6,16 +6,36 @@ from logic.serializer import CategorySerializer
 
 @api_view(['GET'])
 def get_categories_by_user(request, id_user):
+    """
+    Retrieve all categories associated with a user, including universal categories.
+
+    Args:
+        request: The HTTP request object.
+        id_user (int): ID of the user whose categories are to be retrieved.
+
+    Returns:
+        Response: Serialized list of categories or error message if the user is not found.
+    """
     try:
         user = User.objects.get(id_user=id_user)
     except User.DoesNotExist:
         return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
     categories = user.categories.all() | Category.objects.filter(is_universal=True)
-    categories = categories.distinct()  
+    categories = categories.distinct()
     serializer = CategorySerializer(categories, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 def create_or_associate_category_logic(category_name, user):
+    """
+    Logic to create or associate a category with a user.
+
+    Args:
+        category_name (str): The name of the category to create or associate.
+        user (User): The user to associate the category with.
+
+    Returns:
+        dict: Contains the category object and a flag indicating if it was created.
+    """
     category, created = Category.objects.get_or_create(
         category_name=category_name,
         defaults={'is_universal': False}
@@ -26,6 +46,15 @@ def create_or_associate_category_logic(category_name, user):
 
 @api_view(['POST'])
 def create_or_associate_category(request):
+    """
+    Create a new category or associate an existing one with a user.
+
+    Args:
+        request: The HTTP request containing `category_name` and `id_user`.
+
+    Returns:
+        Response: Success message with category details or error message.
+    """
     category_name = request.data.get('category_name')
     id_user = request.data.get('id_user')
     user = User.objects.get(id_user=id_user)
@@ -46,6 +75,17 @@ def create_or_associate_category(request):
 
 @api_view(['PATCH'])
 def update_user_category(request, id_user, id_category):
+    """
+    Update a user-specific category's name or handle merging with an existing category.
+
+    Args:
+        request: The HTTP request containing the new `category_name`.
+        id_user (int): ID of the user editing the category.
+        id_category (int): ID of the category to update.
+
+    Returns:
+        Response: Success or error message depending on the update logic.
+    """
     user = User.objects.get(id_user=id_user)
     category = Category.objects.get(id_category=id_category)
     new_category_name = request.data.get('category_name')
@@ -103,37 +143,3 @@ def update_user_category(request, id_user, id_category):
             "message": "Category duplicated and updated successfully.",
             "category_name": new_category.category_name,
         }, status=status.HTTP_200_OK)
-
-@api_view(['DELETE'])
-def delete_user_category(request, id_user, id_category):
-    try:
-        user = User.objects.get(id_user=id_user)
-        category = Category.objects.get(id_category=id_category)
-    except User.DoesNotExist:
-        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-    except Category.DoesNotExist:
-        return Response({"error": "Category not found."}, status=status.HTTP_404_NOT_FOUND)
-
-    # universal category
-    if category.is_universal:
-        return Response({"error": "Cannot delete global categories."}, status=status.HTTP_400_BAD_REQUEST)
-
-    # associated with this user
-    if not category.users.exclude(id_user=user.id_user).exists():
-        transactions = Transaction.objects.filter(categories=category, id_user=id_user)
-        for transaction in transactions:
-            transaction.categories.remove(category)
-            transaction.save()
-
-        category.delete()
-        return Response({"message": "Category deleted successfully."}, status=status.HTTP_200_OK)
-
-    # associated with multiple users
-    else:
-        user.categories.remove(category)
-        transactions = Transaction.objects.filter(categories=category, id_user=id_user)
-        for transaction in transactions:
-            transaction.categories.remove(category)
-            transaction.save()
-
-        return Response({"message": "Category disassociated from user successfully."}, status=status.HTTP_200_OK)

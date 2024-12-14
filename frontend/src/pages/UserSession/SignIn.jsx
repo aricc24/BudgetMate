@@ -69,6 +69,13 @@ function SignIn() {
     const handleSignUp = async (e) => {
         e.preventDefault();
         const userData = { email, password };
+        const domainExists = await emailDomainExists(getEmailDomain(email));
+        if (!domainExists) {
+            setEmail('');
+            setPassword('');
+            setMessage('E-mail domain invalid.');
+            return;
+        }
 
         try {
             const response = await fetch('http://127.0.0.1:8000/api/users/', {
@@ -76,12 +83,37 @@ function SignIn() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
             });
-            setMessage(response.ok ? 'User added successfully! Please login' : 'Error adding user: The user already exists or the provided data is invalid');
+            setMessage(response.ok ? 'User registered successfully! Check your email for verification.' : 'Error adding user.');
         } catch (error) {
             console.error('Error:', error);
             setMessage('Error adding user.');
         }
     };
+
+    function getEmailDomain(email) {
+        const parts = email.split('@');
+        return parts.length > 1 ? parts[1] : null;
+    }
+
+    async function emailDomainExists(domain) {
+      const url = `https://dns.google/resolve?name=${domain}&type=MX`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.Answer && data.Answer.length > 0) {
+          console.log('MX Records found:', data.Answer);
+          return true;
+        } else {
+          console.log('No MX Records found or domain is not a mail server.');
+          return false;
+        }
+      } catch (error) {
+        console.error('Error fetching DNS:', error);
+        return false;
+      }
+    }
 
     return (
         <AuthForm
