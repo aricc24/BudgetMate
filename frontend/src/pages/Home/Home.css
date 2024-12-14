@@ -17,18 +17,32 @@
     color: #1ab188;
     text-align: center;
     margin-bottom: 20px;
+    position: relative;
+    bottom: 100px;
   }
   
+  .home label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1ab188;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    bottom: 125px;
+  }
+
   .filter-container {
     display: flex;
     flex-direction: column;
     width: 50%;
     margin-bottom: 20px;
+    margin-top: 10px; 
   }
   
   .filter-container label {
     font-size: 1rem;
     color: #1ab188;
+    margin-bottom: 5px;
   }
   
   .filter-container select,
@@ -64,33 +78,42 @@
   .filter-container button:hover {
     background-color: #6ed6ba;
   }
-  
+
   .email-schedule {
     width: 50%;
     margin-bottom: 20px;
-    margin-top: 20px;
+    margin-top: 10px;
+    position: relative;
+    bottom: 121px;
+    left: 160px;
   }
   
   .email-schedule label {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #1ab188;
+    left: 20px;
+    padding: 7px;
+    bottom: 110px;
   }
   
   .email-schedule select,
   .email-schedule input {
-    padding: 10px;
-    font-size: 1rem;
+    padding: 3px;
+    font-size: 0.7rem;
     border: 1px solid #1ab188;
     border-radius: 8px;
     outline: none;
     background-color: #132e2f;
     color: #fff;
-    margin-top: 10px;
+    position: relative;
+    bottom: 90px;
+    left: 10px;
+    width: 90px;
+    height: 24px;
   }
   
   .email-schedule button {
-    padding: 10px 15px;
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: #fff;
     background-color: #1ab188;
     border: none;
@@ -98,6 +121,11 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s;
     margin-top: 20px;
+    position: relative;
+    bottom: 50px;
+    left: -197px;
+    width: 115px;
+    height: 24px;
   }
   
   .email-schedule button:hover {
@@ -125,20 +153,48 @@
     margin-bottom: 10px;
   }
   
-  .button {
-    padding: 10px 15px;
-    font-size: 1rem;
+  .buttonS,
+  .buttonH {
+    padding: 5px 4px;
+    font-size: 1.2rem;
     color: #fff;
     background-color: #1ab188;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s;
-    width: 100%;
-    margin-top: 20px;
+    width: auto;
+    margin-top: 26px;
+    position: relative;
+    bottom: 100px;
   }
   
-  .button:hover {
+  .buttonS {
+    bottom: 100px;
+    left: -120px;
+    font-size: 0.7rem;
+    width: 135px;
+    height: 24px;
+  }
+
+  .buttonH {
+    width: 100px;
+    bottom: 140px;
+    font-size: 0.8rem;
+  }
+
+  .buttonS:hover,
+  .buttonH:hover{
     background-color: #6ed6ba;
+  }
+
+  .or-container {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #1ab189cd;
+    text-align: center;
+    position: relative;
+    bottom: 121px;
+    left: -10px;
   }
   

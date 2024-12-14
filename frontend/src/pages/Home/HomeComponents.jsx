@@ -19,10 +19,23 @@ const HomeComponents = ({
     return (
         <Layout>
             <div className="home">
-                <h2>Financial Overview</h2>
-                <button onClick={handleDownloadPDF} className="button">Download PDF</button>
-                <button onClick={handleSendEmail} className="button">Send by Email Now</button>
-                
+                <h2>Home</h2>
+                <button 
+                    onClick={handleDownloadPDF} 
+                    className="buttonH"
+                >
+                    Download PDF
+                </button>
+                <label>Schedule PDF Send by Email</label>
+                <button 
+                    onClick={handleSendEmail} 
+                    className="buttonS"
+                >
+                    Send PDF by Email Now
+                </button>
+                <div className="or-container">
+                    <span>or</span>
+                </div>
                 <div className="email-schedule">
                     <label>Frequency:</label>
                     <select value={selectedFrequency} onChange={(e) => setSelectedFrequency(e.target.value)}>
