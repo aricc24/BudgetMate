@@ -162,7 +162,7 @@ class Debt(models.Model):
 
 class ScheduledTransaction(models.Model):
     """
-    Represents a scheduled transaction that repeats periodically (e.g., daily, weekly, etc.).
+    Represents a scheduled transaction that repeats periodically.
 
     Attributes:
         id_transaction: Auto-incrementing primary key for each scheduled transaction.

@@ -11,18 +11,11 @@ def process_scheduled_transactions():
     """
     Processes scheduled transactions, creating new transactions based on the schedule and frequency.
 
-    This task looks for all scheduled transactions that need to be processed (i.e., their `schedule_date` is today
-    or in the past) and creates corresponding transactions for the users. After a transaction is created, the schedule date
+    This task looks for all scheduled transactions that need to be processed and creates corresponding transactions for the users. After a transaction is created, the schedule date
     is updated based on the repeat frequency (daily, weekly, monthly, or yearly). If the repeat frequency is 'none',
     the scheduled transaction is deleted.
 
     This task is scheduled to run periodically to ensure that transactions are processed according to their schedule.
-
-    Steps:
-        1. Retrieve scheduled transactions that need to be processed.
-        2. Create corresponding transactions for the user.
-        3. Update the schedule date based on the repeat frequency (daily, weekly, monthly, or yearly).
-        4. Delete the scheduled transaction if the repeat frequency is 'none'.
     """
     current_time = now().date()
     scheduled_transactions = ScheduledTransaction.objects.filter(schedule_date__lte=current_time)
@@ -61,11 +54,6 @@ def send_scheduled_emails():
     This task checks the email schedule frequency for each user (daily, weekly, monthly, or yearly) and sends an email
     if the current date matches their scheduled send date. After sending the email, the user's `email_schedule_start_date`
     is updated to the next scheduled send date based on their frequency.
-
-    Steps:
-        1. Retrieve all users and check their email schedule frequency.
-        2. If the current date matches the user's scheduled send date, send the email.
-        3. Update the `email_schedule_start_date` to the next scheduled date based on the frequency (daily, weekly, monthly, or yearly).
     """
     users = User.objects.all()
     today = now().date()

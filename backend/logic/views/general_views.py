@@ -79,8 +79,7 @@ def filter_transactions(request, id_user):
 def generate_pdf(request, id_user):
     """
     Generates a PDF report for a specific user containing their financial data such as income,
-    expenses, debts, and scheduled transactions. It also includes visual charts for income and
-    expense trends, as well as distribution by category.
+    expenses, debts, and charts that represent this information.
 
     Parameters:
         - id_user: The ID of the user for whom the report is being generated.
@@ -334,8 +333,7 @@ def update_email_schedule(request, id_user):
     Updates the email schedule for sending financial reports to a specific user.
 
     This endpoint allows the user to set how frequently they want to receive their
-    financial reports (daily, weekly, monthly, or yearly). The schedule start date
-    is also updated.
+    financial reports. The schedule start date is also updated.
 
     Parameters:
         - request.data: Contains the frequency of email delivery and the start date

@@ -20,8 +20,6 @@ class TransactionCreateView(generics.CreateAPIView):
 @api_view(['GET'])
 def get_transactions_by_user(request, id_user):
     """
-    Retrieve all transactions for a specific user.
-
     This view returns all transactions associated with the user identified by `id_user`.
 
     Parameters:
@@ -41,8 +39,6 @@ def delete_transaction(request, transaction_id):
     """
     Delete a specific transaction by its ID.
 
-    This view deletes the transaction identified by `transaction_id`.
-
     Parameters:
         - request: The HTTP request object.
         - transaction_id: The ID of the transaction to be deleted.
@@ -60,9 +56,7 @@ def delete_transaction(request, transaction_id):
 @api_view(['PATCH'])
 def update_user_transaction(request, id_user, id_transaction):
     """"
-    Update a specific transaction for a given user.
-
-    This view updates a transaction identified by `id_transaction` and associated with the user `id_user`.
+    Updates a specific transaction for a given user by `id_transaction` and associated with the user `id_user`.
     Only the fields provided in the request are updated (partial update).
 
     Parameters:

@@ -16,9 +16,6 @@ class CustomRefreshToken(RefreshToken):
     """
     Custom Refresh Token that includes the user ID in the payload.
 
-    This class extends the default `RefreshToken` class and adds the user ID
-    to the payload when generating a new refresh token.
-
     Attributes:
         - user_id: The ID of the user for whom the token is being created.
     """
@@ -31,20 +28,18 @@ class UserView(generics.ListCreateAPIView):
     API view to list and create users.
 
     This view handles both the listing and creation of new users. Upon user creation,
-    a set of default categories are created and assigned to the user, and a verification
+    a global categories are created and assigned to the user, and a verification
     email is sent to the user.
 
     Methods:
         POST: Create a new user and send a verification email.
-        GET: List all users (can be extended if needed).
+        GET: List all users.
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def perform_create(self, serializer):
         """
-        Overridden method to perform custom logic during user creation.
-
         This method is used to create default categories and send a verification
         email to the user once the user has been created.
         """
@@ -137,10 +132,7 @@ def get_user_info(request):
 
 class UserUpdateView(generics.RetrieveUpdateAPIView):
     """
-    API view to retrieve and update user data.
-
-    This view allows users to retrieve and update their information, identified
-    by `id_user`.
+    API view to retrieve and update user data, identified by `id_user`.
 
     Methods:
         GET: Retrieve user details.
