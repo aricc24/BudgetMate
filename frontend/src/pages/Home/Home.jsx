@@ -11,34 +11,35 @@ const Home = () => {
     const [selectedFrequencyForEmail, setSelectedFrequencyForEmail] = useState('monthly');
     const [selectedStartDateForFilter, setSelectedStartDateForFilter] = useState('');
     const [selectedStartDateForEmail, setSelectedStartDateForEmail] = useState('');
-    
+
     const filterDataByDateRange = (data, startDate, frequency) => {
-        if (!startDate) return data;
-
+        if (!startDate || frequency === 'all') return data;
+    
         const start = new Date(startDate);
-
+    
         return data.filter((item) => {
             const transactionDate = new Date(item.date);
-
+    
             switch (frequency) {
                 case 'daily':
                     return transactionDate.toISOString().split('T')[0] === start.toISOString().split('T')[0];
                 case 'weekly':
                     const weekLater = new Date(start);
-                    weekLater.setDate(start.getDate() + 7);
+                    weekLater.setDate(start.getDate() + 6); 
                     return transactionDate >= start && transactionDate <= weekLater;
                 case 'monthly':
-                    return (
-                        transactionDate.getMonth() === start.getMonth() &&
-                        transactionDate.getFullYear() === start.getFullYear()
-                    );
+                    const monthLater = new Date(start);
+                    monthLater.setMonth(start.getMonth() + 1);
+                    return transactionDate >= start && transactionDate < monthLater;
                 case 'yearly':
-                    return transactionDate.getFullYear() === start.getFullYear();
+                    const yearLater = new Date(start);
+                    yearLater.setFullYear(start.getFullYear() + 1);
+                    return transactionDate >= start && transactionDate < yearLater;
                 default:
-                    return true;
+                    return false;
             }
         });
-    }; 
+    };
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -57,7 +58,7 @@ const Home = () => {
                 if (response.ok) {
                     const data = await response.json();
 
-                    const filteredData = filterDataByDateRange(data, selectedStartDateForFilter, selectedFrequencyForFilter); // Usar el filtro para las transacciones
+                    const filteredData = filterDataByDateRange(data, selectedStartDateForFilter, selectedFrequencyForFilter);
 
                     const incomeData = filteredData
                         .filter(t => t.type === 0)
@@ -206,8 +207,6 @@ const CombinedPieChart = ({ data }) => {
     return <canvas ref={chartRef}></canvas>;
 };
 
-
-
 const handleDownloadPDF = async () => {
     const authToken = localStorage.getItem('authToken');
     const userId = localStorage.getItem('userId');
@@ -258,3 +257,4 @@ const handleSendEmail = async () => {
 };
 
 export default Home;
+
