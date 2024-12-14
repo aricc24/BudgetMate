@@ -90,7 +90,7 @@ const DebtsComponents = ({
     handelDeleteDebt,
 }) => {
 
-    const [isAddDebtDialogOpen, setIsAddDebtDialogOpen] = useState(false); 
+    const [isAddDebtDialogOpen, setIsAddDebtDialogOpen] = useState(false);
 
     useEffect(() => {
         if (isAddDebtDialogOpen || isEditOpen) {
@@ -99,7 +99,7 @@ const DebtsComponents = ({
             document.body.style.overflow = '';
         }
     }, [isAddDebtDialogOpen, isEditOpen]);
-    
+
     const handleOpenAddDebtDialog = () => { setIsAddDebtDialogOpen(true); };
     const handleCloseAddDebtDialog = () => { handleAddDebt(); setIsAddDebtDialogOpen(false);};
 
@@ -107,7 +107,7 @@ const DebtsComponents = ({
         <Layout>
             <div className={`debt-page ${isAddDebtDialogOpen || isEditOpen ? 'inactive' : ''}`}>
                 <label>Debts</label>
-                <button 
+                <button
                     className="Buttons1"
                     onClick={handleOpenAddDebtDialog}>
                     Add Debt

@@ -108,7 +108,7 @@ const ExpensesComponents = ({
     handleEditCategory,
     handleDeleteCategory,
 }) => {
-    const [isAddExpenseDialogOpen, setIsAddExpenseDialogOpen] = useState(false); 
+    const [isAddExpenseDialogOpen, setIsAddExpenseDialogOpen] = useState(false);
 
     useEffect(() => {
         if (isAddExpenseDialogOpen || isEditOpen || isCategoryDialogOpen || isNewCategoryDialogOpen || isEditCategoryOpen) {
@@ -117,7 +117,7 @@ const ExpensesComponents = ({
             document.body.style.overflow = '';
         }
     }, [isAddExpenseDialogOpen, isEditOpen, isCategoryDialogOpen, isNewCategoryDialogOpen, isEditCategoryOpen]);
-    
+
     const handleOpenAddExpenseDialog = () => { setIsAddExpenseDialogOpen(true); };
     const handleCloseAddExpenseDialog = () => { handleAddExpense(); setIsAddExpenseDialogOpen(false);};
 
@@ -125,7 +125,7 @@ const ExpensesComponents = ({
         <Layout>
             <div className={`expense-page ${isAddExpenseDialogOpen || isEditOpen || isCategoryDialogOpen ? 'inactive' : ''}`}>
                 <label>Expenses</label>
-                <button 
+                <button
                     className="Buttons1"
                     onClick={handleOpenAddExpenseDialog}>
                     Add Expense
@@ -140,7 +140,7 @@ const ExpensesComponents = ({
                         className="mb-4 p-2 border border-gray-300 rounded"
                     />
                 </div>
-    
+
                 <div className="table2">
                     <table border="1" className="table">
                         <thead>
@@ -211,7 +211,7 @@ const ExpensesComponents = ({
                     </table>
                 </div>
 
-    
+
                 <div className="chart-container">
                     <h4 className="chart-title">Line Chart</h4>
                     {chartData && <LineChart data={chartData} />}
@@ -353,7 +353,7 @@ const ExpensesComponents = ({
             )}
             {isCategoryDialogOpen && (
                 <>
-                    <div className="overlay"></div> 
+                    <div className="overlay"></div>
                     <dialog className="category-dialog" open>
                         <h3>Select Categories</h3>
                         <h6>Hold ctrl or left click to select multiple categories</h6>
@@ -374,8 +374,8 @@ const ExpensesComponents = ({
                             }}
                         >
                             +
-                        </button>                    
-                        <button 
+                        </button>
+                        <button
                             className="Buttons4"
                             onClick={() => {
                                 if (selectedCategories.length === 1) {
@@ -420,10 +420,10 @@ const ExpensesComponents = ({
                         onChange={(e) => setNewCategory(e.target.value)}
                         placeholder="Category Name"
                     />
-                    
+
                         <button className="Buttons3" onClick={handleAddCategory}>Add</button>
                         <button className="Buttons3" onClick={() => setIsNewCategoryDialogOpen(false)}>Cancel</button>
-                    
+
                 </dialog>
             )}
 
@@ -463,13 +463,13 @@ const ExpensesComponents = ({
                     <button
                         className="Buttons3"
                         onClick={() => setIsEditCategoryOpen(false)}
-                    > 
+                    >
                         Cancel
                     </button>
                 </dialog>
             )}
         </Layout>
-    );    
+    );
 };
 
 export default ExpensesComponents;

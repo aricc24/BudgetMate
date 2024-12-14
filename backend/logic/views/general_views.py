@@ -32,6 +32,21 @@ from django.utils.timezone import localtime
 
 @api_view(['GET'])
 def filter_transactions(request, id_user):
+    """
+    Filters transactions for a specific user based on various query parameters like date range,
+    categories, minimum and maximum amount, and transaction type (income or expense).
+
+    Parameters:
+        - start_date (optional): Start date for filtering transactions.
+        - end_date (optional): End date for filtering transactions.
+        - categories (optional): List of categories to filter transactions.
+        - min_amount (optional): Minimum amount for filtering transactions.
+        - max_amount (optional): Maximum amount for filtering transactions.
+        - type (optional): Type of transaction (`incomes` or `expenses`).
+
+    Returns:
+        - Response: A list of filtered transactions, serialized using the `TransactionSerializer`.
+    """
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
     categories = request.GET.getlist('categories')
@@ -40,7 +55,7 @@ def filter_transactions(request, id_user):
     transaction_type = request.GET.get('type')
 
     transactions = Transaction.objects.filter(id_user=id_user)
-    
+
     if transaction_type == 'expenses':
         transactions = transactions.filter(type=Transaction.TransEnum.EXPENSE)
     elif transaction_type == 'incomes':
@@ -62,103 +77,113 @@ def filter_transactions(request, id_user):
 
 @api_view(['GET'])
 def generate_pdf(request, id_user):
-   user = User.objects.get(id_user=id_user)
-   transactions = Transaction.objects.filter(id_user=user).select_related('id_user').prefetch_related('categories')
-   for transaction in transactions:
-    transaction.date = localtime(transaction.date)   
-   debts = Debt.objects.filter(id_user=user) 
-   scheduled_transactions = ScheduledTransaction.objects.filter(user=user).prefetch_related('categories')
+    """
+    Generates a PDF report for a specific user containing their financial data such as income,
+    expenses, debts, and charts that represent this information.
 
-   income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
-   expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
-   
-   total_income = sum(t.mount for t in income_data)
-   total_expenses = sum(t.mount for t in expense_data)
-   
-   total_paid_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PAID)
-   total_pending_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PENDING)
-   total_overdue_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.OVERDUE)
-   
-   main_balance = total_income - total_expenses 
-   debt_balance = total_pending_debt + total_overdue_debt
-   suggested_balance = main_balance - (total_pending_debt + total_overdue_debt)
-   
-   main_balance_message = ( f"${main_balance:.2f}")
-   debt_balance_message = f"${debt_balance:.2f}"
-   suggested_balance_message = f"${suggested_balance:.2f}"
+    Parameters:
+        - id_user: The ID of the user for whom the report is being generated.
 
+    Returns:
+        - HttpResponse: A PDF file containing the generated report as an attachment.
+    """
+    user = User.objects.get(id_user=id_user)
+    transactions = Transaction.objects.filter(id_user=user).select_related('id_user').prefetch_related('categories')
+    for transaction in transactions:
+        transaction.date = localtime(transaction.date)
+    debts = Debt.objects.filter(id_user=user)
+    scheduled_transactions = ScheduledTransaction.objects.filter(user=user).prefetch_related('categories')
 
-   income_dates = [t.date for t in income_data]
-   income_amounts = [t.mount for t in income_data]
-   expense_dates = [t.date for t in expense_data]
-   expense_amounts = [t.mount for t in expense_data]
-   
-   temp_images = []
+    income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
+    expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
 
+    total_income = sum(t.mount for t in income_data)
+    total_expenses = sum(t.mount for t in expense_data)
 
-   #Line Graph Incomes
-   income_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_income_chart_{id_user}.png")
-   fig, ax = plt.subplots(figsize=(16, 9))
-   ax.plot(income_dates, income_amounts, label='Ingresos', color='green', linewidth=2)
-   ax.scatter(income_dates, income_amounts, color='black', zorder=5, label='Entries')
-   ax.set_xlabel('Date')
-   ax.set_ylabel('Amount ($)')
-   ax.set_title('Income over Time')
-   ax.xaxis.set_major_locator(AutoDateLocator())
-   ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
-   ax.tick_params(axis='x', rotation=45)
-   ax.legend()
-   ax.grid(visible=True, linestyle='--', alpha=0.6)
-   fig.savefig(income_temp_file, format='png')
-   plt.close(fig)
-   income_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(income_temp_file))
+    total_paid_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PAID)
+    total_pending_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PENDING)
+    total_overdue_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.OVERDUE)
 
-   #Line Graph Expenses
-   expense_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expense_chart_{id_user}.png")
-   fig, ax = plt.subplots(figsize=(16, 9))
-   ax.plot(expense_dates, expense_amounts, label='Egresos', color='red', linewidth=2)
-   ax.scatter(expense_dates, expense_amounts, color='black', zorder=5, label='Entries')
-   ax.set_xlabel('Date')
-   ax.set_ylabel('Amount ($)')
-   ax.set_title('Expenses over Time')
-   ax.xaxis.set_major_locator(AutoDateLocator())
-   ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
-   ax.tick_params(axis='x', rotation=45)
-   ax.legend()
-   ax.grid(visible=True, linestyle='--', alpha=0.6)
-   fig.savefig(expense_temp_file, format='png')
-   plt.close(fig)
-   expense_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(expense_temp_file))
+    main_balance = total_income - total_expenses
+    debt_balance = total_pending_debt + total_overdue_debt
+    suggested_balance = main_balance - (total_pending_debt + total_overdue_debt)
 
-   #Category Graph Incomes
-   inpie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_inpie_chart_{id_user}.png")
-   income_categories = income_data.values('categories__category_name').annotate(total=Sum('mount'))
-   category_names = [cat['categories__category_name'] for cat in income_categories]
-   category_totals = [cat['total'] for cat in income_categories]
-   income_colors = [to_hex((random.random(), random.random(), random.random())) for _ in category_names]
-   fig, ax = plt.subplots(figsize=(8, 8))
-   ax.pie(category_totals, labels=category_names, autopct='%1.1f%%', colors=income_colors)
-   ax.set_title('Income Distribution by Category')
-   fig.savefig(inpie_temp_file, format='png')
-   plt.close(fig)
-   inpie_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(inpie_temp_file))
+    main_balance_message = ( f"${main_balance:.2f}")
+    debt_balance_message = f"${debt_balance:.2f}"
+    suggested_balance_message = f"${suggested_balance:.2f}"
 
 
-   #Category Graph Expenses
-   expie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expie_chart_{id_user}.png")
-   expense_categories = expense_data.values('categories__category_name').annotate(total=Sum('mount'))
-   category_names_expense = [cat['categories__category_name'] for cat in expense_categories]
-   category_totals_expense = [cat['total'] for cat in expense_categories]
-   expense_colors = [to_hex((random.random(), random.random(), random.random())) for _ in category_names_expense]
-   fig, ax = plt.subplots(figsize=(8, 8))
-   ax.pie(category_totals_expense, labels=category_names_expense, autopct='%1.1f%%', colors=expense_colors)
-   ax.set_title('Expenses Distribution by Category')
-   fig.savefig(expie_temp_file, format='png')
-   plt.close(fig)
-   expie_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(expie_temp_file))
+    income_dates = [t.date for t in income_data]
+    income_amounts = [t.mount for t in income_data]
+    expense_dates = [t.date for t in expense_data]
+    expense_amounts = [t.mount for t in expense_data]
+
+    temp_images = []
 
 
-   context = {
+    #Line Graph Incomes
+    income_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_income_chart_{id_user}.png")
+    fig, ax = plt.subplots(figsize=(16, 9))
+    ax.plot(income_dates, income_amounts, label='Ingresos', color='green', linewidth=2)
+    ax.scatter(income_dates, income_amounts, color='black', zorder=5, label='Entries')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Amount ($)')
+    ax.set_title('Income over Time')
+    ax.xaxis.set_major_locator(AutoDateLocator())
+    ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
+    ax.tick_params(axis='x', rotation=45)
+    ax.legend()
+    ax.grid(visible=True, linestyle='--', alpha=0.6)
+    fig.savefig(income_temp_file, format='png')
+    plt.close(fig)
+    income_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(income_temp_file))
+
+    #Line Graph Expenses
+    expense_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expense_chart_{id_user}.png")
+    fig, ax = plt.subplots(figsize=(16, 9))
+    ax.plot(expense_dates, expense_amounts, label='Egresos', color='red', linewidth=2)
+    ax.scatter(expense_dates, expense_amounts, color='black', zorder=5, label='Entries')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Amount ($)')
+    ax.set_title('Expenses over Time')
+    ax.xaxis.set_major_locator(AutoDateLocator())
+    ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
+    ax.tick_params(axis='x', rotation=45)
+    ax.legend()
+    ax.grid(visible=True, linestyle='--', alpha=0.6)
+    fig.savefig(expense_temp_file, format='png')
+    plt.close(fig)
+    expense_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(expense_temp_file))
+
+    #Category Graph Incomes
+    inpie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_inpie_chart_{id_user}.png")
+    income_categories = income_data.values('categories__category_name').annotate(total=Sum('mount'))
+    category_names = [cat['categories__category_name'] for cat in income_categories]
+    category_totals = [cat['total'] for cat in income_categories]
+    income_colors = [to_hex((random.random(), random.random(), random.random())) for _ in category_names]
+    fig, ax = plt.subplots(figsize=(8, 8))
+    ax.pie(category_totals, labels=category_names, autopct='%1.1f%%', colors=income_colors)
+    ax.set_title('Income Distribution by Category')
+    fig.savefig(inpie_temp_file, format='png')
+    plt.close(fig)
+    inpie_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(inpie_temp_file))
+
+
+    #Category Graph Expenses
+    expie_temp_file = os.path.join(settings.MEDIA_ROOT, f"temp_expie_chart_{id_user}.png")
+    expense_categories = expense_data.values('categories__category_name').annotate(total=Sum('mount'))
+    category_names_expense = [cat['categories__category_name'] for cat in expense_categories]
+    category_totals_expense = [cat['total'] for cat in expense_categories]
+    expense_colors = [to_hex((random.random(), random.random(), random.random())) for _ in category_names_expense]
+    fig, ax = plt.subplots(figsize=(8, 8))
+    ax.pie(category_totals_expense, labels=category_names_expense, autopct='%1.1f%%', colors=expense_colors)
+    ax.set_title('Expenses Distribution by Category')
+    fig.savefig(expie_temp_file, format='png')
+    plt.close(fig)
+    expie_chart_url = request.build_absolute_uri(settings.MEDIA_URL + os.path.basename(expie_temp_file))
+
+
+    context = {
        'transactions': transactions,
        'debts': debts,
        'scheduled_transactions': scheduled_transactions,
@@ -170,46 +195,55 @@ def generate_pdf(request, id_user):
        'main_balance_message': main_balance_message,
        'debt_balance_message': debt_balance_message,
        'suggested_balance_message': suggested_balance_message,
-       'total_income' : total_income, 
-       'total_expenses' : total_expenses, 
-       'total_paid_debt': total_paid_debt, 
-       'total_pending_debt': total_pending_debt, 
+       'total_income' : total_income,
+       'total_expenses' : total_expenses,
+       'total_paid_debt': total_paid_debt,
+       'total_pending_debt': total_pending_debt,
        'total_overdue_debt': total_overdue_debt,
 
-   }
+    }
 
 
-   html_content = render_to_string('pdf_template.html', context)
-   pdf = HTML(string=html_content, base_url=request.build_absolute_uri('/')).write_pdf()
-   response = HttpResponse(content_type='application/pdf')
-   response['Content-Disposition'] = f'attachment; filename="report_{id_user}.pdf"'
-   for temp_image in temp_images:
+    html_content = render_to_string('pdf_template.html', context)
+    pdf = HTML(string=html_content, base_url=request.build_absolute_uri('/')).write_pdf()
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="report_{id_user}.pdf"'
+    for temp_image in temp_images:
        os.remove(temp_image)
 
-   response.write(pdf)
-   return response
+    response.write(pdf)
+    return response
 
 
 @api_view(['POST'])
 def send_email(request, id_user):
+    """
+    Sends an email with the financial report as a PDF attachment to a specific user.
+
+    Parameters:
+        - id_user: The ID of the user to whom the email should be sent.
+
+    Returns:
+        - HttpResponse: Success message if the email is sent successfully, or error message if failed.
+    """
     user = User.objects.get(id_user=id_user)
     transactions = Transaction.objects.filter(id_user=user)
-    debts = Debt.objects.filter(id_user=user) 
+    debts = Debt.objects.filter(id_user=user)
     scheduled_transactions = ScheduledTransaction.objects.filter(user=user).prefetch_related('categories')
 
     income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
     expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
     total_income = sum(t.mount for t in income_data)
     total_expenses = sum(t.mount for t in expense_data)
-    
+
     total_paid_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PAID)
     total_pending_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PENDING)
     total_overdue_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.OVERDUE)
-    
-    main_balance = total_income - total_expenses 
+
+    main_balance = total_income - total_expenses
     debt_balance = total_pending_debt + total_overdue_debt
     suggested_balance = main_balance - (total_pending_debt + total_overdue_debt)
-    
+
     main_balance_message = ( f"${main_balance:.2f}")
     debt_balance_message = f"${debt_balance:.2f}"
     suggested_balance_message = f"${suggested_balance:.2f}"
@@ -229,15 +263,15 @@ def send_email(request, id_user):
         'scheduled_transactions': scheduled_transactions,
         'income_chart_url': income_chart_url,
         'expense_chart_url': expense_chart_url,
-        'inpie_chart_url': inpie_chart_url,  
-        'expie_chart_url': expie_chart_url, 
+        'inpie_chart_url': inpie_chart_url,
+        'expie_chart_url': expie_chart_url,
         'main_balance_message': main_balance_message,
         'debt_balance_message': debt_balance_message,
         'suggested_balance_message': suggested_balance_message,
-        'total_income' : total_income, 
-        'total_expenses' : total_expenses, 
-        'total_paid_debt': total_paid_debt, 
-        'total_pending_debt': total_pending_debt, 
+        'total_income' : total_income,
+        'total_expenses' : total_expenses,
+        'total_paid_debt': total_paid_debt,
+        'total_pending_debt': total_pending_debt,
         'total_overdue_debt': total_overdue_debt,
     }
 
@@ -264,27 +298,40 @@ def send_email(request, id_user):
         return HttpResponse(f"Failed to send email: {e}")
     finally:
         pass
-    
+
 
 def send_email_to_user(user_id):
+    """
+    Sends a financial report email to the user with the specified user ID.
+
+    This function generates a financial report in PDF format, attaches it to an email,
+    and sends the email to the user. The report includes visual charts for income and
+    expense trends, as well as category distribution.
+
+    Parameters:
+        - user_id: The ID of the user to whom the email should be sent.
+
+    Returns:
+        - None: The function does not return a value. It sends an email to the user.
+    """
     user = User.objects.get(id_user=user_id)
     transactions = Transaction.objects.filter(id_user=user)
-    debts = Debt.objects.filter(id_user=user) 
+    debts = Debt.objects.filter(id_user=user)
     scheduled_transactions = ScheduledTransaction.objects.filter(user=user).prefetch_related('categories')
 
     income_data = transactions.filter(type=Transaction.TransEnum.INCOME)
     expense_data = transactions.filter(type=Transaction.TransEnum.EXPENSE)
     total_income = sum(t.mount for t in income_data)
     total_expenses = sum(t.mount for t in expense_data)
-    
+
     total_paid_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PAID)
     total_pending_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.PENDING)
     total_overdue_debt = sum(d.totalAmount for d in debts if d.status == Debt.StatusEnum.OVERDUE)
-    
-    main_balance = total_income - total_expenses 
+
+    main_balance = total_income - total_expenses
     debt_balance = total_pending_debt + total_overdue_debt
     suggested_balance = main_balance - (total_pending_debt + total_overdue_debt)
-    
+
     main_balance_message = ( f"${main_balance:.2f}")
     debt_balance_message = f"${debt_balance:.2f}"
     suggested_balance_message = f"${suggested_balance:.2f}"
@@ -310,10 +357,10 @@ def send_email_to_user(user_id):
         'main_balance_message': main_balance_message,
         'debt_balance_message': debt_balance_message,
         'suggested_balance_message': suggested_balance_message,
-        'total_income' : total_income, 
-        'total_expenses' : total_expenses, 
-        'total_paid_debt': total_paid_debt, 
-        'total_pending_debt': total_pending_debt, 
+        'total_income' : total_income,
+        'total_expenses' : total_expenses,
+        'total_paid_debt': total_paid_debt,
+        'total_pending_debt': total_pending_debt,
         'total_overdue_debt': total_overdue_debt,
     }
 
@@ -340,13 +387,28 @@ def send_email_to_user(user_id):
 
 @api_view(['POST'])
 def update_email_schedule(request, id_user):
+    """
+    Updates the email schedule for sending financial reports to a specific user.
+
+    This endpoint allows the user to set how frequently they want to receive their
+    financial reports. The schedule start date is also updated.
+
+    Parameters:
+        - request.data: Contains the frequency of email delivery and the start date
+                        for the schedule in ISO 8601 format.
+        - id_user: The ID of the user whose email schedule is being updated.
+
+    Returns:
+        - Response: The updated email schedule data, or an error message if the request
+                    is invalid.
+    """
     try:
         user = User.objects.get(id_user=id_user)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    frequency = request.data.get('frequency', 'monthly')  
-    start_date = request.data.get('start_date', now().isoformat())  
+    frequency = request.data.get('frequency', 'monthly')
+    start_date = request.data.get('start_date', now().isoformat())
 
     try:
         start_date = parse_datetime(start_date)
@@ -370,4 +432,3 @@ def update_email_schedule(request, id_user):
             'start_date': user.email_schedule_start_date.isoformat(),
         }
     }, status=status.HTTP_200_OK)
-

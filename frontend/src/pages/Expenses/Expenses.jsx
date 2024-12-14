@@ -72,7 +72,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
-import ExpensesComponents from './ExpensesComponents.jsx'
+import ExpensesComponents from './ExpensesComponents.jsx';
 
 const Expenses = () => {
     const [transactions, setTransactions] = useState([]);
@@ -93,7 +93,7 @@ const Expenses = () => {
     const [editCategory, setEditCategory] = useState('');
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const navigate = useNavigate();
-    const [searchTerm, setSearchTerm] = useState(''); 
+    const [searchTerm, setSearchTerm] = useState('');
 
     const fetchTransactions = useCallback(async () => {
         const authToken = localStorage.getItem('authToken');
@@ -139,12 +139,12 @@ const Expenses = () => {
         fetchCategories();
         const intervalId = setInterval(() => {
             fetchTransactions();
-        }, 60000); 
+        }, 60000);
         return () => clearInterval(intervalId);
     }, [fetchTransactions]);
 
 
-    
+
     const updateChartData = (transactions) => {
         const filteredData = transactions.map(transaction => ({
             date: new Date(transaction.date),
@@ -153,7 +153,7 @@ const Expenses = () => {
         setChartData(filteredData);
     };
 
-    
+
 
     const handleAddExpense = async () => {
         const authToken = localStorage.getItem('authToken');
@@ -204,7 +204,7 @@ const Expenses = () => {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${authToken}` },
             });
-    
+
             if (response.ok) {
                 const deleteTransactions = transactions.filter(
                     (transaction) => transaction.id_transaction !== transactionId
@@ -219,13 +219,13 @@ const Expenses = () => {
             console.error('Error deleting transaction:', error);
             alert('An error occurred while trying to delete the expense.');
         }
-    }; 
+    };
 
     const handleEditExpense = async (transactionId) => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
-    
+
         const currentTransaction = transactions.find(t => t.id_transaction === transactionId);
         const updatedTransaction = {
             id_user: userId,
@@ -235,7 +235,7 @@ const Expenses = () => {
             categories: selectedCategories.length > 0 ? selectedCategories : currentTransaction.categories,
             date: selectedDate ? selectedDate.toISOString() : currentTransaction.date,
         };
-    
+
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/update_transaction/${userId}/${transactionId}/`, {
                 method: 'PATCH',
@@ -247,7 +247,7 @@ const Expenses = () => {
             });
             if (response.ok) {
                 const savedTransaction = await response.json();
-    
+
                 const updatedTransactions = transactions.map(transaction =>
                     transaction.id_transaction === transactionId ? savedTransaction : transaction
                 );
@@ -264,7 +264,7 @@ const Expenses = () => {
             console.error('Error updating transaction:', error);
         }
     };
-    
+
 
     const handleAddCategory = async () => {
         if (!newCategory.trim()) return;
@@ -276,11 +276,11 @@ const Expenses = () => {
             (category) =>
                 category.category_name.toLowerCase() === newCategory.trim().toLowerCase()
         );
-    
+
         if (categoryExists) {
             alert('This category already exists.');
             return;
-        }        
+        }
 
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/create_category/`, {
@@ -323,7 +323,7 @@ const Expenses = () => {
         const updateCategory = {
             category_name: editCategory || currentCategory.category_name,
         };
-    
+
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/update_category/${userId}/${categoryId}/`, {
                 method: 'PATCH',
@@ -333,7 +333,7 @@ const Expenses = () => {
                 },
                 body: JSON.stringify(updateCategory),
             });
-    
+
             if (response.ok) {
                 const result = await response.json();
                 const updatedCategoryName = result.category_name;
@@ -368,7 +368,7 @@ const Expenses = () => {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         if (!authToken || !userId) return;
-    
+
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/delete_category/${userId}/${categoryId}/`, {
                 method: 'DELETE',
@@ -376,7 +376,7 @@ const Expenses = () => {
                     'Authorization': `Bearer ${authToken}`,
                 },
             });
-    
+
             if (response.ok) {
                 setCategories((prevCategories) =>
                     prevCategories.filter((category) => category.id_category !== categoryId)
