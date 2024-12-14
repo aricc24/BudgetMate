@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-import React, {useState, useEffect} from 'react';
-=======
 /**
  * IncomeComponents.jsx
  *
@@ -76,8 +73,7 @@ import React, {useState, useEffect} from 'react';
  */
 
 
-import React, {useState} from 'react';
->>>>>>> origin/feature/frontend-documentation
+import React, {useState, useEffect} from 'react';
 import 'chartjs-adapter-date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -116,7 +112,7 @@ const IncomeComponents = ({
     handleEditCategory,
     handleDeleteCategory,
 }) => {
-    const [isAddIncomeDialogOpen, setIsAddIncomeDialogOpen] = useState(false); 
+    const [isAddIncomeDialogOpen, setIsAddIncomeDialogOpen] = useState(false);
 
     useEffect(() => {
         if (isAddIncomeDialogOpen || isEditOpen || isCategoryDialogOpen || isNewCategoryDialogOpen || isEditCategoryOpen) {
@@ -125,7 +121,7 @@ const IncomeComponents = ({
             document.body.style.overflow = '';
         }
     }, [isAddIncomeDialogOpen, isEditOpen, isCategoryDialogOpen, isNewCategoryDialogOpen, isEditCategoryOpen]);
-    
+
     const handleOpenAddIncomeDialog = () => { setIsAddIncomeDialogOpen(true); };
     const handleCloseAddIncomeDialog = () => { handleAddIncome(); setIsAddIncomeDialogOpen(false);};
 
@@ -133,7 +129,7 @@ const IncomeComponents = ({
         <Layout>
             <div className={`income-page ${isAddIncomeDialogOpen || isEditOpen || isCategoryDialogOpen ? 'inactive' : ''}`}>
                 <label>Incomes</label>
-                <button 
+                <button
                     className="Buttons1"
                     onClick={handleOpenAddIncomeDialog}>
                     Add Income
@@ -149,7 +145,7 @@ const IncomeComponents = ({
                     />
                 </div>
 
-    
+
                 <div className="table2">
                     <table border="1" className="table">
                         <thead>
@@ -220,7 +216,7 @@ const IncomeComponents = ({
                     </table>
                 </div>
 
-    
+
                 <div className="chart-container">
                     <h4 className="chart-title">Line Chart</h4>
                     {chartData && <LineChart data={chartData} />}
@@ -362,7 +358,7 @@ const IncomeComponents = ({
             )}
             {isCategoryDialogOpen && (
                 <>
-                    <div className="overlay"></div> 
+                    <div className="overlay"></div>
                     <dialog className="category-dialog" open>
                         <h3>Select Categories</h3>
                         <h6>Hold ctrl or left click to select multiple categories</h6>
@@ -383,8 +379,8 @@ const IncomeComponents = ({
                             }}
                         >
                             +
-                        </button>                    
-                        <button 
+                        </button>
+                        <button
                             className="ButtonsI"
                             onClick={() => {
                                 if (selectedCategories.length === 1) {
@@ -429,10 +425,10 @@ const IncomeComponents = ({
                         onChange={(e) => setNewCategory(e.target.value)}
                         placeholder="Category Name"
                     />
-                    
+
                         <button className="Buttons3" onClick={handleAddCategory}>Add</button>
                         <button className="Buttons3" onClick={() => setIsNewCategoryDialogOpen(false)}>Cancel</button>
-                    
+
                 </dialog>
             )}
 
@@ -472,13 +468,13 @@ const IncomeComponents = ({
                     <button
                         className="Buttons3"
                         onClick={() => setIsEditCategoryOpen(false)}
-                    > 
+                    >
                         Cancel
                     </button>
                 </dialog>
             )}
         </Layout>
-    );    
+    );
 };
 
 export default IncomeComponents;

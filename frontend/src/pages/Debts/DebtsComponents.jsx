@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 import React, {useState, useEffect} from 'react';
-=======
 /**
  * DebtsComponents.jsx
  *
@@ -61,9 +59,6 @@ import React, {useState, useEffect} from 'react';
  * - Table rows allow for interaction through buttons to delete or edit debts.
  * - Styling uses custom CSS classes defined in `Debts.css`.
  */
-
-import React from 'react';
->>>>>>> origin/feature/frontend-documentation
 import 'chartjs-adapter-date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -94,7 +89,7 @@ const DebtsComponents = ({
     handelDeleteDebt,
 }) => {
 
-    const [isAddDebtDialogOpen, setIsAddDebtDialogOpen] = useState(false); 
+    const [isAddDebtDialogOpen, setIsAddDebtDialogOpen] = useState(false);
 
     useEffect(() => {
         if (isAddDebtDialogOpen || isEditOpen) {
@@ -103,7 +98,7 @@ const DebtsComponents = ({
             document.body.style.overflow = '';
         }
     }, [isAddDebtDialogOpen, isEditOpen]);
-    
+
     const handleOpenAddDebtDialog = () => { setIsAddDebtDialogOpen(true); };
     const handleCloseAddDebtDialog = () => { handleAddDebt(); setIsAddDebtDialogOpen(false);};
 
@@ -111,7 +106,7 @@ const DebtsComponents = ({
         <Layout>
             <div className={`debt-page ${isAddDebtDialogOpen || isEditOpen ? 'inactive' : ''}`}>
                 <label>Debts</label>
-                <button 
+                <button
                     className="Buttons1"
                     onClick={handleOpenAddDebtDialog}>
                     Add Debt
