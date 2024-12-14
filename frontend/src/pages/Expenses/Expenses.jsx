@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 import React, { useEffect, useState, useCallback } from 'react';
-=======
 /**
  * Expenses.jsx
  *
