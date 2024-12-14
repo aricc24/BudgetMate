@@ -68,13 +68,12 @@ const HomeComponents = ({
                         onChange={(e) => setSelectedStartDate(e.target.value)}
                     />
                 </div>
-
-                <div className="charts-container">
-                    <div className="chart-blockL">
+                <div className="chartsH">
+                    <div className="chart-block chart-blockL">
                         <h4>Combined Line Chart</h4>
                         {chartData && <CombinedChart data={chartData} />}
                     </div>
-                    <div className="chart-blockP">
+                    <div className="chart-block chart-blockP">
                         <h4>Combined Pie Chart</h4>
                         {chartData && (
                             <CombinedPieChart
